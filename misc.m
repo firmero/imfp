@@ -21,12 +21,12 @@ function [hf, certainly_ok] = horner_simple(polynom_coefficients, x)
 	hf = p(n);
 
 	if (inf(x) == sup(x))
-		certainly_ok = true
+		certainly_ok = true; % what if coeficients are intervals
 		return
 	endif
 
 	if (in(0,intval(x)))
-		certainly_ok = false
+		certainly_ok = false; % what if coeficients are intervals
 		return
 	endif
 
@@ -68,6 +68,7 @@ endfunction
 % intvalinit('displayinfsup')
 % format long
 
+% if x is [0,R]
 function [hf, certainly_ok] = horner_left_zero(polynom_coefficients, x)
 
 	n = length(polynom_coefficients);
@@ -126,19 +127,79 @@ function [hf, certainly_ok] = horner_bisect_at_zero(polynom_coefficients, x)
 								-left_interval), 
 			  horner_left_zero(polynom_coefficients,right_interval));
 
-	certainly_ok = false
+	certainly_ok = false;
+
+endfunction
+
+% poradie koeficienov?
+function mvf = mean_value_form(polynom_coefficients, x)
+
+	polynom_coefficients = fliplr(polynom_coefficients);
+	c = mid(x);
+
+	hf_at_center = horner_simple(polynom_coefficients,c);
+
+	n = length(polynom_coefficients);
+
+	% co je rychlejsie, downto or for
+	for i = 1:n-1
+
+		% rounding?
+		f_derivated(i) = i * polynom_coefficients(i+1);
+
+	endfor
+
+	hf_derivated = horner_simple(fliplr(f_derivated), x);
+
+	mvf = hf_at_center + hf_derivated*(x-c);
+
+endfunction
+
+% poradie?
+function sf = slope_form(polynom_coefficients, x)
+
+	polynom_coefficients = fliplr(polynom_coefficients);
+	n = length(polynom_coefficients);
+	c = mid(x);
+
+	% get coefficients of polynom g()
+	g(n-1) = polynom_coefficients(n);
+	for i = n-1:-1:2
+		g(i-1) = g(i)*c + polynom_coefficients(i);
+	endfor
+
+	%for testing purpose
+	%{ 
+	polynom_coefficients = fliplr(polynom_coefficients)
+	g = fliplr(g)
+	xx=2.345; ((polyval(polynom_coefficients,c) + polyval(g,xx)*(xx-c)) == \
+				polyval(polynom_coefficients,xx))
+	%} 
+
+
+	hf_g = horner_simple(g,x);
+
+	f_at_c = polyval(polynom_coefficients, c);
+
+	sf = f_at_c + hf_g*(x-c);
 
 endfunction
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %p = rand(1,1100);
-p = [1026,-470,53,-0.5];
-x = infsup(-0.5,0.15);
+%p = [1026,-470,53,-0.5];
+p = [4,3,6];
+x = infsup(-0.1,0.2);
 
 tic
 
-[y,ok] = horner_simple(p, x), toc
+%[y,ok] = horner_simple(p, x), toc
 %y = horner_left_zero(p, x),toc
-horner_bisect_at_zero(p,x), toc
+%horner_bisect_at_zero(p,x), toc
 
+%p = [infsup(2,2.3), infsup(4,4.2)];
+%horner_simple(p,x), toc
 
+%horner_simple(p,x), toc
+%mean_value_form(p,x), toc
+slope_form(p,x), toc
