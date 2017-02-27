@@ -131,6 +131,20 @@ function [hf, certainly_ok] = horner_bisect_at_zero(polynom_coefficients, x)
 
 endfunction
 
+function f_derivated = derivate_polynom(polynom_coefficients)
+
+	n = length(polynom_coefficients);
+
+	% co je rychlejsie, downto or for, append
+	for i = 1:n-1
+
+		% rounding?
+		f_derivated(i) = i * polynom_coefficients(i+1);
+
+	endfor
+
+endfunction
+
 % poradie koeficienov?
 function mvf = mean_value_form(polynom_coefficients, x)
 
@@ -141,13 +155,9 @@ function mvf = mean_value_form(polynom_coefficients, x)
 
 	n = length(polynom_coefficients);
 
-	% co je rychlejsie, downto or for
-	for i = 1:n-1
 
-		% rounding?
-		f_derivated(i) = i * polynom_coefficients(i+1);
+	f_derivated = derivate_polynom(polynom_coefficients,x);
 
-	endfor
 
 	hf_derivated = horner_simple(fliplr(f_derivated), x);
 
@@ -179,9 +189,51 @@ function sf = slope_form(polynom_coefficients, x)
 
 	hf_g = horner_simple(g,x);
 
+	% what if interval coeficients?
 	f_at_c = polyval(polynom_coefficients, c);
 
 	sf = f_at_c + hf_g*(x-c);
+
+endfunction
+
+function [c_left, c_right] = centres_mean_value_form(f_derivated, x)
+
+	if (inf(f_derivated) >= 0)
+		c_left = inf(x);
+		c_right = sup(x);
+		return
+	endif
+
+	if (sup(f_derivated) <= 0)
+		c_left = sup(x);
+		c_right = inf(x);
+		return
+	endif
+
+	% else approximate
+
+	c_right = (sup(f_derivated)*sup(x) - inf(f_derivated)*inf(x))/width;
+	c_left = (sup(f_derivated)*inf(x) - inf(f_derivated)*sup(x))/width;
+
+	% todo check rounding
+
+endfunction
+
+% poradie?
+function mvfb = mean_value_form_bicentred(polynom_coefficients,x)
+
+	polynom_coefficients = fliplr(polynom_coefficients);
+	f_derivated = fliplr(derivate_polynom(polynom_coefficients));
+
+	hf_derivated = horner_simple(f_derivated,x);
+
+	[c_left, c_right] = centres_mean_value_form(hf_derivated,x);
+
+	% to do rounding
+	right = horner_simple(polynom_coefficients,c_right) + sup(hf_derivated*(x-c_right));
+	left = horner_simple(polynom_coefficients,c_left) + inf(hf_derivated*(x-c_left));
+
+	mvfb = infsup(inf(left),sup(right));
 
 endfunction
 
@@ -202,4 +254,6 @@ tic
 
 %horner_simple(p,x), toc
 %mean_value_form(p,x), toc
-slope_form(p,x), toc
+%slope_form(p,x), toc
+%mean_value_form_bicentred(p,x), toc
+
