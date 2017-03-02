@@ -21,18 +21,20 @@ function [hf, certainly_ok] = horner_simple(polynom_coefficients, x)
 	hf = p(n);
 
 	if (inf(x) == sup(x))
-		certainly_ok = true; % what if coeficients are intervals
+		certainly_ok = true; % what if coefficients are intervals
 		return
 	endif
 
 	if (in(0,intval(x)))
-		certainly_ok = false; % what if coeficients are intervals
+		certainly_ok = false; % what if coefficients are intervals
 		return
 	endif
 
 	sgn = sign(polynom_coefficients(1));
-	% !! duplicity of code
+	% not working on interval koefficients
 
+
+	% !! duplicity of code
 	if (inf(x) >= 0 )		% on right
 		for i = 2:n-1
 			if (inf(sgn*p(i)) < 0)
@@ -189,7 +191,7 @@ function sf = slope_form(polynom_coefficients, x)
 
 	hf_g = horner_simple(g,x);
 
-	% what if interval coeficients?
+	% what if interval coefficients?
 	f_at_c = polyval(polynom_coefficients, c);
 
 	sf = f_at_c + hf_g*(x-c);
@@ -237,12 +239,142 @@ function mvfb = mean_value_form_bicentred(polynom_coefficients,x)
 
 endfunction
 
+%
+%  tc(1) = hf(p,c), tc(2) = hf(p',c),...
+%
+function tc = taylor_coefficient(polynom_coefficients, c)
+
+	n = length(polynom_coefficients);
+
+	%tc = zeros(1,n);
+
+	tc(1) = horner_simple(polynom_coefficients,c);
+
+
+	fact = 1;
+
+	for j = 2:n
+		k = 2;
+		polynom_coefficients(n) = polynom_coefficients(n-1);
+		for i = n-1:-1:j
+			polynom_coefficients(i) = polynom_coefficients(i-1)*k;
+			k++;
+		endfor
+		
+		p = polynom_coefficients(j:n);
+
+		tc(j) = horner_simple(p,c) / fact;
+		% todo overflow
+		fact *= j;
+
+	endfor
+
+endfunction
+
+function tf = taylor_form(polynom_coefficients, x)
+
+	%todo check special cases for x
+
+	c = mid(x);
+	r = rad(x);
+
+	n = length(polynom_coefficients);
+
+	tay_coeff = taylor_coefficient(polynom_coefficients,c);
+
+	% magnitude....
+	% rounding...
+	magnitude = mag(tay_coeff(n)) * r;
+
+	for i = n:-1:2
+		magnitude = (magnitude + mag(tay_coeff(i)))*r;
+	endfor
+
+	%tay_coeff(1)
+	% disp " [-magnitude, magnitude]", infsup(-magnitude, magnitude)
+
+	tf = tay_coeff(1) + infsup(-magnitude, magnitude);
+
+endfunction
+
+function y = evaluate_parallel(polynom_coefficients, x)
+
+	ncpus = nproc();
+
+	% assert ncpus != 0
+	delta = (sup(x) - inf(x))/ncpus;
+
+	coefficients = cell(1,ncpus);
+	intervals = cell(1,ncpus);
+
+
+	left = inf(x);
+	for i = 1:ncpus
+	
+		% todo rounding
+		getround(1);
+		right = left + delta;
+		intervals(i) = infsup(left,right);
+		left = right;
+
+		coefficients(i) = polynom_coefficients;
+
+	endfor
+
+	a = parcellfun(ncpus, @evaluate, coefficients, intervals,"UniformOutput", false);
+
+	y = a{1};
+
+	for i=2:ncpus
+		y = hull(y,a{i});
+	endfor
+
+endfunction
+
+%
+% x interval
+%
+function y = evaluate(polynom_coefficients, x)
+
+	t = inf(x);
+	y = intval(polyval(polynom_coefficients,t));
+
+	while (t < sup(x))
+		t += 0.00003;
+		ny = polyval(polynom_coefficients,t);
+		y = hull(y,ny);
+	endwhile
+
+	y = hull(y,polyval(polynom_coefficients,sup(x)));
+
+endfunction
+
+%
+% x is computed, y is referenced
+%
+function d = distance(x,y)
+
+	% to do if y i point?
+	% todo check if x is subset of y
+
+	if (!in(intval(y),intval(x)))
+		d = -1;
+		return
+	endif
+
+	getround(1);
+
+	d = 1024*max(sup(x)-sup(y),inf(y)-inf(x)); % scale
+	d /=(sup(y)-inf(y));
+
+endfunction
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %p = rand(1,1100);
-%p = [1026,-470,53,-0.5];
-p = [4,3,6];
+p = [1026,-470,53,-0.5];
+%p = [infsup(1026,1026.002),-470,infsup(53,53.001),-0.5];
+%p = [4,3,6];
 x = infsup(-0.1,0.2);
-
 tic
 
 %[y,ok] = horner_simple(p, x), toc
@@ -252,8 +384,16 @@ tic
 %p = [infsup(2,2.3), infsup(4,4.2)];
 %horner_simple(p,x), toc
 
-%horner_simple(p,x), toc
-%mean_value_form(p,x), toc
-%slope_form(p,x), toc
-%mean_value_form_bicentred(p,x), toc
+%disp "  HORNER ",horner_simple(p,x), toc
+%disp "  MEAV_VAL ",mean_value_form(p,x), toc
+%disp "  MEAN_SLOPE ",slope_form(p,x), toc
+%disp "  MEAN_BICENTRED ", mean_value_form_bicentred(p,x), toc
+%disp "  TAYLOR ", taylor_form(p,x), toc
+%tic, evaluate_parallel(p,x), toc
+%tic, evaluate(p,x), toc
+
+distance(infsup(0.040,0.069), infsup(0.05,0.055))
+distance(infsup(0.041,0.069), infsup(0.05,0.055))
+distance(infsup(0.040,0.068), infsup(0.05,0.055))
+distance(infsup(0.041,0.068), infsup(0.05,0.055))
 
