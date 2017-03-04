@@ -515,29 +515,36 @@ function res = bernstein_coefficients(polynom_coefficients,x)
 	w = sup(x) - inf(x);
 	n = length(polynom_coefficients);
 
-	k = n-1; % todo
+	% k should be at least n-1 (deg of polynom)
+	k = n-1 % todo
 
 	% temporary, not bernstein coefficients
 	b(1) = intval(1);
 
+	% to simulate factorial
+	q = w;
+
 	for i = 2:n
-		b(i) = b(i-1)*w/(k-i+2);
-		w += w; % trick to simulate factorial
+		b(i) = b(i-1)*q/(k-i+2);
+		q += w; % trick to simulate factorial
 	endfor
 	
 
-	tc = taylor_coefficient(polynom_coefficients,inf(x));
+	tc = taylor_coefficient(polynom_coefficients,inf(x))
 	for i = 1:n
 		b(i) = b(i)*tc(i);
 	endfor
+	b
 
 	res = b(1)
 	for j = 1:k
 		for i = 1:min(n-1,k-j+1)
+			%printf("i j  %d %d\n", i,j);
 			b(i) = b(i) + b(i+1);
 		endfor
-		res = hull(res,b(1));
+
 		% b(1) is bernstein coeffcient b1,b2,b3,bj.. after a loop of j
+		res = hull(res,b(1));
 		b(1)
 	endfor
 	
