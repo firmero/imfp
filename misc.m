@@ -250,7 +250,6 @@ function tc = taylor_coefficient(polynom_coefficients, c)
 
 	tc(1) = horner_simple(polynom_coefficients,c);
 
-
 	fact = 1;
 
 	for j = 2:n
@@ -340,7 +339,7 @@ function y = evaluate(polynom_coefficients, x)
 	y = intval(polyval(polynom_coefficients,t));
 
 	while (t < sup(x))
-		t += 0.00003;
+		t += 0.0003;
 		ny = polyval(polynom_coefficients,t);
 		y = hull(y,ny);
 	endwhile
@@ -352,7 +351,7 @@ endfunction
 %
 % x is computed, y is referenced
 %
-function d = distance(x,y)
+function d = distance(x,y)% todo
 
 	% to do if y i point?
 	% todo check if x is subset of y
@@ -369,11 +368,118 @@ function d = distance(x,y)
 
 endfunction
 
+function parabola_range = evaluate_parabola(a2,a1,a0,x)
+	
+	if (in0(0,x))
+		parabola_range = horner_simple([a2 a1 a0],x);
+		return
+	endif
+
+	mx = 0.5*a1;
+	my = hull((a2*inf(x)+a1)*inf(x),(a2*sup(x)+a1)*sup(x));
+
+	% contain x extrem point mx
+	mxi = intersect(-mx/a2,x);
+	if (!isnan(mxi))
+		my = hull(my,mx*mxi);
+	endif
+
+	parabola_range = my + a0;
+
+endfunction
+
+%
+% a_1*x^n + a_2*x^(n-1) + ... + a_(n+1)
+%
+% [ a_1 a_2 ... a_(n+1) ]
+%
+function res = interpolation_form(polynom_coefficients,x)
+	
+	f_derivated = fliplr(derivate_polynom(fliplr(polynom_coefficients)));
+	f_twice_derivated = fliplr(derivate_polynom(fliplr(f_derivated)));
+
+	c = mid(x);
+
+	f_at_c = horner_simple(polynom_coefficients,c);
+	f_derivated_at_c = horner_simple(f_derivated,c);
+	f_twice_derivated_range = horner_simple(f_twice_derivated,x);
+
+	m = mid(f_twice_derivated_range);
+
+	% parabola coefficients
+	a2 = 0.5*m;
+	a1 = f_derivated_at_c - m*c;
+	a0 = (a2*c - f_derivated_at_c)*c + f_at_c;
+
+	parabola_range = evaluate_parabola(a2,a1,a0,x);
+
+	getround(1);
+	r = mag(x-c);
+	res = parabola_range + (f_twice_derivated_range - m)*infsup(0,0.5*r*r);
+
+endfunction
+
+function res = modified_interpolation_form(polynom_coefficients,x) 
+	f_derivated = fliplr(derivate_polynom(fliplr(polynom_coefficients)));
+	f_twice_derivated = fliplr(derivate_polynom(fliplr(f_derivated)));
+
+	c = mid(x);
+
+	f_at_c = horner_simple(polynom_coefficients,c);
+	f_derivated_at_c = horner_simple(f_derivated,c);
+	f_twice_derivated_range = horner_simple(f_twice_derivated,x);
+
+	m = mid(f_twice_derivated_range);
+
+	% parabola coefficients
+	a2 = 0.5*f_twice_derivated_range;
+
+	a2_up = a2;
+	a2_down = a2;
+
+
+	a1_up = f_derivated_at_c - sup(f_twice_derivated_range)*c;
+	a1_down = f_derivated_at_c - inf(f_twice_derivated_range)*c;
+
+	a0_up = (a2_up*c - f_derivated_at_c)*c;
+	a0_down = (a2_down*c - f_derivated_at_c)*c;
+
+	p1 = evaluate_parabola(a2_up,a1_up,a0_up,x);
+	p2 = evaluate_parabola(a2_down,a1_down,a0_down,x);
+
+	res = hull(p1,p2) + f_at_c;
+
+endfunction
+
+function test1
+
+	%tic, evaluate_parallel(p,x), toc
+	n = 1
+	MP = random(n,10);
+
+	for i = 1:n
+		p = MP(i,:);
+		x = infsup(-0.2,0.3);
+
+		evaluate_parallel(p,x);
+		disp "  HORNER ",horner_simple(p,x),sup(ans)-inf(ans), toc, 
+		disp "  MEAV_VAL ",mean_value_form(p,x),sup(ans)-inf(ans), toc
+		disp "  MEAN_SLOPE ",slope_form(p,x),sup(ans)-inf(ans), toc
+		%disp "  MEAN_BICENTRED ", mean_value_form_bicentred(p,x),sup(ans)-inf(ans), toc
+		disp "  TAYLOR ", taylor_form(p,x),sup(ans)-inf(ans), toc
+
+		disp "  INTERPOLATION ",interpolation_form(p,x), sup(ans)-inf(ans),toc
+		disp "  MOD_INTERPOLATION ",modified_interpolation_form(p,x), sup(ans)-inf(ans),toc
+	endfor
+
+endfunction
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %p = rand(1,1100);
-p = [1026,-470,53,-0.5];
+%p = [1026,-470,53,-0.5];	% [-11,5261, 1.2642]
 %p = [infsup(1026,1026.002),-470,infsup(53,53.001),-0.5];
-%p = [4,3,6];
+p = [4,3,6];				% [5.7400, 6.7601]
+
 x = infsup(-0.1,0.2);
 tic
 
@@ -392,8 +498,56 @@ tic
 %tic, evaluate_parallel(p,x), toc
 %tic, evaluate(p,x), toc
 
-distance(infsup(0.040,0.069), infsup(0.05,0.055))
-distance(infsup(0.041,0.069), infsup(0.05,0.055))
-distance(infsup(0.040,0.068), infsup(0.05,0.055))
-distance(infsup(0.041,0.068), infsup(0.05,0.055))
+%distance(infsup(0.040,0.069), infsup(0.05,0.055))
+%distance(infsup(0.041,0.069), infsup(0.05,0.055))
+%distance(infsup(0.040,0.068), infsup(0.05,0.055))
+%distance(infsup(0.041,0.068), infsup(0.05,0.055))
 
+%disp "  INTERPOLATION ",interpolation_form(p,x), toc
+%disp "  MOD_INTERPOLATION ",modified_interpolation_form(p,x), toc
+%test1
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function res = bernstein_coefficients(polynom_coefficients,x)
+
+	w = sup(x) - inf(x);
+	n = length(polynom_coefficients);
+
+	k = n-1; % todo
+
+	% temporary, not bernstein coefficients
+	b(1) = intval(1);
+
+	for i = 2:n
+		b(i) = b(i-1)*w/(k-i+2);
+		w += w; % trick to simulate factorial
+	endfor
+	
+
+	tc = taylor_coefficient(polynom_coefficients,inf(x));
+	for i = 1:n
+		b(i) = b(i)*tc(i);
+	endfor
+
+	res = b(1)
+	for j = 1:k
+		for i = 1:min(n-1,k-j+1)
+			b(i) = b(i) + b(i+1);
+		endfor
+		res = hull(res,b(1));
+		% b(1) is bernstein coeffcient b1,b2,b3,bj.. after a loop of j
+		b(1)
+	endfor
+	
+
+endfunction
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+x=infsup(0,1);
+p = intval("-1 0.7 -0.2 0.9");
+
+%tic, evaluate_parallel(p,x), toc
+
+bernstein_coefficients(p,x)
