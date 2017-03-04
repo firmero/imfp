@@ -2,12 +2,9 @@
 % Prevent Octave from thinking that this is a function file:
 1;
 
-
 % intvalinit('displaymidrad')
 % intvalinit('displayinfsup')
 % format long
-% allocate vector
-% p = repmat(intval(0),1,n);
 
 %%%-------------------------------------------------------------
 
@@ -38,15 +35,15 @@ endfunction
 %
 % Return:
 %
-%	hf				- Horner form
+%	res				- Horner form
 %	certainly_ok	- if true then Horner form gives no overestimation 
 %
-function [hf, certainly_ok] = horner_form(polynomial_coefficients, X)
+function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 
 	%{ 
 	% gives better result but is expensive
 	if (inf(X) < 0)
-		hf = horner_form_bisect_zero(polynomial_coefficients,X);
+		res = horner_form_bisect_zero(polynomial_coefficients,X);
 		certainly_ok = false;
 		return
 	endif
@@ -62,7 +59,7 @@ function [hf, certainly_ok] = horner_form(polynomial_coefficients, X)
 		p(i) = p(i-1) * X + polynomial_coefficients(i);
 	endfor
     
-	hf = p(n);
+	res = p(n);
 
 	% tests for covering overestimation interval
 	if (inf(X) == sup(X))
@@ -102,7 +99,7 @@ endfunction
 %
 % Horner form for X = [0,R]
 %
-function hf = horner_form_left_zero(polynomial_coefficients, X)
+function res = horner_form_left_zero(polynomial_coefficients, X)
 
 	n = length(polynomial_coefficients);
 	% allocate vector
@@ -133,7 +130,7 @@ function hf = horner_form_left_zero(polynomial_coefficients, X)
 
 	endfor
 	
-	hf = p(n);
+	res = p(n);
 
 endfunction
 
@@ -157,7 +154,7 @@ endfunction
 %
 % Horner form for X containing 0
 %
-function hf = horner_form_bisect_zero(polynomial_coefficients, X)
+function res = horner_form_bisect_zero(polynomial_coefficients, X)
 
 	if (!in(0,X))
 		error("Interval doesn't contain 0")
@@ -167,7 +164,7 @@ function hf = horner_form_bisect_zero(polynomial_coefficients, X)
 	left_interval  = infsup(inf(X),0);
 	right_interval = infsup(0,sup(X));
 
-	hf = hull(horner_form_left_zero(invert_polynomial(polynomial_coefficients),
+	res = hull(horner_form_left_zero(invert_polynomial(polynomial_coefficients),
 								-left_interval), 
 			  horner_form_left_zero(polynomial_coefficients,right_interval));
 
@@ -195,20 +192,26 @@ function p_derivated = derivate_polynomial(polynomial_coefficients)
 endfunction
 
 %
+% Compute MVF(p,mid(X))
+%
+%	mvf = p(mid(X)) + hf(p',X)*(X-mid(X))
+%
 % Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-function mvf = mean_value_form(polynomial_coefficients, x)
+% If 0 is not in hf(p',X) then range is without overestimation
+%
+function mvf = mean_value_form(polynomial_coefficients, X)
 
-	c = mid(x);
+	c = mid(X);
 	hf_at_center = horner_form(polynomial_coefficients,c);
 
-	p_derivated = derivate_polynomial(polynomial_coefficients,x);
+	p_derivated = derivate_polynomial(polynomial_coefficients,X);
 
-	hf_derivated = horner_form(p_derivated,x);
+	hf_derivated = horner_form(p_derivated,X);
 
-	mvf = hf_at_center + hf_derivated*(x-c);
+	mvf = hf_at_center + hf_derivated*(X-c);
 
 endfunction
 
@@ -217,11 +220,10 @@ endfunction
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-function sf = slope_form(polynomial_coefficients, x)
+function sf = slope_form(polynomial_coefficients, X)
 
 	n = length(polynomial_coefficients);
-	c = mid(x);
-
+	c = mid(X);
 
 	% get coefficients of polynom g()
 	g = repmat(intval(0),1,n-1);
@@ -240,15 +242,24 @@ function sf = slope_form(polynomial_coefficients, x)
 	%} 
 
 
-	hf_g = horner_form(g,x);
+	hf_g = horner_form(g,X);
 
-	% what if interval coefficients?
-	f_at_c = polyval(polynomial_coefficients, c);
+	p_c = polyval(polynomial_coefficients, c);
 
-	sf = f_at_c + hf_g*(x-c);
+	sf = p_c + hf_g*(X-c);
 
 endfunction
 
+%
+% Comptupe optimal points c_left and c_right in sense of:
+% 
+% For all c in X it holds:
+%
+%	sup(MVF(p,c_right)) <= sup(MVF(p,c))
+%	inf(MVF(p,c_left))  >= inf(MVF(p,c))
+%
+%	width(MVF(p,mid(X))) <= width(MVF(p,c)
+%
 function [c_left, c_right] = centres_mean_value_form(f_derivated, x)
 
 	if (inf(f_derivated) >= 0)
@@ -263,34 +274,43 @@ function [c_left, c_right] = centres_mean_value_form(f_derivated, x)
 		return
 	endif
 
-	% else approximate
-
+	% else approximate, it is correct thanks to lemma of optimality
+	width = sup(x) - inf(x);
 	c_right = (sup(f_derivated)*sup(x) - inf(f_derivated)*inf(x))/width;
 	c_left = (sup(f_derivated)*inf(x) - inf(f_derivated)*sup(x))/width;
 
-	% todo check rounding
-
 endfunction
 
-% poradie?
-function mvfb = mean_value_form_bicentred(polynomial_coefficients,x)
+%
+% MVFB(p,x) = infsup(inf(hf(p,c_left)), sup(hf(p,c_right)))
+%
+% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
+function res = mean_value_form_bicentred(polynomial_coefficients,x)
 
-	polynomial_coefficients = fliplr(polynomial_coefficients);
-	f_derivated = fliplr(derivate_polynomial(polynomial_coefficients));
+	p_derivated = derivate_polynomial(polynomial_coefficients);
 
-	hf_derivated = horner_form(f_derivated,x);
+	hf_derivated = horner_form(p_derivated,x);
 
 	[c_left, c_right] = centres_mean_value_form(hf_derivated,x);
 
-	% to do rounding
-	right = horner_form(polynomial_coefficients,c_right) + sup(hf_derivated*(x-c_right));
-	left = horner_form(polynomial_coefficients,c_left) + inf(hf_derivated*(x-c_left));
+	getround(1);
+	right = sup(horner_form(polynomial_coefficients,c_right)) ...
+			+ sup(hf_derivated*(x-c_right));
 
-	mvfb = infsup(inf(left),sup(right));
+	getround(-1);
+	left = inf(horner_form(polynomial_coefficients,c_left)) ...
+			+ inf(hf_derivated*(x-c_left));
+
+	res = infsup(left,right);
 
 endfunction
 
 %% end of MEAN VAL FORM
+
+%% start of TAYLOR FORM
 %
 %  tc(1) = hf(p,c), tc(2) = hf(p',c),...
 %
@@ -609,6 +629,7 @@ p = p - 0.5;
 tic, evaluate_parallel(p,x), toc
 tic, horner_form(p,x), toc
 tic, mean_value_form(p,x), toc
+tic, mean_value_form_bicentred(p,x), toc
 tic, slope_form(p,x), toc
 
 %tic, evaluate_parallel(p,x), toc
