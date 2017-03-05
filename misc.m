@@ -220,38 +220,36 @@ endfunction
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-function sf = slope_form(polynomial_coefficients, X)
+function res = slope_form(polynomial_coefficients, X)
 
 	n = length(polynomial_coefficients);
 	c = mid(X);
 
-	% get coefficients of polynom g()
+	%
+	% gc(x) = b_1*x^(n-2) + b_2*x^(n-3) + ... + b_(n-2)*x + b_(n-1)
+	%
+	% b_1 =  a_1 
+	% b_2 =  a_1*c + a_2 
+	% b_3 = (a_1*c + a_2)*c + a_3 
+	%
+
+	% get coefficients of polynom gc()
 	g = repmat(intval(0),1,n-1);
 
-	g(n-1) = polynomial_coefficients(n);
-	for i = n-1:-1:2
-		g(i-1) = g(i)*c + polynomial_coefficients(i);
+	g(1) = polynomial_coefficients(1);
+	for i = 2:n-1
+		g(i) = g(i-1)*c + polynomial_coefficients(i);
 	endfor
-
-	%for testing purpose
-	%{ 
-	polynomial_coefficients = fliplr(polynomial_coefficients)
-	g = fliplr(g)
-	xx=2.345; ((polyval(polynomial_coefficients,c) + polyval(g,xx)*(xx-c)) == \
-				polyval(polynomial_coefficients,xx))
-	%} 
-
 
 	hf_g = horner_form(g,X);
 
-	p_c = polyval(polynomial_coefficients, c);
-
-	sf = p_c + hf_g*(X-c);
+	p_at_c = g(n-1)*c + polynomial_coefficients(n);
+	res = p_at_c + hf_g*(X-c);
 
 endfunction
 
 %
-% Comptupe optimal points c_left and c_right in sense of:
+% Comptupes optimal points c_left and c_right in sense of:
 % 
 % For all c in X it holds:
 %
@@ -311,17 +309,20 @@ endfunction
 %% end of MEAN VAL FORM
 
 %% start of TAYLOR FORM
+
 %
-%  tc(1) = hf(p,c), tc(2) = hf(p',c),...
+%  tc(1) = hf(p,c) ; tc(2) = hf(p',c)/1! ; tc(3) = hf(p'',c)/2! ...
 %
 function tc = taylor_coefficient(polynomial_coefficients, c)
 
 	n = length(polynomial_coefficients);
+	% assert n < 166 ... factorial
 
-	%tc = zeros(1,n);
-
+	% allocate vector
+	tc = repmat(intval(0),1,n);
 	tc(1) = horner_form(polynomial_coefficients,c);
 
+	% factorial
 	fact = 1;
 
 	for j = 2:n
@@ -335,13 +336,15 @@ function tc = taylor_coefficient(polynomial_coefficients, c)
 		p = polynomial_coefficients(j:n);
 
 		tc(j) = horner_form(p,c) / fact;
-		% todo overflow
 		fact *= j;
 
 	endfor
 
 endfunction
 
+%
+%
+%
 function tf = taylor_form(polynomial_coefficients, x)
 
 	%todo check special cases for x
@@ -367,6 +370,8 @@ function tf = taylor_form(polynomial_coefficients, x)
 	tf = tay_coeff(1) + infsup(-magnitude, magnitude);
 
 endfunction
+
+%% end of TAYLOR FORM
 
 function y = evaluate_parallel(polynomial_coefficients, x)
 
@@ -623,14 +628,13 @@ endfunction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x=infsup(-0.3,0.2);
 
-p = rand(1,7);
+p = rand(1,6);
 p = p - 0.5;
 
 tic, evaluate_parallel(p,x), toc
 tic, horner_form(p,x), toc
-tic, mean_value_form(p,x), toc
 tic, mean_value_form_bicentred(p,x), toc
-tic, slope_form(p,x), toc
+tic, taylor_form(p,x), toc
 
 %tic, evaluate_parallel(p,x), toc
 
