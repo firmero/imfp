@@ -194,13 +194,13 @@ endfunction
 %
 % Compute MVF(p,mid(X))
 %
-%	mvf = p(mid(X)) + hf(p',X)*(X-mid(X))
+%	mvf = p(mid(X)) + HF(p',X)*(X-mid(X))
 %
 % Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-% If 0 is not in hf(p',X) then range is without overestimation
+% If 0 is not in HF(p',X) then range is without overestimation
 %
 function mvf = mean_value_form(polynomial_coefficients, X)
 
@@ -258,49 +258,49 @@ endfunction
 %
 %	width(MVF(p,mid(X))) <= width(MVF(p,c)
 %
-function [c_left, c_right] = centres_mean_value_form(f_derivated, x)
+function [c_left, c_right] = centres_mean_value_form(f_derivated, X)
 
 	if (inf(f_derivated) >= 0)
-		c_left = inf(x);
-		c_right = sup(x);
+		c_left = inf(X);
+		c_right = sup(X);
 		return
 	endif
 
 	if (sup(f_derivated) <= 0)
-		c_left = sup(x);
-		c_right = inf(x);
+		c_left = sup(X);
+		c_right = inf(X);
 		return
 	endif
 
 	% else approximate, it is correct thanks to lemma of optimality
-	width = sup(x) - inf(x);
-	c_right = (sup(f_derivated)*sup(x) - inf(f_derivated)*inf(x))/width;
-	c_left = (sup(f_derivated)*inf(x) - inf(f_derivated)*sup(x))/width;
+	width = sup(X) - inf(X);
+	c_right = (sup(f_derivated)*sup(X) - inf(f_derivated)*inf(X))/width;
+	c_left = (sup(f_derivated)*inf(X) - inf(f_derivated)*sup(X))/width;
 
 endfunction
 
 %
-% MVFB(p,x) = infsup(inf(hf(p,c_left)), sup(hf(p,c_right)))
+% MVFB(p,X) = infsup(inf(HF(p,c_left)), sup(HF(p,c_right)))
 %
 % Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-function res = mean_value_form_bicentred(polynomial_coefficients,x)
+function res = mean_value_form_bicentred(polynomial_coefficients,X)
 
 	p_derivated = derivate_polynomial(polynomial_coefficients);
 
-	hf_derivated = horner_form(p_derivated,x);
+	hf_derivated = horner_form(p_derivated,X);
 
-	[c_left, c_right] = centres_mean_value_form(hf_derivated,x);
+	[c_left, c_right] = centres_mean_value_form(hf_derivated,X);
 
 	getround(1);
 	right = sup(horner_form(polynomial_coefficients,c_right)) ...
-			+ sup(hf_derivated*(x-c_right));
+			+ sup(hf_derivated*(X-c_right));
 
 	getround(-1);
 	left = inf(horner_form(polynomial_coefficients,c_left)) ...
-			+ inf(hf_derivated*(x-c_left));
+			+ inf(hf_derivated*(X-c_left));
 
 	res = infsup(left,right);
 
@@ -311,9 +311,9 @@ endfunction
 %% start of TAYLOR FORM
 
 %
-%  tc(1) = hf(p,c) ; tc(2) = hf(p',c)/1! ; tc(3) = hf(p'',c)/2! ...
+%  tc(1) = HF(p,c) ; tc(2) = HF(p`,c)/1! ; tc(3) = HF(p``,c)/2! ...
 %
-function tc = taylor_coefficient(polynomial_coefficients, c)
+function tc = taylor_coefficients(polynomial_coefficients, c)
 
 	n = length(polynomial_coefficients);
 	% assert n < 166 ... factorial
@@ -343,31 +343,41 @@ function tc = taylor_coefficient(polynomial_coefficients, c)
 endfunction
 
 %
+%	c = mid(X)
+%	r = rad(X)
 %
+%	p_series = sum i=0..deg(p) a(p,c,i)*x^i
+%	g_series = sum i=1..deg(p) a(p,c,i)*x^(i-1)
+%			where a(p,c,i) = HF(derivative(p,i),c)/i!
 %
-function tf = taylor_form(polynomial_coefficients, x)
+%	TF	= HF(p_series,X-c)
+%		= p(c) + HF(g_series,X-c)*(X-c) = p(c) + mag(HF(g_series,X-c))*[-r,r]
+%
+function res = taylor_form(polynomial_coefficients, x)
 
-	%todo check special cases for x
+	if (inf(x) == sup(x))
+		res = horner_form(polynomial_coefficients,x);
+		return
+	endif
 
 	c = mid(x);
 	r = rad(x);
 
 	n = length(polynomial_coefficients);
 
-	tay_coeff = taylor_coefficient(polynomial_coefficients,c);
+	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
 
-	% magnitude....
-	% rounding...
+	getround(1);
 	magnitude = mag(tay_coeff(n)) * r;
 
-	for i = n:-1:2
+	% compute mag(HF(g_series,X-c))*[-r,r]
+	% X - c == [-r,r]
+	for i = n-1:-1:2
 		magnitude = (magnitude + mag(tay_coeff(i)))*r;
 	endfor
 
-	%tay_coeff(1)
-	% disp " [-magnitude, magnitude]", infsup(-magnitude, magnitude)
-
-	tf = tay_coeff(1) + infsup(-magnitude, magnitude);
+	% tay_coeff(1) == p(c)
+	res = tay_coeff(1) + infsup(-magnitude, magnitude);
 
 endfunction
 
@@ -606,7 +616,7 @@ function res = bernstein_coefficients(polynomial_coefficients,x)
 		q += w; % trick to simulate factorial
 	endfor
 	
-	tc = taylor_coefficient(polynomial_coefficients,inf(x));
+	tc = taylor_coefficients(polynomial_coefficients,inf(x));
 	for i = 1:n
 		b(i) = b(i)*tc(i);
 	endfor
