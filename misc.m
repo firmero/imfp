@@ -72,6 +72,11 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 		return
 	endif
 
+	
+	if (isa(polynomial_coefficients(1),'intval'))
+		certainly_ok = false;
+		return
+	endif
 	% !! not working on interval coefficients !!
 	sgn = sign(polynomial_coefficients(1));
 
@@ -353,18 +358,17 @@ endfunction
 %	TF	= HF(p_series,X-c)
 %		= p(c) + HF(g_series,X-c)*(X-c) = p(c) + mag(HF(g_series,X-c))*[-r,r]
 %
-function res = taylor_form(polynomial_coefficients, x)
+function res = taylor_form(polynomial_coefficients, X)
 
-	if (inf(x) == sup(x))
-		res = horner_form(polynomial_coefficients,x);
+	if (inf(X) == sup(X))
+		res = horner_form(polynomial_coefficients,X);
 		return
 	endif
 
-	c = mid(x);
-	r = rad(x);
+	c = mid(X);
+	r = rad(X);
 
 	n = length(polynomial_coefficients);
-
 	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
 
 	getround(1);
@@ -378,6 +382,71 @@ function res = taylor_form(polynomial_coefficients, x)
 
 	% tay_coeff(1) == p(c)
 	res = tay_coeff(1) + infsup(-magnitude, magnitude);
+
+endfunction
+
+%
+%
+%
+function res = taylor_form_eval_half(tay_coeff,x)
+
+	n = length(tay_coeff);
+	left = inf(tay_coeff(n));
+	right = sup(tay_coeff(n));
+
+	for i = n-1:-1:1
+
+		getround(1);
+		if (right > 0)
+			right = right*x + sup(tay_coeff(i));
+		else
+			right = sup(tay_coeff(i));
+		endif
+
+		getround(-1);
+		if (left < 0)
+			left = left*x + inf(tay_coeff(i));
+		else
+			left= inf(tay_coeff(i));
+		endif
+
+	endfor
+
+	res = infsup(left,right);
+
+endfunction
+
+%
+%	TF	= HF(p_series,X-c)
+%			X - c is centered interval
+%
+%	p_series(x) = sum i=0..deg(p) a(p,c,i)*x^i
+%		where a(p,c,i) = HF(derivative(p,i),c)/i!
+%
+function res = taylor_form_bisect_middle(polynomial_coefficients, X)
+
+	c = mid(X);
+
+	n = length(polynomial_coefficients);
+	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
+
+	% right half
+	getround(1);
+	x =	sup(X) - c;
+	R = taylor_form_eval_half(tay_coeff,x);
+
+	% left half
+	getround(-1);
+	x = c - inf(X);
+
+	% coefficients for p_series(-x)
+	for i = 2:2:n
+		tay_coeff(i) *= -1;
+	endfor
+
+	L = taylor_form_eval_half(tay_coeff,x);
+
+	res = hull(L,R);
 
 endfunction
 
@@ -562,37 +631,11 @@ function test1
 endfunction
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%p = rand(1,1100);
-%p = [1026,-470,53,-0.5];	% [-11,5261, 1.2642]
-%p = [infsup(1026,1026.002),-470,infsup(53,53.001),-0.5];
-p = [4,3,6];				% [5.7400, 6.7601]
-
-x = infsup(-0.1,0.2);
-tic
-
-%[y,ok] = horner_form(p, x), toc
-%y = horner_left_zero(p, x),toc
-%horner_form_bisect_zero(p,x), toc
-
-%p = [infsup(2,2.3), infsup(4,4.2)];
-%horner_form(p,x), toc
-
-%disp "  HORNER ",horner_form(p,x), toc
-%disp "  MEAV_VAL ",mean_value_form(p,x), toc
-%disp "  MEAN_SLOPE ",slope_form(p,x), toc
-%disp "  MEAN_BICENTRED ", mean_value_form_bicentred(p,x), toc
-%disp "  TAYLOR ", taylor_form(p,x), toc
-%tic, evaluate_parallel(p,x), toc
-%tic, evaluate(p,x), toc
 
 %distance(infsup(0.040,0.069), infsup(0.05,0.055))
 %distance(infsup(0.041,0.069), infsup(0.05,0.055))
 %distance(infsup(0.040,0.068), infsup(0.05,0.055))
 %distance(infsup(0.041,0.068), infsup(0.05,0.055))
-
-%disp "  INTERPOLATION ",interpolation_form(p,x), toc
-%disp "  MOD_INTERPOLATION ",modified_interpolation_form(p,x), toc
-%test1
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -642,9 +685,13 @@ p = rand(1,6);
 p = p - 0.5;
 
 tic, evaluate_parallel(p,x), toc
-tic, horner_form(p,x), toc
+%tic, horner_form(p,x), toc
+tic, horner_form_bisect_zero(p,x), toc
+%tic, mean_value_form(p,x), toc
+%tic, slope_form(p,x), toc
 tic, mean_value_form_bicentred(p,x), toc
-tic, taylor_form(p,x), toc
+%tic, taylor_form(p,x), toc
+tic, taylor_form_bisect_middle(p,x), toc
 
 %tic, evaluate_parallel(p,x), toc
 
