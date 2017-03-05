@@ -6,7 +6,7 @@
 % intvalinit('displayinfsup')
 % format long
 
-%%%-------------------------------------------------------------
+%% start of misc
 
 %
 % The range of natural power over interval X (as a function) 
@@ -25,6 +25,80 @@ function res = interval_power(X,n)
 	res = infsup(inf(X)^n, sup(X)^n);
 
 endfunction
+
+function y = evaluate_parallel(polynomial_coefficients, x)
+
+	ncpus = nproc();
+
+	% assert ncpus != 0
+	delta = (sup(x) - inf(x))/ncpus;
+
+	coefficients = cell(1,ncpus);
+	intervals = cell(1,ncpus);
+
+
+	left = inf(x);
+	for i = 1:ncpus
+	
+		% todo rounding
+		getround(1);
+		right = left + delta;
+		intervals(i) = infsup(left,right);
+		left = right;
+
+		coefficients(i) = polynomial_coefficients;
+
+	endfor
+
+	a = parcellfun(ncpus, @evaluate, coefficients, intervals,"UniformOutput", false);
+
+	y = a{1};
+
+	for i=2:ncpus
+		y = hull(y,a{i});
+	endfor
+
+endfunction
+
+%
+% x interval
+% nadhodnocuje !!!!!
+%
+function y = evaluate(polynomial_coefficients, X)
+
+	t = inf(X);
+	y = intval(polyval(polynomial_coefficients,t));
+
+	while (t < sup(X))
+		t += 0.0003;
+		ny = polyval(polynomial_coefficients,t);
+		y = hull(y,ny);
+	endwhile
+
+	y = hull(y,polyval(polynomial_coefficients,sup(X)));
+
+endfunction
+
+%
+% x is computed, y is referenced
+%
+function d = distance(x,y)% todo
+
+	% to do if y i point?
+	% todo check if x is subset of y
+
+	if (!in(intval(y),intval(x)))
+		d = -1;
+		return
+	endif
+
+	getround(1);
+
+	d = 1024*max(sup(x)-sup(y),inf(y)-inf(x)); % scale
+	d /=(sup(y)-inf(y));
+
+endfunction
+%% end of misc
 
 %% start of HORNER FORM
 
@@ -162,7 +236,8 @@ endfunction
 function res = horner_form_bisect_zero(polynomial_coefficients, X)
 
 	if (!in(0,X))
-		error("Interval doesn't contain 0")
+		warning("Interval doesn't contain 0");
+		res = horner_form(polynomial_coefficients,X);
 		return
 	endif
 
@@ -313,6 +388,92 @@ endfunction
 
 %% end of MEAN VAL FORM
 
+%% start of BERNSTEIN
+
+%
+% Return the hull of the j-th Bernstein polynomials of order k over X,
+%	j = 0..k where k >= deg(p)
+%
+function res = bernstein_form(polynomial_coefficients,X, k = -321)
+
+	w = sup(X) - inf(X);
+	n = length(polynomial_coefficients);
+
+	% k should be at least n-1 (deg of polynom)
+	if (k == -321)
+		k = n-1;
+	elseif (k< n-1)
+		warning("Parameter k should be at least the degree of polynomial");
+		k = n-1;
+	endif
+
+	% temporary, not bernstein coefficients
+	b(1) = intval(1);
+
+	% to simulate factorial
+	q = w;
+
+	for i = 2:n
+		b(i) = b(i-1)*q/(k-i+2);
+		q += w; % trick to simulate factorial
+	endfor
+	
+	tc = taylor_coefficients(polynomial_coefficients,inf(X));
+	for i = 1:n
+		b(i) = b(i)*tc(i);
+	endfor
+
+	res = b(1);
+	for j = 1:k
+		for i = 1:min(n-1,k-j+1)
+			b(i) = b(i) + b(i+1);
+		endfor
+
+		% b(1) is bernstein coeffcient <- b1,b2,b3,bj.. after the j-th loop
+		res = hull(res,b(1));
+	endfor
+
+endfunction
+
+%
+% Bernstein form for X containing 0.
+%
+function res = bernstein_form_bisect_zero(polynomial_coefficients,X, k = -321)
+
+	n = length(polynomial_coefficients);
+
+	if (!in(0,X))
+		warning("Interval X doesn't contain 0");
+		res = bernstein_form(polynomial_coefficients,X,k);
+		return
+	endif
+
+	if (k == -321)
+		k = n-1;
+	elseif (k< n-1)
+		warning("Parameter k should be at least the degree of polynomial");
+		k = n-1;
+	endif
+
+	right = bernstein_form(polynomial_coefficients,infsup(0,sup(X)), k);
+
+	% coefficients for p(-x)
+	start = 1;
+	if (odd(n))
+		start++;
+	endif
+	
+	for i = start:2:n
+		polynomial_coefficients(i) *= -1;
+	endfor
+
+	left = bernstein_form(polynomial_coefficients,infsup(0,-inf(X)), k);
+
+	res = hull(left, right);
+
+endfunction
+%% end of BERNSTEIN
+
 %% start of TAYLOR FORM
 
 %
@@ -452,78 +613,6 @@ endfunction
 
 %% end of TAYLOR FORM
 
-function y = evaluate_parallel(polynomial_coefficients, x)
-
-	ncpus = nproc();
-
-	% assert ncpus != 0
-	delta = (sup(x) - inf(x))/ncpus;
-
-	coefficients = cell(1,ncpus);
-	intervals = cell(1,ncpus);
-
-
-	left = inf(x);
-	for i = 1:ncpus
-	
-		% todo rounding
-		getround(1);
-		right = left + delta;
-		intervals(i) = infsup(left,right);
-		left = right;
-
-		coefficients(i) = polynomial_coefficients;
-
-	endfor
-
-	a = parcellfun(ncpus, @evaluate, coefficients, intervals,"UniformOutput", false);
-
-	y = a{1};
-
-	for i=2:ncpus
-		y = hull(y,a{i});
-	endfor
-
-endfunction
-
-%
-% x interval
-%
-function y = evaluate(polynomial_coefficients, x)
-
-	t = inf(x);
-	y = intval(polyval(polynomial_coefficients,t));
-
-	while (t < sup(x))
-		t += 0.0003;
-		ny = polyval(polynomial_coefficients,t);
-		y = hull(y,ny);
-	endwhile
-
-	y = hull(y,polyval(polynomial_coefficients,sup(x)));
-
-endfunction
-
-%
-% x is computed, y is referenced
-%
-function d = distance(x,y)% todo
-
-	% to do if y i point?
-	% todo check if x is subset of y
-
-	if (!in(intval(y),intval(x)))
-		d = -1;
-		return
-	endif
-
-	getround(1);
-
-	d = 1024*max(sup(x)-sup(y),inf(y)-inf(x)); % scale
-	d /=(sup(y)-inf(y));
-
-endfunction
-
 function parabola_range = evaluate_parabola(a2,a1,a0,x)
 	
 	if (in0(0,x))
@@ -637,65 +726,19 @@ endfunction
 %distance(infsup(0.040,0.068), infsup(0.05,0.055))
 %distance(infsup(0.041,0.068), infsup(0.05,0.055))
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function res = bernstein_coefficients(polynomial_coefficients,x)
-
-	w = sup(x) - inf(x);
-	n = length(polynomial_coefficients);
-
-	% k should be at least n-1 (deg of polynom)
-	k = n-1; % todo
-
-	% temporary, not bernstein coefficients
-	b(1) = intval(1);
-
-	% to simulate factorial
-	q = w;
-
-	for i = 2:n
-		b(i) = b(i-1)*q/(k-i+2);
-		q += w; % trick to simulate factorial
-	endfor
-	
-	tc = taylor_coefficients(polynomial_coefficients,inf(x));
-	for i = 1:n
-		b(i) = b(i)*tc(i);
-	endfor
-
-	res = b(1)
-	for j = 1:k
-		for i = 1:min(n-1,k-j+1)
-			%printf("i j  %d %d\n", i,j);
-			b(i) = b(i) + b(i+1);
-		endfor
-
-		% b(1) is bernstein coeffcient b1,b2,b3,bj.. after a loop of j
-		res = hull(res,b(1));
-	endfor
-
-
-endfunction
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x=infsup(-0.3,0.2);
 
-p = rand(1,6);
+p = rand(1,5);
 p = p - 0.5;
 
-tic, evaluate_parallel(p,x), toc
+tic, evaluate_parallel(p,x), %toc
 %tic, horner_form(p,x), toc
-tic, horner_form_bisect_zero(p,x), toc
+%tic, horner_form_bisect_zero(p,x), toc
 %tic, mean_value_form(p,x), toc
 %tic, slope_form(p,x), toc
-tic, mean_value_form_bicentred(p,x), toc
+%tic, mean_value_form_bicentred(p,x), toc
 %tic, taylor_form(p,x), toc
-tic, taylor_form_bisect_middle(p,x), toc
-
-%tic, evaluate_parallel(p,x), toc
-
-
-%bernstein_coefficients(p,x)
-%horner_form(p,x)
+%tic, taylor_form_bisect_middle(p,x), toc
+tic, bernstein_form(p,x), %toc
+tic, bernstein_form_bisect_zero(p,x), %toc
 
