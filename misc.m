@@ -329,7 +329,7 @@ function res = slope_form(polynomial_coefficients, X)
 endfunction
 
 %
-% Comptupes optimal points c_left and c_right in sense of:
+% Computes optimal points c_left and c_right in sense of:
 % 
 % For all c in X it holds:
 %
@@ -621,19 +621,25 @@ endfunction
 
 %% end of TAYLOR FORM
 
-function parabola_range = evaluate_parabola(a2,a1,a0,x)
+%% start of INTERPOLATION FORM
+
+%
+% Computes range of parabola a2*x^2 + a1*x + a0.
+%
+function parabola_range = evaluate_parabola(a2,a1,a0,X)
 	
-	if (in0(0,x))
-		parabola_range = horner_form([a2 a1 a0],x);
+	if (in0(0,intval(a2)))
+		parabola_range = (a2*X + a1)*X + a0;
 		return
 	endif
 
 	mx = 0.5*a1;
-	my = hull((a2*inf(x)+a1)*inf(x),(a2*sup(x)+a1)*sup(x));
+	my = hull((a2*inf(X) + a1)*inf(X),(a2*sup(X) + a1)*sup(X));
 
-	% contain x extrem point mx
-	mxi = intersect(-mx/a2,x);
+	% contain X extrem point mx
+	mxi = intersect(-mx/a2,X);
 	if (!isnan(mxi))
+		% extrem points
 		my = hull(my,mx*mxi);
 	endif
 
@@ -642,33 +648,40 @@ function parabola_range = evaluate_parabola(a2,a1,a0,x)
 endfunction
 
 %
-% a_1*x^n + a_2*x^(n-1) + ... + a_(n+1)
+% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
-% [ a_1 a_2 ... a_(n+1) ]
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-function res = interpolation_form(polynomial_coefficients,x)
+% m = mid(HF(p``,X))
+% c = mid(X)
+%
+% IF(X) = HF(parabola,X) + 0.5*(HF(p``,X) - m)*(X-c)^2
+%
+% parabola(x) = 0.5*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 0.5*m*c^2)
+%
+function res = interpolation_form(polynomial_coefficients,X)
 	
-	f_derivated = fliplr(derivate_polynomial(fliplr(polynomial_coefficients)));
-	f_twice_derivated = fliplr(derivate_polynomial(fliplr(f_derivated)));
+	p_derivated = derivate_polynomial(polynomial_coefficients);
+	p_twice_derivated = derivate_polynomial(p_derivated);
 
-	c = mid(x);
+	c = mid(X);
 
-	f_at_c = horner_form(polynomial_coefficients,c);
-	f_derivated_at_c = horner_form(f_derivated,c);
-	f_twice_derivated_range = horner_form(f_twice_derivated,x);
+	p_at_c = horner_form(polynomial_coefficients,c);
+	p_derivated_at_c = horner_form(p_derivated,c);
+	p_twice_derivated_range = horner_form(p_twice_derivated,X);
 
-	m = mid(f_twice_derivated_range);
+	m = mid(p_twice_derivated_range);
 
 	% parabola coefficients
 	a2 = 0.5*m;
-	a1 = f_derivated_at_c - m*c;
-	a0 = (a2*c - f_derivated_at_c)*c + f_at_c;
+	a1 = p_derivated_at_c - m*c;
+	a0 = (a2*c - p_derivated_at_c)*c + p_at_c;
 
-	parabola_range = evaluate_parabola(a2,a1,a0,x);
+	parabola_range = evaluate_parabola(a2,a1,a0,X);
 
 	getround(1);
-	r = mag(x-c);
-	res = parabola_range + (f_twice_derivated_range - m)*infsup(0,0.5*r*r);
+	r = mag(X-c);
+	res = parabola_range + (p_twice_derivated_range - m)*infsup(0,0.5*r*r);
 
 endfunction
 
@@ -703,31 +716,7 @@ function res = modified_interpolation_form(polynomial_coefficients,x)
 	res = hull(p1,p2) + f_at_c;
 
 endfunction
-
-function test1
-
-	%tic, evaluate_parallel(p,x), toc
-	n = 1
-	MP = random(n,10);
-
-	for i = 1:n
-		p = MP(i,:);
-		x = infsup(-0.2,0.3);
-
-		evaluate_parallel(p,x);
-		disp "  HORNER ",horner_form(p,x),sup(ans)-inf(ans), toc, 
-		disp "  MEAV_VAL ",mean_value_form(p,x),sup(ans)-inf(ans), toc
-		disp "  MEAN_SLOPE ",slope_form(p,x),sup(ans)-inf(ans), toc
-		%disp "  MEAN_BICENTRED ", mean_value_form_bicentred(p,x),sup(ans)-inf(ans), toc
-		disp "  TAYLOR ", taylor_form(p,x),sup(ans)-inf(ans), toc
-
-		disp "  INTERPOLATION ",interpolation_form(p,x), sup(ans)-inf(ans),toc
-		disp "  MOD_INTERPOLATION ",modified_interpolation_form(p,x), sup(ans)-inf(ans),toc
-	endfor
-
-endfunction
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% end of INTERPOLATION FORM
 
 %distance(infsup(0.040,0.069), infsup(0.05,0.055))
 %distance(infsup(0.041,0.069), infsup(0.05,0.055))
@@ -741,12 +730,13 @@ p = p - 0.5;
 
 tic, evaluate_parallel(p,x), %toc
 %tic, horner_form(p,x), toc
-%tic, horner_form_bisect_zero(p,x), toc
+tic, horner_form_bisect_zero(p,x), %toc
 %tic, mean_value_form(p,x), toc
 %tic, slope_form(p,x), toc
 %tic, mean_value_form_bicentred(p,x), toc
 %tic, taylor_form(p,x), toc
-tic, taylor_form_bisect_middle(p,x), toc
-tic, bernstein_form(p,x), %toc
+%tic, taylor_form_bisect_middle(p,x), toc
+%tic, bernstein_form(p,x), %toc
 tic, bernstein_form_bisect_zero(p,x), %toc
+tic, interpolation_form(p,x), %toc
 
