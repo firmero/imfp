@@ -124,6 +124,11 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 	%}
 
 	n = length(polynomial_coefficients);
+	if (n < 1)
+		res = intval(0);
+		certainly_ok = true;
+		return
+	endif
 	% allocate vector
 	p = repmat(intval(0),1,n);
 
@@ -311,6 +316,7 @@ function res = slope_form(polynomial_coefficients, X)
 	% b_1 =  a_1 
 	% b_2 =  a_1*c + a_2 
 	% b_3 = (a_1*c + a_2)*c + a_3 
+	% ...
 	%
 
 	% get coefficients of polynom gc()
@@ -739,12 +745,32 @@ function res = interpolation_form2(polynomial_coefficients,X)
 endfunction
 
 %
+% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
+% ISF(X) = [inf(p_down),sup(p_up)]
+%
+% c = mid(X)
+%
+% p_up(x)   = p(c) + p`(c)(x-c) + sup(G)*(x-c)^2 
+%			= sup(G) + (p`(c)-2*sup(G)*c)*x + (p(c)-p`(c)*c+sup(G)*c^2)
+%
+% p_down(x) = p(c) + p`(c)(x-c) + inf(G)*(x-c)^2 
+%			= inf(G) + (p`(c)-2*inf(G)*c)*x + (p(c)-p`(c)*c+inf(G)*c^2)
+%
+% G = HF(g(c,x)), g(c,x) is uniquely defined polynomial that:
+% 
+%	p(x) = p(c) + p`(c)*(x-c) + g(c,x)*(x-c)^2
 %
 function res = interpolation_slope_form(polynomial_coefficients,X)
 
 	n = length(polynomial_coefficients);
-	% todo special cases
+
+	if (n < 3)
+		res = horner_form(polynomial_coefficients,X);
+		return;
+	endif
 
 	p = repmat(intval(0),1,n);
 	for i = 1:n 
@@ -755,30 +781,31 @@ function res = interpolation_slope_form(polynomial_coefficients,X)
 	for i = 2:n
 		p(i) = p(i) + c*p(i-1);
 	endfor
+	% p(n) = HF(p,c)
 
 	for i = 2:n-1
 		p(i) = p(i) + c*p(i-1);
 	endfor
+	% p(n-1) = HF(p`,c)
+	% p(n)   = HF(p,c)
 
-	H = p(1);
-
+	G = p(1);
 	for i = 2:n-2
-		H = H*X + p(i);
+		G = G*X + p(i);
 	endfor
 
-	HC_up = intval(sup(H))*c;
-	H1_up = p(n-1) - HC_up; 
-	a1_up = H1_up - HC_up;
-	a0_up = -H1_up*c;
+	GC_up = intval(sup(G))*c;
+	tmp = p(n-1) - GC_up; 
+	a1_up = tmp - GC_up;
+	a0_up = -tmp*c;
 
-	HC_down = intval(inf(H))*c;
-	H1_down = p(n-1) - HC_down; 
-	a1_down = H1_down - HC_down;
-	a0_down = -H1_down*c;
+	GC_down = intval(inf(G))*c;
+	tmp = p(n-1) - GC_down; 
+	a1_down = tmp - GC_down;
+	a0_down = -tmp*c;
 
-
-	p1 = evaluate_parabola(sup(H),a1_up,a0_up,X);
-	p2 = evaluate_parabola(inf(H),a1_down,a0_down,X);
+	p1 = evaluate_parabola(sup(G),a1_up,a0_up,X);
+	p2 = evaluate_parabola(inf(G),a1_down,a0_down,X);
 
 	res = hull(p1,p2) + p(n);
 
@@ -793,7 +820,7 @@ endfunction
 
 x=infsup(-0.3,0.2);
 
-p = rand(1,5);
+p = rand(1,6);
 p = p - 0.5;
 
 tic, evaluate_parallel(p,x), %toc
