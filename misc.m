@@ -737,6 +737,53 @@ function res = interpolation_form2(polynomial_coefficients,X)
 	res = hull(p1,p2) + p_at_c;
 
 endfunction
+
+%
+%
+%
+function res = interpolation_slope_form(polynomial_coefficients,X)
+
+	n = length(polynomial_coefficients);
+	% todo special cases
+
+	p = repmat(intval(0),1,n);
+	for i = 1:n 
+		p(i) = intval(polynomial_coefficients(i));
+	endfor
+	
+	c = mid(X);
+	for i = 2:n
+		p(i) = p(i) + c*p(i-1);
+	endfor
+
+	for i = 2:n-1
+		p(i) = p(i) + c*p(i-1);
+	endfor
+
+	H = p(1);
+
+	for i = 2:n-2
+		H = H*X + p(i);
+	endfor
+
+	HC_up = intval(sup(H))*c;
+	H1_up = p(n-1) - HC_up; 
+	a1_up = H1_up - HC_up;
+	a0_up = -H1_up*c;
+
+	HC_down = intval(inf(H))*c;
+	H1_down = p(n-1) - HC_down; 
+	a1_down = H1_down - HC_down;
+	a0_down = -H1_down*c;
+
+
+	p1 = evaluate_parabola(sup(H),a1_up,a0_up,X);
+	p2 = evaluate_parabola(inf(H),a1_down,a0_down,X);
+
+	res = hull(p1,p2) + p(n);
+
+endfunction
+
 %% end of INTERPOLATION FORM
 
 %distance(infsup(0.040,0.069), infsup(0.05,0.055))
@@ -761,5 +808,6 @@ tic, horner_form_bisect_zero(p,x), %toc
 tic, bernstein_form_bisect_zero(p,x), %toc
 %tic, interpolation_form(p,x), %toc
 tic, interpolation_form2(p,x), %toc
+tic, interpolation_slope_form(p,x), %toc
 
 
