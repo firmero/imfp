@@ -423,6 +423,7 @@ function res = bernstein_form(polynomial_coefficients,X, k = -321)
 		b(i) = b(i)*tc(i);
 	endfor
 
+	% scheme to compute iteratively bernstein coefficients (stored in b(1))
 	res = b(1);
 	for j = 1:k
 		for i = 1:min(n-1,k-j+1)
@@ -547,11 +548,16 @@ function res = taylor_form(polynomial_coefficients, X)
 endfunction
 
 %
+% This function is used by taylor_form_bisect_middle(), which converts
+% his input interval to centered interval [-r,r], then it calls this function
+% twice and returns hull of results returned by that function.
 %
+% r >= 0
 %
-function res = taylor_form_eval_half(tay_coeff,x)
+function res = _taylor_form_eval_half(tay_coeff,r)
 
 	n = length(tay_coeff);
+
 	left = inf(tay_coeff(n));
 	right = sup(tay_coeff(n));
 
@@ -559,16 +565,18 @@ function res = taylor_form_eval_half(tay_coeff,x)
 
 		getround(1);
 		if (right > 0)
-			right = right*x + sup(tay_coeff(i));
-		else
+			right = right*r + sup(tay_coeff(i));
+		else 
+			% choose 0 to maximize
 			right = sup(tay_coeff(i));
 		endif
 
 		getround(-1);
 		if (left < 0)
-			left = left*x + inf(tay_coeff(i));
+			left = left*r + inf(tay_coeff(i));
 		else
-			left= inf(tay_coeff(i));
+			% choose 0 to minimize
+			left = inf(tay_coeff(i));
 		endif
 
 	endfor
@@ -591,12 +599,12 @@ function res = taylor_form_bisect_middle(polynomial_coefficients, X)
 	n = length(polynomial_coefficients);
 	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
 
-	% right half
+	% right half [0,|c|]
 	getround(1);
 	x =	sup(X) - c;
-	R = taylor_form_eval_half(tay_coeff,x);
+	R = _taylor_form_eval_half(tay_coeff,x);
 
-	% left half
+	% left half [-|c|,0] -> [0,|c|] && p_series(-x)
 	getround(-1);
 	x = c - inf(X);
 
@@ -605,7 +613,7 @@ function res = taylor_form_bisect_middle(polynomial_coefficients, X)
 		tay_coeff(i) *= -1;
 	endfor
 
-	L = taylor_form_eval_half(tay_coeff,x);
+	L = _taylor_form_eval_half(tay_coeff,x);
 
 	res = hull(L,R);
 
@@ -738,7 +746,7 @@ tic, evaluate_parallel(p,x), %toc
 %tic, slope_form(p,x), toc
 %tic, mean_value_form_bicentred(p,x), toc
 %tic, taylor_form(p,x), toc
-%tic, taylor_form_bisect_middle(p,x), toc
+tic, taylor_form_bisect_middle(p,x), toc
 tic, bernstein_form(p,x), %toc
 tic, bernstein_form_bisect_zero(p,x), %toc
 
