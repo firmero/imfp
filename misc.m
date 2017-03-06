@@ -685,35 +685,56 @@ function res = interpolation_form(polynomial_coefficients,X)
 
 endfunction
 
-function res = modified_interpolation_form(polynomial_coefficients,x) 
-	f_derivated = fliplr(derivate_polynomial(fliplr(polynomial_coefficients)));
-	f_twice_derivated = fliplr(derivate_polynomial(fliplr(f_derivated)));
+%
+% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
+% IF2(X) = [inf(p_down),sup(p_up)]
+%
+% IF2(X) is subset of IF(X)
+%
+% c = mid(X)
+%
+% p_up(x)   = p(c) + p`(c)(x-c) + 0.5*sup(HF(p``,X))*(x-c)^2 
+%  = p(c)	+ 0.5*sup(HF(p``,X))*x^2 
+%			+ (p`(c) - sup(HF(p``,X))*c)*x 
+%			+ (0.5*sup(HF(p``,X)*c - p`(c))*c
+%  = p(c) + p2(X)
+%
+% p_down(x) = p(c) + p`(c)(x-c) + 0.5*inf(HF(p``,X))*(x-c)^2
+%  = p(c)	+ 0.5*inf(HF(p``,X))*x^2 
+%			+ (p`(c) - inf(HF(p``,X))*c)*x 
+%			+ (0.5*inf(HF(p``,X)*c - p`(c))*c
+%  = p(c) + p1(X)
+%
+function res = interpolation_form2(polynomial_coefficients,X) 
 
-	c = mid(x);
+	p_derivated = derivate_polynomial(polynomial_coefficients);
+	p_twice_derivated = derivate_polynomial(p_derivated);
 
-	f_at_c = horner_form(polynomial_coefficients,c);
-	f_derivated_at_c = horner_form(f_derivated,c);
-	f_twice_derivated_range = horner_form(f_twice_derivated,x);
+	c = mid(X);
 
-	m = mid(f_twice_derivated_range);
+	p_at_c = horner_form(polynomial_coefficients,c);
+	p_derivated_at_c = horner_form(p_derivated,c);
+	p_twice_derivated_range = horner_form(p_twice_derivated,X);
 
-	% parabola coefficients
-	a2 = 0.5*f_twice_derivated_range;
+	% parabola coefficients for polynomials par_up
+	a2 = 0.5*p_twice_derivated_range;
 
-	a2_up = a2;
-	a2_down = a2;
+	a2_up = sup(a2);
+	a2_down = inf(a2);
 
+	a1_up = p_derivated_at_c - intval(sup(p_twice_derivated_range))*c;
+	a1_down = p_derivated_at_c - intval(inf(p_twice_derivated_range))*c;
 
-	a1_up = f_derivated_at_c - sup(f_twice_derivated_range)*c;
-	a1_down = f_derivated_at_c - inf(f_twice_derivated_range)*c;
+	a0_up = (a2_up*c - p_derivated_at_c)*c;
+	a0_down = (a2_down*c - p_derivated_at_c)*c;
 
-	a0_up = (a2_up*c - f_derivated_at_c)*c;
-	a0_down = (a2_down*c - f_derivated_at_c)*c;
+	p1 = evaluate_parabola(a2_up,a1_up,a0_up,X);
+	p2 = evaluate_parabola(a2_down,a1_down,a0_down,X);
 
-	p1 = evaluate_parabola(a2_up,a1_up,a0_up,x);
-	p2 = evaluate_parabola(a2_down,a1_down,a0_down,x);
-
-	res = hull(p1,p2) + f_at_c;
+	res = hull(p1,p2) + p_at_c;
 
 endfunction
 %% end of INTERPOLATION FORM
@@ -738,5 +759,7 @@ tic, horner_form_bisect_zero(p,x), %toc
 %tic, taylor_form_bisect_middle(p,x), toc
 %tic, bernstein_form(p,x), %toc
 tic, bernstein_form_bisect_zero(p,x), %toc
-tic, interpolation_form(p,x), %toc
+%tic, interpolation_form(p,x), %toc
+tic, interpolation_form2(p,x), %toc
+
 
