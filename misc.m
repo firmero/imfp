@@ -305,7 +305,7 @@ endfunction
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-function res = slope_form(polynomial_coefficients, X)
+function res = mean_value_slope_form(polynomial_coefficients, X)
 
 	n = length(polynomial_coefficients);
 	c = mid(X);
@@ -813,28 +813,102 @@ endfunction
 
 %% end of INTERPOLATION FORM
 
+%
+% Returns n polynomials of degree deg with coeffcients in (-1,1)
+%
+function res = generate_polynomials(deg, n=1)
+
+	deg++;
+	res = zeros(n,deg);
+
+	for i = 1:n
+		res(i,:) = rand(1,deg) - 0.5;
+	endfor
+
+endfunction
+
+%
+%
+%
+function res = eval_forms(form_cell,p,X)
+
+	n = length(form_cell);
+	res = cell(n,2);
+	% range of form and evaltime
+
+	for i = 1:n
+		tic;
+		res{i,1} = form_cell{i}(p,X);
+		res{i,2} = toc;
+	endfor
+
+endfunction
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function test1()
+
+	X = infsup(-0.3,0.2);
+	polynomials_count = 5;
+	deg = 6;
+	polynomials = generate_polynomials(deg, polynomials_count);
+
+	forms = {	
+				%@horner_form;
+				@horner_form_bisect_zero;
+
+				@mean_value_form;
+				@mean_value_slope_form;
+				@mean_value_form_bicentred;
+
+				@taylor_form;
+				@taylor_form_bisect_middle;
+
+				@bernstein_form;
+				@bernstein_form_bisect_zero;
+
+				@interpolation_form;
+				@interpolation_form2;
+				@interpolation_slope_form;
+			};
+
+
+	for i = 1:length(forms)
+
+		ranges = repmat(intval(0),polynomials_count,1);
+		eval_time = zeros(polynomials_count,1);
+
+		for j = 1:polynomials_count
+			tic;
+			ranges(j) = forms{i}(polynomials(j,:),X);
+			eval_time(j) = toc;
+		endfor
+
+		fname = func2str(forms{i});
+
+		filename = strcat(fname,'_ranges.bin')
+		save(filename, 'ranges', '-binary')
+
+		save(strcat(fname,'_eval_time.bin'), 'eval_time', '-binary')
+
+	endfor
+
+	%save "vysledky.bin" "forms_ranges" "-binary"
+	%save "polynomials.bin" "polynomials" "-binary"
+
+	
+endfunction
+
 %distance(infsup(0.040,0.069), infsup(0.05,0.055))
 %distance(infsup(0.041,0.069), infsup(0.05,0.055))
 %distance(infsup(0.040,0.068), infsup(0.05,0.055))
 %distance(infsup(0.041,0.068), infsup(0.05,0.055))
 
-x=infsup(-0.3,0.2);
 
-p = rand(1,6);
-p = p - 0.5;
+id = tic;
+	test1 
+toc(id)
 
-tic, evaluate_parallel(p,x), %toc
-%tic, horner_form(p,x), toc
-tic, horner_form_bisect_zero(p,x), %toc
-%tic, mean_value_form(p,x), toc
-%tic, slope_form(p,x), toc
-%tic, mean_value_form_bicentred(p,x), toc
-%tic, taylor_form(p,x), toc
-%tic, taylor_form_bisect_middle(p,x), toc
-%tic, bernstein_form(p,x), %toc
-tic, bernstein_form_bisect_zero(p,x), %toc
-%tic, interpolation_form(p,x), %toc
-tic, interpolation_form2(p,x), %toc
-tic, interpolation_slope_form(p,x), %toc
+
 
 
