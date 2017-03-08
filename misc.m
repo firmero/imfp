@@ -844,14 +844,12 @@ function res = eval_forms(form_cell,p,X)
 
 endfunction
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-
 function test1()
 
-	X = infsup(-0.3,0.2);
-	polynomials_count = 5;
-	deg = 6;
-	polynomials = generate_polynomials(deg, polynomials_count);
+	test.X = infsup(-0.3,0.2);
+	test.polynomials_count = 2;
+	test.deg = 6;
+	test.polynomials = generate_polynomials(test.deg, test.polynomials_count);
 
 	forms = {	
 				%@horner_form;
@@ -873,31 +871,36 @@ function test1()
 			};
 
 
+	test.filenames = repmat(struct("form","","eval_time",""),length(forms),1);
+
 	for i = 1:length(forms)
 
-		ranges = repmat(intval(0),polynomials_count,1);
-		eval_time = zeros(polynomials_count,1);
+		ranges = repmat(intval(0),test.polynomials_count,1);
+		eval_time = zeros(test.polynomials_count,1);
 
-		for j = 1:polynomials_count
+		for j = 1:test.polynomials_count
 			tic;
-			ranges(j) = forms{i}(polynomials(j,:),X);
+			ranges(j) = forms{i}(test.polynomials(j,:),test.X);
 			eval_time(j) = toc;
 		endfor
 
 		fname = func2str(forms{i});
 
-		filename = strcat(fname,'_ranges.bin')
-		save(filename, 'ranges', '-binary')
+		range_filename = strcat(fname,'_ranges.bin');
+		save(range_filename, 'ranges', '-binary');
 
-		save(strcat(fname,'_eval_time.bin'), 'eval_time', '-binary')
+		eval_time_filename = strcat(fname,'_eval_time.bin');
+		save(eval_time_filename, 'eval_time', '-binary');
+
+		test.filenames(i).form = range_filename;
+		test.filenames(i).eval_time = eval_time_filename;
 
 	endfor
-
-	%save "vysledky.bin" "forms_ranges" "-binary"
-	%save "polynomials.bin" "polynomials" "-binary"
-
 	
+	save('test.bin','test', '-binary');
+
 endfunction
+%%%%%%%%%%%%
 
 %distance(infsup(0.040,0.069), infsup(0.05,0.055))
 %distance(infsup(0.041,0.069), infsup(0.05,0.055))
@@ -909,6 +912,8 @@ id = tic;
 	test1 
 toc(id)
 
-
+clear
+load('test.bin')
+whos test
 
 
