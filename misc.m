@@ -850,27 +850,35 @@ function test1()
 	test.polynomials_count = 2;
 	test.deg = 6;
 	test.polynomials = generate_polynomials(test.deg, test.polynomials_count);
+	test.polynomials_ranges = repmat(intval(0),test.polynomials_count,1);
+
+
+	for i = 1:test.polynomials_count
+		test.polynomials_ranges(i) = ...
+			evaluate_parallel(test.polynomials(i,:),test.X);
+	endfor
 
 	forms = {	
-				%@horner_form;
-				@horner_form_bisect_zero;
+			%@horner_form;
+			%@horner_form_bisect_zero;
 
-				@mean_value_form;
-				@mean_value_slope_form;
-				@mean_value_form_bicentred;
+			%@mean_value_form;
+			%@mean_value_slope_form;
+			@mean_value_form_bicentred;
 
-				@taylor_form;
-				@taylor_form_bisect_middle;
+			%@taylor_form;
+			@taylor_form_bisect_middle;
 
-				@bernstein_form;
-				@bernstein_form_bisect_zero;
+			%@bernstein_form;
+			@bernstein_form_bisect_zero;
 
-				@interpolation_form;
-				@interpolation_form2;
-				@interpolation_slope_form;
-			};
+			%@interpolation_form;
+			%@interpolation_form2;
+			@interpolation_slope_form;
+		};
 
 
+	test.forms_count = length(forms);
 	test.filenames = repmat(struct("form","","eval_time",""),length(forms),1);
 
 	for i = 1:length(forms)
@@ -900,6 +908,38 @@ function test1()
 	save('test.bin','test', '-binary');
 
 endfunction
+
+function d = test_distance(x,y)
+	d = 3;
+endfunction
+
+function stats(test_filename, distance_fcn = @test_distance)
+
+	load(test_filename);
+
+	n = test.polynomials_count;
+
+	for i = 1:test.forms_count
+
+		printf("Stats for %s\n", test.filenames(i).form);
+
+		% load ranges
+		load(test.filenames(i).form);
+		% load eval_time
+		load(test.filenames(i).eval_time);
+
+		distances = zeros(1,n);
+		for j = 1:n
+			distances(j) = distance_fcn(ranges(j), test.polynomials_ranges(j));
+		endfor
+
+		printf("max\t %d\t min\t %d\t avg\t %d\t avg_time\t %d\n\n" ,...
+			max(distances),min(distances), mean(distances), mean(eval_time));
+
+	endfor
+
+endfunction
+
 %%%%%%%%%%%%
 
 %distance(infsup(0.040,0.069), infsup(0.05,0.055))
@@ -908,12 +948,10 @@ endfunction
 %distance(infsup(0.041,0.068), infsup(0.05,0.055))
 
 
-id = tic;
-	test1 
-toc(id)
+id = tic; test1, 
+%toc(id)
 
-clear
-load('test.bin')
-whos test
+stats('test.bin')
 
+load('test.bin');
 
