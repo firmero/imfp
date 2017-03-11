@@ -845,11 +845,11 @@ function res = eval_forms(form_cell,p,X)
 
 endfunction
 
-function test1()
+function test(deg, polynomials_count, X, prefix = '')
 
-	X = infsup(-0.3,0.2);
-	polynomials_count = 2;
-	deg = 6;
+	mkdir 'tests';
+	test_dir_prefix = strcat('tests/',prefix);
+
 	polynomials = generate_polynomials(deg, polynomials_count);
 	polynomials_ranges = repmat(intval(0),polynomials_count,1);
 
@@ -893,10 +893,10 @@ function test1()
 
 		fname = func2str(forms{i});
 
-		range_filename = strcat(fname,'_ranges.bin');
+		range_filename = strcat(test_dir_prefix,fname,'_ranges.bin');
 		save(range_filename, 'ranges', '-binary');
 
-		eval_time_filename = strcat(fname,'_eval_time.bin');
+		eval_time_filename = strcat(test_dir_prefix,fname,'_eval_time.bin');
 		save(eval_time_filename, 'eval_time', '-binary');
 
 		filenames(i).form = range_filename;
@@ -914,13 +914,10 @@ function test1()
 	test.forms_count = length(forms);
 	test.filenames = filenames;
 
-	save('test.bin','test', '-binary');
+	test_filename = strcat(test_dir_prefix,'test.bin');
+	save(test_filename,'test', '-binary');
 
 
-endfunction
-
-function d = test_distance(x,y)
-	d = pi;
 endfunction
 
 function stats(test_filename, distance_fcn = @distance)
@@ -943,8 +940,11 @@ function stats(test_filename, distance_fcn = @distance)
 			distances(j) = distance_fcn(ranges(j), test.polynomials_ranges(j));
 		endfor
 
-		printf(" max  %5.5d  min  %5.5d  avg  %5.5d  avg_time  %5.5d\n\n" ,...
-			max(distances),min(distances), mean(distances), mean(eval_time));
+		printf(" max  %5.5d  min  %5.5d  avg  %5.5d  med  %5.5d\n" ,...
+			max(distances), min(distances), mean(distances), median(distances));
+
+		printf(" max  %5.5d  min  %5.5d  avg  %5.5d  med  %5.5d\n\n" ,...
+			max(eval_time), min(eval_time), mean(eval_time), median(eval_time));
 
 	endfor
 
@@ -952,9 +952,6 @@ endfunction
 
 %%%%%%%%%%%%
 
-
-id = tic; test1, toc(id)
-
-stats('test.bin')
-load('test.bin');
+id = tic; test(20,3,infsup(-0.3,0.2),'t1_') , toc(id)
+stats('tests/t1_test.bin')
 
