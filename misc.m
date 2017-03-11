@@ -80,22 +80,23 @@ function y = evaluate(polynomial_coefficients, X)
 endfunction
 
 %
-% x is computed, y is referenced
+% X is computed, Y is referenced
 %
-function d = distance(x,y)% todo
+function d = distance(X,Y)% todo
 
 	% to do if y i point?
 	% todo check if x is subset of y
 
-	if (!in(intval(y),intval(x)))
-		d = -1;
+	if (!in(intval(Y),intval(X)))
+		% ?? rounding of evaluate...
+		d = 0;
 		return
 	endif
 
 	getround(1);
-
-	d = 1024*max(sup(x)-sup(y),inf(y)-inf(x)); % scale
-	d /=(sup(y)-inf(y));
+	wX = (sup(X)-inf(X));
+	wY = (sup(Y)-inf(Y));
+	d = 1024*(wX - wY)/wY;
 
 endfunction
 %% end of misc
@@ -828,13 +829,13 @@ function res = generate_polynomials(deg, n=1)
 endfunction
 
 %
-%
+% For testing purpose
 %
 function res = eval_forms(form_cell,p,X)
 
 	n = length(form_cell);
-	res = cell(n,2);
 	% range of form and evaltime
+	res = cell(n,2);
 
 	for i = 1:n
 		tic;
@@ -846,49 +847,47 @@ endfunction
 
 function test1()
 
-	test.X = infsup(-0.3,0.2);
-	test.polynomials_count = 2;
-	test.deg = 6;
-	test.polynomials = generate_polynomials(test.deg, test.polynomials_count);
-	test.polynomials_ranges = repmat(intval(0),test.polynomials_count,1);
+	X = infsup(-0.3,0.2);
+	polynomials_count = 2;
+	deg = 6;
+	polynomials = generate_polynomials(deg, polynomials_count);
+	polynomials_ranges = repmat(intval(0),polynomials_count,1);
 
 
-	for i = 1:test.polynomials_count
-		test.polynomials_ranges(i) = ...
-			evaluate_parallel(test.polynomials(i,:),test.X);
+	for i = 1:polynomials_count
+		polynomials_ranges(i) = evaluate_parallel(polynomials(i,:),X);
 	endfor
 
 	forms = {	
-			%@horner_form;
-			%@horner_form_bisect_zero;
+			@horner_form;
+			@horner_form_bisect_zero;
 
-			%@mean_value_form;
-			%@mean_value_slope_form;
+			@mean_value_form;
+			@mean_value_slope_form;
 			@mean_value_form_bicentred;
 
-			%@taylor_form;
+			@taylor_form;
 			@taylor_form_bisect_middle;
 
-			%@bernstein_form;
+			@bernstein_form;
 			@bernstein_form_bisect_zero;
 
-			%@interpolation_form;
-			%@interpolation_form2;
+			@interpolation_form;
+			@interpolation_form2;
 			@interpolation_slope_form;
 		};
 
 
-	test.forms_count = length(forms);
-	test.filenames = repmat(struct("form","","eval_time",""),length(forms),1);
+	filenames = repmat(struct("form","","eval_time",""),length(forms),1);
 
 	for i = 1:length(forms)
 
-		ranges = repmat(intval(0),test.polynomials_count,1);
-		eval_time = zeros(test.polynomials_count,1);
+		ranges = repmat(intval(0),polynomials_count,1);
+		eval_time = zeros(polynomials_count,1);
 
-		for j = 1:test.polynomials_count
+		for j = 1:polynomials_count
 			tic;
-			ranges(j) = forms{i}(test.polynomials(j,:),test.X);
+			ranges(j) = forms{i}(polynomials(j,:),X);
 			eval_time(j) = toc;
 		endfor
 
@@ -900,20 +899,31 @@ function test1()
 		eval_time_filename = strcat(fname,'_eval_time.bin');
 		save(eval_time_filename, 'eval_time', '-binary');
 
-		test.filenames(i).form = range_filename;
-		test.filenames(i).eval_time = eval_time_filename;
+		filenames(i).form = range_filename;
+		filenames(i).eval_time = eval_time_filename;
 
 	endfor
-	
+
+	test.X = X;
+	test.polynomials_count = polynomials_count;
+	test.deg = deg;
+	test.polynomials = polynomials;
+	% the 'real' values of polynomials
+	test.polynomials_ranges = polynomials_ranges;
+
+	test.forms_count = length(forms);
+	test.filenames = filenames;
+
 	save('test.bin','test', '-binary');
+
 
 endfunction
 
 function d = test_distance(x,y)
-	d = 3;
+	d = pi;
 endfunction
 
-function stats(test_filename, distance_fcn = @test_distance)
+function stats(test_filename, distance_fcn = @distance)
 
 	load(test_filename);
 
@@ -921,9 +931,9 @@ function stats(test_filename, distance_fcn = @test_distance)
 
 	for i = 1:test.forms_count
 
-		printf("Stats for %s\n", test.filenames(i).form);
+		printf("=== %s ===\n\n", test.filenames(i).form);
 
-		% load ranges
+		% load ranges of a i-th form
 		load(test.filenames(i).form);
 		% load eval_time
 		load(test.filenames(i).eval_time);
@@ -933,7 +943,7 @@ function stats(test_filename, distance_fcn = @test_distance)
 			distances(j) = distance_fcn(ranges(j), test.polynomials_ranges(j));
 		endfor
 
-		printf("max\t %d\t min\t %d\t avg\t %d\t avg_time\t %d\n\n" ,...
+		printf(" max  %5.5d  min  %5.5d  avg  %5.5d  avg_time  %5.5d\n\n" ,...
 			max(distances),min(distances), mean(distances), mean(eval_time));
 
 	endfor
@@ -942,16 +952,9 @@ endfunction
 
 %%%%%%%%%%%%
 
-%distance(infsup(0.040,0.069), infsup(0.05,0.055))
-%distance(infsup(0.041,0.069), infsup(0.05,0.055))
-%distance(infsup(0.040,0.068), infsup(0.05,0.055))
-%distance(infsup(0.041,0.068), infsup(0.05,0.055))
 
-
-id = tic; test1, 
-%toc(id)
+id = tic; test1, toc(id)
 
 stats('test.bin')
-
 load('test.bin');
 
