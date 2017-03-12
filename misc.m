@@ -927,21 +927,21 @@ function test(deg, polynomials_count, X, prefix = '')
 
 endfunction
 
-function stats(test_filename, distance_fcn = @distance)
+function stats(test_filename, fileID, distance_fcn = @distance)
 
 	load(test_filename);
 	n = test.polynomials_count;
 
 
-	printf(">> STATS for %s\n", test_filename);
-	printf(" #polynomials = %-5i  deg = %-4i  X = [%f , %f]\n", ...
+	fprintf(fileID,">> STATS for %s\n", test_filename);
+	fprintf(fileID," #polynomials = %-5i  deg = %-4i  X = [%f , %f]\n", ...
 			test.polynomials_count, test.deg, inf(test.X), sup(test.X));
 
 
-	printf(">> [DISTANCE]\n");
-	printf(...
+	fprintf(fileID,">> [DISTANCE]\n");
+	fprintf(fileID,...
 	"Form              max              min             mean            median\n");
-	printf(...
+	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
 	for i = 1:test.forms_count
 
@@ -953,28 +953,28 @@ function stats(test_filename, distance_fcn = @distance)
 			distances(j) = distance_fcn(form.ranges(j), test.polynomials_ranges(j));
 		endfor
 
-		printf(" %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
+		fprintf(fileID," %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
 			max(distances), min(distances), mean(distances), median(distances));
 
 	endfor
-	printf(...
+	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
 
 
-	printf(">> [EVAL_TIME]\n");
-	printf(...
+	fprintf(fileID,">> [EVAL_TIME]\n");
+	fprintf(fileID,...
 	"Form              max              min             mean            median\n");
-	printf(...
+	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
 	for i = 1:test.forms_count
 
 		load(test.filenames(i).form);
 		eval_time = form.eval_time;
 
-		printf(" %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
+		fprintf(fileID," %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
 			max(eval_time), min(eval_time), mean(eval_time), median(eval_time));
 	endfor
-	printf(...
+	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
 
 endfunction
@@ -983,12 +983,62 @@ function test_suite()
 	
 	tests_prms ={ 
 					% deg, cnt, X, prefix
-					{ 3, 2, infsup(-0.3, 0.2), 't1_' };
-					{ 5, 2, infsup(-0.3, 0.2), 't2_' };
+					{ 4, 100, infsup(-0.3, 0.2), 't11_' };
+					{ 5, 100, infsup(-0.3, 0.2), 't12_' };
+					{ 6, 100, infsup(-0.3, 0.2), 't13_' };
+					{ 7, 100, infsup(-0.3, 0.2), 't14_' };
+					{ 11, 100, infsup(-0.3, 0.2), 't15_' };
+					{ 16, 100, infsup(-0.3, 0.2), 't16_' };
+					{ 21, 100, infsup(-0.3, 0.2), 't17_' };
+					{ 26, 100, infsup(-0.3, 0.2), 't18_' };
+					{ 31, 100, infsup(-0.3, 0.2), 't19_' };
+
+					{ 4, 100, infsup(-0.15, 0.1), 't21_' };
+					{ 5, 100, infsup(-0.15, 0.1), 't22_' };
+					{ 6, 100, infsup(-0.15, 0.1), 't23_' };
+					{ 7, 100, infsup(-0.15, 0.1), 't24_' };
+					{ 11, 100, infsup(-0.15, 0.1), 't25_' };
+					{ 16, 100, infsup(-0.15, 0.1), 't26_' };
+					{ 21, 100, infsup(-0.15, 0.1), 't27_' };
+					{ 26, 100, infsup(-0.15, 0.1), 't28_' };
+					{ 31, 100, infsup(-0.15, 0.1), 't29_' };
+
+					{ 4, 100, infsup(-0.1, 0.1), 't31_' };
+					{ 5, 100, infsup(-0.1, 0.1), 't32_' };
+					{ 6, 100, infsup(-0.1, 0.1), 't33_' };
+					{ 7, 100, infsup(-0.1, 0.1), 't34_' };
+					{ 11, 100, infsup(-0.1, 0.1), 't35_' };
+					{ 16, 100, infsup(-0.1, 0.1), 't36_' };
+					{ 21, 100, infsup(-0.1, 0.1), 't37_' };
+					{ 26, 100, infsup(-0.1, 0.1), 't38_' };
+					{ 31, 100, infsup(-0.1, 0.1), 't39_' };
+
+					{ 4, 100, infsup(0.3, 0.4), 't41_' };
+					{ 5, 100, infsup(0.3, 0.4), 't42_' };
+					{ 6, 100, infsup(0.3, 0.4), 't43_' };
+					{ 7, 100, infsup(0.3, 0.4), 't44_' };
+					{ 11, 100, infsup(0.3, 0.4), 't45_' };
+					{ 16, 100, infsup(0.3, 0.4), 't46_' };
+					{ 21, 100, infsup(0.3, 0.4), 't47_' };
+					{ 26, 100, infsup(0.3, 0.4), 't48_' };
+					{ 31, 100, infsup(0.3, 0.4), 't49_' };
+
+					{ 4, 100, infsup(-0.4, 0.3), 't51_' };
+					{ 5, 100, infsup(-0.4, 0.3), 't52_' };
+					{ 6, 100, infsup(-0.4, 0.3), 't53_' };
+					{ 7, 100, infsup(-0.4, 0.3), 't54_' };
+					{ 11, 100, infsup(-0.4, 0.3), 't55_' };
+					{ 16, 100, infsup(-0.4, 0.3), 't56_' };
+					{ 21, 100, infsup(-0.4, 0.3), 't57_' };
+					{ 26, 100, infsup(-0.4, 0.3), 't58_' };
+					{ 31, 100, infsup(-0.4, 0.3), 't59_' };
 				};
+	%tests_prms ={ { 5, 2, infsup(-0.3, 0.2), 'x11_' } };
+
+
+	fileID = fopen('stats.txt','w');
 
 	tests_cnt = length(tests_prms);
-
 	for i = 1:tests_cnt
 
 		printf("Test case        %4i/%i\n", i, tests_cnt);
@@ -996,9 +1046,11 @@ function test_suite()
 		test(tests_prms{i}{1}, tests_prms{i}{2},
 			tests_prms{i}{3}, tests_prms{i}{4});
 
-		stats(strcat('tests/',tests_prms{i}{4},'test.bin'));
+		stats(strcat('tests/',tests_prms{i}{4},'test.bin'),fileID);
 
 	endfor
+
+	fclose(fileID);
 
 endfunction
 
