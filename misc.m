@@ -50,7 +50,8 @@ function y = evaluate_parallel(polynomial_coefficients, x)
 
 	endfor
 
-	a = parcellfun(ncpus, @evaluate, coefficients, intervals,"UniformOutput", false);
+	a = parcellfun(ncpus, @evaluate, coefficients, intervals,"UniformOutput", false,
+					"VerboseLevel", 0);
 
 	y = a{1};
 
@@ -857,7 +858,9 @@ function test(deg, polynomials_count, X, prefix = '')
 
 	for i = 1:polynomials_count
 		polynomials_ranges(i) = evaluate_parallel(polynomials(i,:),X);
+		printf("\rEval polynomial: %4i/%i", i, polynomials_count);
 	endfor
+	printf("\n");
 
 	forms = {	
 				{ @horner_form, "HF"};
@@ -878,14 +881,17 @@ function test(deg, polynomials_count, X, prefix = '')
 				{ @interpolation_slope_form, "ISF"};
 		};
 
-	filenames = repmat(struct("form",""),length(forms),1);
+	form_cnt = length(forms);
+	filenames = repmat(struct("form",""),form_cnt,1);
 
-	for i = 1:length(forms)
+	for i = 1:form_cnt
 
 		ranges = repmat(intval(0),polynomials_count,1);
 		eval_time = zeros(polynomials_count,1);
 
 		for j = 1:polynomials_count
+			printf("\rEval form: %4i/%i polynomial: %4i/%i",
+					i, form_cnt, j, polynomials_count);
 			tic;
 			ranges(j) = forms{i}{1}(polynomials(j,:),X);
 			eval_time(j) = toc;
@@ -903,6 +909,7 @@ function test(deg, polynomials_count, X, prefix = '')
 		filenames(i).form = filename;
 
 	endfor
+	printf("\n");
 
 	test.X = X;
 	test.polynomials_count = polynomials_count;
@@ -911,7 +918,7 @@ function test(deg, polynomials_count, X, prefix = '')
 	% the 'real' values of polynomials
 	test.polynomials_ranges = polynomials_ranges;
 
-	test.forms_count = length(forms);
+	test.forms_count = form_cnt;
 	test.filenames = filenames;
 
 	test_filename = strcat(test_dir_prefix,'test.bin');
@@ -923,9 +930,15 @@ endfunction
 function stats(test_filename, distance_fcn = @distance)
 
 	load(test_filename);
-
 	n = test.polynomials_count;
 
+
+	printf(">> STATS for %s\n", test_filename);
+	printf(" #polynomials = %-5i  deg = %-4i  X = [%f , %f]\n", ...
+			test.polynomials_count, test.deg, inf(test.X), sup(test.X));
+
+
+	printf(">> [DISTANCE]\n");
 	printf(...
 	"Form              max              min             mean            median\n");
 	printf(...
@@ -944,7 +957,11 @@ function stats(test_filename, distance_fcn = @distance)
 			max(distances), min(distances), mean(distances), median(distances));
 
 	endfor
+	printf(...
+	"-------------------------------------------------------------------------\n");
 
+
+	printf(">> [EVAL_TIME]\n");
 	printf(...
 	"Form              max              min             mean            median\n");
 	printf(...
@@ -957,11 +974,34 @@ function stats(test_filename, distance_fcn = @distance)
 		printf(" %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
 			max(eval_time), min(eval_time), mean(eval_time), median(eval_time));
 	endfor
+	printf(...
+	"-------------------------------------------------------------------------\n");
+
+endfunction
+
+function test_suite()
+	
+	tests_prms ={ 
+					% deg, cnt, X, prefix
+					{ 3, 2, infsup(-0.3, 0.2), 't1_' };
+					{ 5, 2, infsup(-0.3, 0.2), 't2_' };
+				};
+
+	tests_cnt = length(tests_prms);
+
+	for i = 1:tests_cnt
+
+		printf("Test case        %4i/%i\n", i, tests_cnt);
+
+		test(tests_prms{i}{1}, tests_prms{i}{2},
+			tests_prms{i}{3}, tests_prms{i}{4});
+
+		stats(strcat('tests/',tests_prms{i}{4},'test.bin'));
+
+	endfor
 
 endfunction
 
 %%%%%%%%%%%%
 
-id = tic; test(6,2,infsup(-0.3,0.2),'t1_') , toc(id)
-stats('tests/t1_test.bin')
-
+test_suite
