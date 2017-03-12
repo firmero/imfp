@@ -88,15 +88,16 @@ function d = distance(X,Y)% todo
 	% todo check if x is subset of y
 
 	if (!in(intval(Y),intval(X)))
-		% ?? rounding of evaluate...
-		d = 0;
-		return
+		;
+		%return
 	endif
 
 	getround(1);
 	wX = (sup(X)-inf(X));
 	wY = (sup(Y)-inf(Y));
 	d = 1024*(wX - wY)/wY;
+
+	d = abs(d);
 
 endfunction
 %% end of misc
@@ -859,26 +860,25 @@ function test(deg, polynomials_count, X, prefix = '')
 	endfor
 
 	forms = {	
-			@horner_form;
-			@horner_form_bisect_zero;
+				{ @horner_form, "HF"};
+				{ @horner_form_bisect_zero, "HFBZ"};
 
-			@mean_value_form;
-			@mean_value_slope_form;
-			@mean_value_form_bicentred;
+				{ @mean_value_form, "MVF"};
+				{ @mean_value_slope_form, "MVSF"} ;
+				{ @mean_value_form_bicentred, "MVFB"};
 
-			@taylor_form;
-			@taylor_form_bisect_middle;
+				{ @taylor_form, "TF"};
+				{ @taylor_form_bisect_middle, "TFBM"};
 
-			@bernstein_form;
-			@bernstein_form_bisect_zero;
+				{ @bernstein_form, "BF"};
+				{ @bernstein_form_bisect_zero, "BFBZ"};
 
-			@interpolation_form;
-			@interpolation_form2;
-			@interpolation_slope_form;
+				{ @interpolation_form, "IF"};
+				{ @interpolation_form2, "IF2"};
+				{ @interpolation_slope_form, "ISF"};
 		};
 
-
-	filenames = repmat(struct("form","","eval_time",""),length(forms),1);
+	filenames = repmat(struct("form",""),length(forms),1);
 
 	for i = 1:length(forms)
 
@@ -887,20 +887,20 @@ function test(deg, polynomials_count, X, prefix = '')
 
 		for j = 1:polynomials_count
 			tic;
-			ranges(j) = forms{i}(polynomials(j,:),X);
+			ranges(j) = forms{i}{1}(polynomials(j,:),X);
 			eval_time(j) = toc;
 		endfor
 
-		fname = func2str(forms{i});
+		fname = func2str(forms{i}{1});
 
-		range_filename = strcat(test_dir_prefix,fname,'_ranges.bin');
-		save(range_filename, 'ranges', '-binary');
+		form.ranges = ranges;
+		form.eval_time = eval_time;
+		form.desc = forms{i}{2};
 
-		eval_time_filename = strcat(test_dir_prefix,fname,'_eval_time.bin');
-		save(eval_time_filename, 'eval_time', '-binary');
+		filename = strcat(test_dir_prefix,fname,'.bin');
+		save(filename, 'form', '-binary');
 
-		filenames(i).form = range_filename;
-		filenames(i).eval_time = eval_time_filename;
+		filenames(i).form = filename;
 
 	endfor
 
@@ -926,32 +926,42 @@ function stats(test_filename, distance_fcn = @distance)
 
 	n = test.polynomials_count;
 
+	printf(...
+	"Form              max              min             mean            median\n");
+	printf(...
+	"-------------------------------------------------------------------------\n");
 	for i = 1:test.forms_count
-
-		printf("=== %s ===\n\n", test.filenames(i).form);
 
 		% load ranges of a i-th form
 		load(test.filenames(i).form);
-		% load eval_time
-		load(test.filenames(i).eval_time);
 
 		distances = zeros(1,n);
 		for j = 1:n
-			distances(j) = distance_fcn(ranges(j), test.polynomials_ranges(j));
+			distances(j) = distance_fcn(form.ranges(j), test.polynomials_ranges(j));
 		endfor
 
-		printf(" max  %5.5d  min  %5.5d  avg  %5.5d  med  %5.5d\n" ,...
+		printf(" %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
 			max(distances), min(distances), mean(distances), median(distances));
 
-		printf(" max  %5.5d  min  %5.5d  avg  %5.5d  med  %5.5d\n\n" ,...
-			max(eval_time), min(eval_time), mean(eval_time), median(eval_time));
+	endfor
 
+	printf(...
+	"Form              max              min             mean            median\n");
+	printf(...
+	"-------------------------------------------------------------------------\n");
+	for i = 1:test.forms_count
+
+		load(test.filenames(i).form);
+		eval_time = form.eval_time;
+
+		printf(" %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
+			max(eval_time), min(eval_time), mean(eval_time), median(eval_time));
 	endfor
 
 endfunction
 
 %%%%%%%%%%%%
 
-id = tic; test(20,3,infsup(-0.3,0.2),'t1_') , toc(id)
+id = tic; test(6,2,infsup(-0.3,0.2),'t1_') , toc(id)
 stats('tests/t1_test.bin')
 
