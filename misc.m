@@ -26,18 +26,18 @@ function res = interval_power(X,n)
 
 endfunction
 
-function y = evaluate_parallel(polynomial_coefficients, x)
+function y = evaluate_parallel(polynomial_coefficients, X)
 
 	ncpus = nproc();
 
 	% assert ncpus != 0
-	delta = (sup(x) - inf(x))/ncpus;
+	delta = (sup(X) - inf(X))/ncpus;
 
 	coefficients = cell(1,ncpus);
 	intervals = cell(1,ncpus);
 
 
-	left = inf(x);
+	left = inf(X);
 	for i = 1:ncpus
 	
 		% todo rounding
@@ -54,7 +54,6 @@ function y = evaluate_parallel(polynomial_coefficients, x)
 					"VerboseLevel", 0);
 
 	y = a{1};
-
 	for i=2:ncpus
 		y = hull(y,a{i});
 	endfor
@@ -62,7 +61,7 @@ function y = evaluate_parallel(polynomial_coefficients, x)
 endfunction
 
 %
-% x interval
+% X interval
 % nadhodnocuje !!!!!
 %
 function y = evaluate(polynomial_coefficients, X)
@@ -70,10 +69,12 @@ function y = evaluate(polynomial_coefficients, X)
 	t = inf(X);
 	y = intval(polyval(polynomial_coefficients,t));
 
-	while (t < sup(X))
+	while (t + 0.0003 < sup(X))
+
 		t += 0.0003;
 		ny = polyval(polynomial_coefficients,t);
 		y = hull(y,ny);
+
 	endwhile
 
 	y = hull(y,polyval(polynomial_coefficients,sup(X)));
@@ -83,9 +84,9 @@ endfunction
 %
 % X is computed, Y is referenced
 %
-function d = distance(X,Y)% todo
+function d = distance(X,Y)
 
-	% to do if y i point?
+	% todo if y i point?
 	% todo check if x is subset of y
 
 	if (!in(intval(Y),intval(X)))
@@ -847,6 +848,9 @@ function res = eval_forms(form_cell,p,X)
 
 endfunction
 
+%
+%
+%
 function test(deg, polynomials_count, X, prefix = '')
 
 	mkdir 'tests';
@@ -927,6 +931,9 @@ function test(deg, polynomials_count, X, prefix = '')
 
 endfunction
 
+%
+% fileID ... output stats filename
+%
 function stats(test_filename, fileID, distance_fcn = @distance)
 
 	load(test_filename);
@@ -940,7 +947,7 @@ function stats(test_filename, fileID, distance_fcn = @distance)
 
 	fprintf(fileID,">> [DISTANCE]\n");
 	fprintf(fileID,...
-	"Form              max              min             mean            median\n");
+	"Form        max         min        mean        median  deg         X\n");
 	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
 	for i = 1:test.forms_count
@@ -953,8 +960,10 @@ function stats(test_filename, fileID, distance_fcn = @distance)
 			distances(j) = distance_fcn(form.ranges(j), test.polynomials_ranges(j));
 		endfor
 
-		fprintf(fileID," %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
-			max(distances), min(distances), mean(distances), median(distances));
+		fprintf(fileID," %-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n" ,
+			form.desc,
+			max(distances), min(distances), mean(distances), median(distances),
+			test.deg, inf(test.X), sup(test.X));
 
 	endfor
 	fprintf(fileID,...
@@ -963,7 +972,8 @@ function stats(test_filename, fileID, distance_fcn = @distance)
 
 	fprintf(fileID,">> [EVAL_TIME]\n");
 	fprintf(fileID,...
-	"Form              max              min             mean            median\n");
+	"Form        max         min        mean        median  deg         X\n");
+
 	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
 	for i = 1:test.forms_count
@@ -971,8 +981,11 @@ function stats(test_filename, fileID, distance_fcn = @distance)
 		load(test.filenames(i).form);
 		eval_time = form.eval_time;
 
-		fprintf(fileID," %-6s %15.4f  %15.4f  %15.4f  %15.4f\n" , form.desc, 
-			max(eval_time), min(eval_time), mean(eval_time), median(eval_time));
+		fprintf(fileID," t_%-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n" ,
+			form.desc,
+			max(eval_time), min(eval_time), mean(eval_time), median(eval_time),
+			test.deg, inf(test.X), sup(test.X));
+
 	endfor
 	fprintf(fileID,...
 	"-------------------------------------------------------------------------\n");
@@ -1013,30 +1026,10 @@ function test_suite()
 					{ 26, 100, infsup(-0.1, 0.1), 't38_' };
 					{ 31, 100, infsup(-0.1, 0.1), 't39_' };
 
-					{ 4, 100, infsup(0.3, 0.4), 't41_' };
-					{ 5, 100, infsup(0.3, 0.4), 't42_' };
-					{ 6, 100, infsup(0.3, 0.4), 't43_' };
-					{ 7, 100, infsup(0.3, 0.4), 't44_' };
-					{ 11, 100, infsup(0.3, 0.4), 't45_' };
-					{ 16, 100, infsup(0.3, 0.4), 't46_' };
-					{ 21, 100, infsup(0.3, 0.4), 't47_' };
-					{ 26, 100, infsup(0.3, 0.4), 't48_' };
-					{ 31, 100, infsup(0.3, 0.4), 't49_' };
-
-					{ 4, 100, infsup(-0.4, 0.3), 't51_' };
-					{ 5, 100, infsup(-0.4, 0.3), 't52_' };
-					{ 6, 100, infsup(-0.4, 0.3), 't53_' };
-					{ 7, 100, infsup(-0.4, 0.3), 't54_' };
-					{ 11, 100, infsup(-0.4, 0.3), 't55_' };
-					{ 16, 100, infsup(-0.4, 0.3), 't56_' };
-					{ 21, 100, infsup(-0.4, 0.3), 't57_' };
-					{ 26, 100, infsup(-0.4, 0.3), 't58_' };
-					{ 31, 100, infsup(-0.4, 0.3), 't59_' };
 				};
 	%tests_prms ={ { 5, 2, infsup(-0.3, 0.2), 'x11_' } };
 
-
-	fileID = fopen('stats.txt','w');
+	fileID = fopen('stats.txt','a');
 
 	tests_cnt = length(tests_prms);
 	for i = 1:tests_cnt
@@ -1056,4 +1049,9 @@ endfunction
 
 %%%%%%%%%%%%
 
-test_suite
+%test_suite
+
+%p = [ infsup(-3.1,-2.5) infsup(2,2.6) infsup(-4,-3.1) ];
+%X = infsup(-1.2,-0.3);
+%evaluate_parallel(p,X)
+
