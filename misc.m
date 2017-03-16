@@ -73,6 +73,7 @@ function y = evaluate(polynomial_coefficients, X)
 
 		t += 0.0003;
 		ny = polyval(polynomial_coefficients,t);
+
 		y = hull(y,ny);
 
 	endwhile
@@ -1049,9 +1050,67 @@ endfunction
 
 %%%%%%%%%%%%
 
+function mvf = mean_value_form_int(polynomial_coefficients, X)
+
+	% check if 0 in x
+	% todo optim for,if
+
+
+	n = length(polynomial_coefficients);
+
+	p = repmat(intval(0),1,n);
+
+	for i = 1:n
+		p(i) = sup(polynomial_coefficients(i));
+	endfor
+	i1 = mean_value_form(p,infsup(0,sup(X)));
+
+
+	for i = 1:n
+		p(i) = inf(polynomial_coefficients(i));
+	endfor
+	i2 = mean_value_form(p,infsup(0,sup(X)));
+
+	for i = n:-1:1
+		if (mod(i,2) == 1)
+			p(i) = sup(polynomial_coefficients(i));
+		endif
+	endfor
+	i3 = mean_value_form(p,infsup(inf(X),0));
+
+	for i = n:-1:1
+		if (mod(i,2) == 1)
+			p(i) = inf(polynomial_coefficients(i));
+		else 
+			p(i) = sup(polynomial_coefficients(i));
+		endif
+	endfor
+	i4 = mean_value_form(p,infsup(inf(X),0));
+
+	val_r = infsup(inf(i2),sup(i1));
+	val_l = infsup(inf(i4),sup(i3));
+
+	mvf = hull(val_r,val_l);
+
+endfunction
+%%%%%%%%%%%%%%%%%%%%%
 %test_suite
 
-%p = [ infsup(-3.1,-2.5) infsup(2,2.6) infsup(-4,-3.1) ];
-%X = infsup(-1.2,-0.3);
-%evaluate_parallel(p,X)
+p = [ infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
+X = infsup(-0.1,0.4);
+
+
+evaluate_parallel(p,X)
+horner_form(p,X)
+
+mean_value_form(p,X)
+disp test
+mean_value_form_int(p,X)
+
+%mean_value_form_bicentred(p,X)
+%mean_value_slope_form(p,X)
+
+
+
+
 
