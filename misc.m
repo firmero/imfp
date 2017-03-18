@@ -1196,18 +1196,49 @@ function res = interval_polynomial_form_par(p,X,form)
 endfunction
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+% Generates n polynomials of deg degree with interval coefficients.
+%
+% Coefficients have middle in (-mid,mid) and radius in (-max_radius, max_radius)
+%
+function res = generate_polynomials_interval(deg, n=1, max_radius=0.4, midd=4)
+
+	deg++;
+	res = repmat(repmat(intval(0),1,deg),n,1);
+
+	for i = 1:n
+		res(i,:) = rand(1,deg) - 0.5;
+	endfor
+
+	midd = 2*midd;
+
+	for i = 1:n 
+
+		middles = midd*(rand(1,deg)-0.5);
+		radii = max_radius*rand(1,deg);
+
+		for j = 1:deg
+			res(i,j) = midrad(middles(j),radii(j));
+		endfor
+	endfor
+
+endfunction
+
+%%%%%%%%%%%%%%%%%%%%
+
 %test_suite
+generate_polynomials_interval(2,5)
+
 
 %p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
 
-n = 7;
-
-for i = 1:n 
-	%p(i) = infsup(d(i)-1,u(i));
-	p(i) = midrad(8*(rand-0.5), 0.4*rand);
-end
-
 X = infsup(-0.3,0.2);
+n = 3;
+
+
+
+%{
 evaluate_parallel(p,X)
 horner_form(p,X)
 
@@ -1233,3 +1264,4 @@ disp "==============="
 %tic, interval_polynomial_form_par(p,X, @interpolation_form),% toc
 tic, interval_polynomial_form_par(p,X, @interpolation_form2),% toc
 tic, interval_polynomial_form_par(p,X, @interpolation_slope_form),% toc
+%}
