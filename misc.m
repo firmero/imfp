@@ -819,7 +819,7 @@ endfunction
 %% end of INTERPOLATION FORM
 
 %
-% Returns n polynomials of degree deg with coeffcients in (-1,1)
+% Returns n polynomials of degree deg with coefficients in (-1,1)
 %
 function res = generate_polynomials(deg, n=1)
 
@@ -1114,9 +1114,12 @@ function res = interval_polynomial_form(p,X,form)
 			down(i) = sup(p(i));
 		endfor
 
-		% compute over [inf(X),0]
-		left_max = form(up,X);
-		left_min = form(down,X);
+		% compute over A
+		bound = min(sup(X),0);
+		Y = infsup(inf(X), bound);
+
+		left_max = form(up,Y);
+		left_min = form(down,Y);
 		left_res = infsup(inf(left_min),sup(left_max));
 	else
 		for i = 1:n
@@ -1124,7 +1127,7 @@ function res = interval_polynomial_form(p,X,form)
 			down(i) = inf(p(i));
 		endfor
 
-		% compute over [0,sup(X)]
+		% compute over B
 		right_max = form(up,X);
 		right_min = form(down,X);
 
@@ -1137,19 +1140,104 @@ function res = interval_polynomial_form(p,X,form)
 		return 
 	endif
 
-	% compute over [0,sup(X)]
+	% compute over B
 	% reuse previous state of up and down vector
 	for i = n-1:-2:1
 		up(i) = sup(p(i));
 		down(i) = inf(p(i));
 	endfor
 
-	right_max = form(up,X);
-	right_min = form(down,X);
+	Y = infsup(0,sup(X));
+	right_max = form(up,Y);
+	right_min = form(down,Y);
 
 	right_res = infsup(inf(right_min),sup(right_max));
 
-	% [inf(X),0] U [0,sup(X)]
+	% A U B
+	res = hull(left_res,right_res);
+
+endfunction
+
+function res = interval_polynomial_form_par(p,X,form)
+	
+	n = length(p);
+	up = repmat(0,1,n);
+	down = repmat(0,1,n);
+	ncpus = nproc();
+
+	if (inf(X) < 0)
+
+		for i = n:-2:1
+			up(i) = sup(p(i));
+			down(i) = inf(p(i));
+		endfor
+
+		for i = n-1:-2:1
+			up(i) = inf(p(i));
+			down(i) = sup(p(i));
+		endfor
+
+		% compute over A
+		bound = min(sup(X),0);
+		Y = infsup(inf(X), bound);
+
+		intervals{1} = Y;
+		intervals{2} = Y;
+
+		coefficients{1} = down;
+		coefficients{2} = up;
+
+	else
+		for i = 1:n
+			up(i) = sup(p(i));
+			down(i) = inf(p(i));
+		endfor
+
+		% compute over B
+		intervals{1} = X;
+		intervals{2} = X;
+
+		coefficients{1} = down;
+		coefficients{2} = up;
+
+		pack = parcellfun(ncpus,form,coefficients,intervals,"UniformOutput", false,
+						"VerboseLevel", 0);
+
+		res = infsup(inf(pack{1}),sup(pack{2}));
+		return
+	endif
+
+	if (sup(X) <= 0)
+
+		pack = parcellfun(ncpus,form,coefficients,intervals,"UniformOutput", false,
+						"VerboseLevel", 0);
+
+		res = infsup(inf(pack{1}),sup(pack{2}));
+		return 
+	endif
+
+	% compute over B
+	% reuse previous state of up and down vector
+	for i = n-1:-2:1
+		up(i) = sup(p(i));
+		down(i) = inf(p(i));
+	endfor
+
+	Y = infsup(0,sup(X));
+	intervals{3} = Y;
+	intervals{4} = Y;
+
+	coefficients{3} = down;
+	coefficients{4} = up;
+
+	% left and right interval
+	pack = parcellfun(ncpus,form,coefficients,intervals,"UniformOutput", false,
+					"VerboseLevel", 0);
+
+	left_res = infsup(inf(pack{1}),sup(pack{2}));
+	right_res = infsup(inf(pack{3}),sup(pack{4}));
+
+	% A U B
 	res = hull(left_res,right_res);
 
 endfunction
@@ -1157,19 +1245,20 @@ endfunction
 %test_suite
 
 p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
-X = infsup(-0.2,0.1);
 
+n = 30;
+u = rand(1,n);
+d = rand(1,n);
+
+for i = 1:n 
+	p(i) = infsup(d(i)-1,u(i));
+end
+
+X = infsup(-0.3,0.5);
 %evaluate_parallel(p,X)
-%[  -79.0000,   -3.7999]  <- [1,3]
-%[   -7.0000,   -2.3979]  <- [0,1]
+horner_form(p,X)
 
+tic, interval_polynomial_form_par(p,X, @horner_form), toc
+tic, interval_polynomial_form_par(p,X, @bernstein_form), toc
+tic, interval_polynomial_form_par(p,X, @interpolation_slope_form), toc
 
-%horner_form(p,X)
-
-%disp test
-%mean_value_form(p,X)
-%mean_value_form_int(p,X)
-
-%mean_value_form_bicentred(p,X)
-%mean_value_slope_form(p,X)
-interval_polynomial_form(p,infsup(-1,1), @bernstein_form)
