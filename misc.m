@@ -1088,29 +1088,88 @@ function mvf = mean_value_form_int(polynomial_coefficients, X)
 	i4 = mean_value_form(p,infsup(inf(X),0));
 
 	val_r = infsup(inf(i2),sup(i1));
-	val_l = infsup(inf(i4),sup(i3));
+	% wtf? todo
+	val_l = infsup(inf(i3),sup(i4));
 
 	mvf = hull(val_r,val_l);
 
 endfunction
 %%%%%%%%%%%%%%%%%%%%%
+
+function res = interval_polynomial_form(p,X,form)
+	
+	n = length(p);
+	up = repmat(0,1,n);
+	down = repmat(0,1,n);
+
+	if (inf(X) < 0)
+
+		for i = n:-2:1
+			up(i) = sup(p(i));
+			down(i) = inf(p(i));
+		endfor
+
+		for i = n-1:-2:1
+			up(i) = inf(p(i));
+			down(i) = sup(p(i));
+		endfor
+
+		% compute over [inf(X),0]
+		left_max = form(up,X);
+		left_min = form(down,X);
+		left_res = infsup(inf(left_min),sup(left_max));
+	else
+		for i = 1:n
+			up(i) = sup(p(i));
+			down(i) = inf(p(i));
+		endfor
+
+		% compute over [0,sup(X)]
+		right_max = form(up,X);
+		right_min = form(down,X);
+
+		res = infsup(inf(right_min),sup(right_max));
+		return
+	endif
+
+	if (sup(X) <= 0)
+		res = left_res;
+		return 
+	endif
+
+	% compute over [0,sup(X)]
+	% reuse previous state of up and down vector
+	for i = n-1:-2:1
+		up(i) = sup(p(i));
+		down(i) = inf(p(i));
+	endfor
+
+	right_max = form(up,X);
+	right_min = form(down,X);
+
+	right_res = infsup(inf(right_min),sup(right_max));
+
+	% [inf(X),0] U [0,sup(X)]
+	res = hull(left_res,right_res);
+
+endfunction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %test_suite
 
-p = [ infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
-X = infsup(-0.1,0.4);
+p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
+X = infsup(-0.2,0.1);
+
+%evaluate_parallel(p,X)
+%[  -79.0000,   -3.7999]  <- [1,3]
+%[   -7.0000,   -2.3979]  <- [0,1]
 
 
-evaluate_parallel(p,X)
-horner_form(p,X)
+%horner_form(p,X)
 
-mean_value_form(p,X)
-disp test
-mean_value_form_int(p,X)
+%disp test
+%mean_value_form(p,X)
+%mean_value_form_int(p,X)
 
 %mean_value_form_bicentred(p,X)
 %mean_value_slope_form(p,X)
-
-
-
-
-
+interval_polynomial_form(p,infsup(-1,1), @bernstein_form)
