@@ -1047,53 +1047,6 @@ function test_suite()
 	fclose(fileID);
 
 endfunction
-
-%%%%%%%%%%%%
-
-function mvf = mean_value_form_int(polynomial_coefficients, X)
-
-	% check if 0 in x
-	% todo optim for,if
-
-
-	n = length(polynomial_coefficients);
-
-	p = repmat(intval(0),1,n);
-
-	for i = 1:n
-		p(i) = sup(polynomial_coefficients(i));
-	endfor
-	i1 = mean_value_form(p,infsup(0,sup(X)));
-
-
-	for i = 1:n
-		p(i) = inf(polynomial_coefficients(i));
-	endfor
-	i2 = mean_value_form(p,infsup(0,sup(X)));
-
-	for i = n:-1:1
-		if (mod(i,2) == 1)
-			p(i) = sup(polynomial_coefficients(i));
-		endif
-	endfor
-	i3 = mean_value_form(p,infsup(inf(X),0));
-
-	for i = n:-1:1
-		if (mod(i,2) == 1)
-			p(i) = inf(polynomial_coefficients(i));
-		else 
-			p(i) = sup(polynomial_coefficients(i));
-		endif
-	endfor
-	i4 = mean_value_form(p,infsup(inf(X),0));
-
-	val_r = infsup(inf(i2),sup(i1));
-	% wtf? todo
-	val_l = infsup(inf(i3),sup(i4));
-
-	mvf = hull(val_r,val_l);
-
-endfunction
 %%%%%%%%%%%%%%%%%%%%%
 
 function res = interval_polynomial_form(p,X,form)
@@ -1241,24 +1194,42 @@ function res = interval_polynomial_form_par(p,X,form)
 	res = hull(left_res,right_res);
 
 endfunction
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %test_suite
 
-p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
+%p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
 
-n = 30;
-u = rand(1,n);
-d = rand(1,n);
+n = 7;
 
 for i = 1:n 
-	p(i) = infsup(d(i)-1,u(i));
+	%p(i) = infsup(d(i)-1,u(i));
+	p(i) = midrad(8*(rand-0.5), 0.4*rand);
 end
 
-X = infsup(-0.3,0.5);
-%evaluate_parallel(p,X)
+X = infsup(-0.3,0.2);
+evaluate_parallel(p,X)
 horner_form(p,X)
 
-tic, interval_polynomial_form_par(p,X, @horner_form), toc
-tic, interval_polynomial_form_par(p,X, @bernstein_form), toc
-tic, interval_polynomial_form_par(p,X, @interpolation_slope_form), toc
+disp "==============="
+%tic, interval_polynomial_form_par(p,X, @horner_form),% toc
+tic, interval_polynomial_form_par(p,X, @horner_form_bisect_zero),% toc
+disp "==============="
 
+
+%tic, interval_polynomial_form_par(p,X, @mean_value_form),% toc
+tic, interval_polynomial_form_par(p,X, @mean_value_slope_form),% toc
+tic, interval_polynomial_form_par(p,X, @mean_value_form_bicentred),% toc
+disp "==============="
+
+%tic, interval_polynomial_form_par(p,X, @taylor_form),% toc
+tic, interval_polynomial_form_par(p,X, @taylor_form_bisect_middle),% toc
+disp "==============="
+
+%tic, interval_polynomial_form_par(p,X, @bernstein_form),% toc
+tic, interval_polynomial_form_par(p,X, @bernstein_form_bisect_zero),% toc
+disp "==============="
+
+%tic, interval_polynomial_form_par(p,X, @interpolation_form),% toc
+tic, interval_polynomial_form_par(p,X, @interpolation_form2),% toc
+tic, interval_polynomial_form_par(p,X, @interpolation_slope_form),% toc
