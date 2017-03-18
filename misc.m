@@ -1206,10 +1206,8 @@ function res = generate_polynomials_interval(deg, n=1, max_radius=0.4, midd=4)
 
 	deg++;
 	res = repmat(repmat(intval(0),1,deg),n,1);
-
-	for i = 1:n
-		res(i,:) = rand(1,deg) - 0.5;
-	endfor
+	middles = zeros(1,deg);
+	radii = zeros(1,deg);
 
 	midd = 2*midd;
 
@@ -1221,6 +1219,7 @@ function res = generate_polynomials_interval(deg, n=1, max_radius=0.4, midd=4)
 		for j = 1:deg
 			res(i,j) = midrad(middles(j),radii(j));
 		endfor
+
 	endfor
 
 endfunction
@@ -1228,7 +1227,7 @@ endfunction
 %%%%%%%%%%%%%%%%%%%%
 
 %test_suite
-generate_polynomials_interval(2,5)
+generate_polynomials_interval(3)
 
 
 %p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
