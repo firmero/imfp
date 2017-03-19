@@ -80,12 +80,12 @@ function y = evaluate(polynomial_coefficients, X)
 
 	while (t + 0.0003 < sup(X))
 
-		t += 0.0003;
+		t = t + 0.0003;
 		ny = polyval(polynomial_coefficients,t);
 
 		y = hull(y,ny);
 
-	endwhile
+	end
 
 	y = hull(y,polyval(polynomial_coefficients,sup(X)));
 
