@@ -10,8 +10,8 @@ function p_derivated = derivate_polynomial(polynomial_coefficients)
 
 	for i = 1:n-1
 		p_derivated(i) = (n-i) * polynomial_coefficients(i);
-	endfor
+	end
 
-endfunction
+end
 
 

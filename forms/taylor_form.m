@@ -14,25 +14,25 @@ function res = taylor_form(polynomial_coefficients, X)
 	if (inf(X) == sup(X))
 		res = horner_form(polynomial_coefficients,X);
 		return
-	endif
+	end
 
 	c = mid(X);
 	r = rad(X);
 
 	n = length(polynomial_coefficients);
-	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
+	tay_coeff = taylor_coefficients(polynomial_coefficients,intval(c));
 
-	getround(1);
+	setround(1);
 	magnitude = mag(tay_coeff(n)) * r;
 
 	% compute mag(HF(g_series,X-c))*[-r,r]
 	% X - c == [-r,r]
 	for i = n-1:-1:2
 		magnitude = (magnitude + mag(tay_coeff(i)))*r;
-	endfor
+	end
 
 	% tay_coeff(1) == p(c)
 	res = tay_coeff(1) + infsup(-magnitude, magnitude);
 
-endfunction
+end
 

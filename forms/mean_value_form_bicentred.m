@@ -13,15 +13,15 @@ function res = mean_value_form_bicentred(polynomial_coefficients,X)
 
 	[c_left, c_right] = centres_mean_value_form(hf_derivated,X);
 
-	getround(1);
+	setround(1);
 	right = sup(horner_form(polynomial_coefficients,c_right)) ...
 			+ sup(hf_derivated*(X-c_right));
 
-	getround(-1);
+	setround(-1);
 	left = inf(horner_form(polynomial_coefficients,c_left)) ...
 			+ inf(hf_derivated*(X-c_left));
 
 	res = infsup(left,right);
 
-endfunction
+end
 

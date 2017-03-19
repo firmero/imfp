@@ -15,12 +15,12 @@ function mvf = mean_value_form(polynomial_coefficients, X)
 	c = mid(X);
 	hf_at_center = horner_form(polynomial_coefficients,c);
 
-	p_derivated = derivate_polynomial(polynomial_coefficients,X);
+	p_derivated = derivate_polynomial(polynomial_coefficients);
 
 	hf_derivated = horner_form(p_derivated,X);
 
 	mvf = hf_at_center + hf_derivated*(X-c);
 
-endfunction
+end
 
 

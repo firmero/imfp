@@ -15,19 +15,19 @@ function [c_left, c_right] = centres_mean_value_form(f_derivated, X)
 		c_left = inf(X);
 		c_right = sup(X);
 		return
-	endif
+	end
 
 	if (sup(f_derivated) <= 0)
 		c_left = sup(X);
 		c_right = inf(X);
 		return
-	endif
+	end
 
 	% else approximate, it is correct thanks to lemma of optimality
 	width = sup(X) - inf(X);
 	c_right = (sup(f_derivated)*sup(X) - inf(f_derivated)*inf(X))/width;
 	c_left = (sup(f_derivated)*inf(X) - inf(f_derivated)*sup(X))/width;
 
-endfunction
+end
 
 

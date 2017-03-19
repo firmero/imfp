@@ -10,9 +10,9 @@ function op_polynomial = invert_polynomial(polynomial_coefficients)
 
 	for i = n-1:-1:1
 		op_polynomial(i) = sgn * polynomial_coefficients(i); 
-		sgn *= (-1);
-	endfor
+		sgn = sgn * (-1);
+	end
 
-endfunction
+end
 
 

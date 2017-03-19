@@ -17,8 +17,8 @@ function res = interpolation_form(polynomial_coefficients,X)
 
 	c = mid(X);
 
-	p_at_c = horner_form(polynomial_coefficients,c);
-	p_derivated_at_c = horner_form(p_derivated,c);
+	p_at_c = horner_form(polynomial_coefficients,intval(c));
+	p_derivated_at_c = horner_form(p_derivated,intval(c));
 	p_twice_derivated_range = horner_form(p_twice_derivated,X);
 
 	m = mid(p_twice_derivated_range);
@@ -30,10 +30,10 @@ function res = interpolation_form(polynomial_coefficients,X)
 
 	parabola_range = evaluate_parabola(a2,a1,a0,X);
 
-	getround(1);
+	setround(1);
 	r = mag(X-c);
 	res = parabola_range + (p_twice_derivated_range - m)*infsup(0,0.5*r*r);
 
-endfunction
+end
 
 

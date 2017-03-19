@@ -13,21 +13,21 @@ function res = taylor_form_bisect_middle(polynomial_coefficients, X)
 	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
 
 	% right half [0,|c|]
-	getround(1);
+	setround(1);
 	x =	sup(X) - c;
-	R = _taylor_form_eval_half(tay_coeff,x);
+	R = taylor_form_eval_half(tay_coeff,x);
 
 	% left half [-|c|,0] -> [0,|c|] && p_series(-x)
-	getround(-1);
+	setround(-1);
 	x = c - inf(X);
 
 	% coefficients for p_series(-x)
 	for i = 2:2:n
-		tay_coeff(i) *= -1;
-	endfor
+		tay_coeff(i) = tay_coeff(i) * -1;
+	end
 
-	L = _taylor_form_eval_half(tay_coeff,x);
+	L = taylor_form_eval_half(tay_coeff,x);
 
 	res = hull(L,R);
 
-endfunction
+end

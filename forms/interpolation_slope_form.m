@@ -24,29 +24,29 @@ function res = interpolation_slope_form(polynomial_coefficients,X)
 	if (n < 3)
 		res = horner_form(polynomial_coefficients,X);
 		return;
-	endif
+	end
 
 	p = repmat(intval(0),1,n);
 	for i = 1:n 
 		p(i) = intval(polynomial_coefficients(i));
-	endfor
+	end
 	
 	c = mid(X);
 	for i = 2:n
 		p(i) = p(i) + c*p(i-1);
-	endfor
+	end
 	% p(n) = HF(p,c)
 
 	for i = 2:n-1
 		p(i) = p(i) + c*p(i-1);
-	endfor
+	end
 	% p(n-1) = HF(p`,c)
 	% p(n)   = HF(p,c)
 
 	G = p(1);
 	for i = 2:n-2
 		G = G*X + p(i);
-	endfor
+	end
 
 	GC_up = intval(sup(G))*c;
 	tmp = p(n-1) - GC_up; 
@@ -63,5 +63,5 @@ function res = interpolation_slope_form(polynomial_coefficients,X)
 
 	res = hull(p1,p2) + p(n);
 
-endfunction
+end
 

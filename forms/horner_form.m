@@ -16,7 +16,7 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 		res = horner_form_bisect_zero(polynomial_coefficients,X);
 		certainly_ok = false;
 		return
-	endif
+	end
 	%}
 
 	n = length(polynomial_coefficients);
@@ -24,7 +24,7 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 		res = intval(0);
 		certainly_ok = true;
 		return
-	endif
+	end
 	% allocate vector
 	p = repmat(intval(0),1,n);
 
@@ -32,7 +32,7 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 
 	for i = 2:n
 		p(i) = p(i-1) * X + polynomial_coefficients(i);
-	endfor
+	end
     
 	res = p(n);
 
@@ -40,18 +40,18 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 	if (inf(X) == sup(X))
 		certainly_ok = true; % what if coefficients are intervals
 		return
-	endif
+	end
 
 	if (in(0,intval(X)))
 		certainly_ok = false; % what if coefficients are intervals
 		return
-	endif
+	end
 
 	
 	if (isa(polynomial_coefficients(1),'intval'))
 		certainly_ok = false;
 		return
-	endif
+	end
 	% !! not working on interval coefficients !!
 	sgn = sign(polynomial_coefficients(1));
 
@@ -60,18 +60,18 @@ function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 			if (inf(sgn*p(i)) < 0)
 				certainly_ok = false;
 				return
-			endif
-		endfor
+			end
+		end
 	else	% on left
 		for i = 2:n-1
-			sgn *= (-1);
+			sgn = sgn * (-1);
 			if (inf(sgn*p(i)) < 0)
 				certainly_ok = false;
 				return
-			endif
-		endfor
-	endif
+			end
+		end
+	end
 
 	certainly_ok = true;
 
-endfunction
+end

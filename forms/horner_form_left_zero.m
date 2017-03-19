@@ -19,21 +19,21 @@ function res = horner_form_left_zero(polynomial_coefficients, X)
 			left = p(i-1)*xx + polynomial_coefficients(i);
 		else % save multiply by zero
 			left = polynomial_coefficients(i);
-		endif
+		end
 
 		if (sup(p(i-1)) > 0)
 			getround(1);
 			right = p(i-1)*xx + polynomial_coefficients(i);
 		else
 			right = polynomial_coefficients(i);
-		endif
+		end
 
 		p(i) = infsup(inf(intval(left)), sup(intval(right)));
 
-	endfor
+	end
 	
 	res = p(n);
 
-endfunction
+end
 
 

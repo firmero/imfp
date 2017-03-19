@@ -24,13 +24,14 @@ function res = mean_value_slope_form(polynomial_coefficients, X)
 	g(1) = polynomial_coefficients(1);
 	for i = 2:n-1
 		g(i) = g(i-1)*c + polynomial_coefficients(i);
-	endfor
+	end
 
 	hf_g = horner_form(g,X);
 
+	% todo if n == 1
 	p_at_c = g(n-1)*c + polynomial_coefficients(n);
 	res = p_at_c + hf_g*(X-c);
 
-endfunction
+end
 
 

@@ -5,34 +5,35 @@
 %
 % r >= 0
 %
-function res = _taylor_form_eval_half(tay_coeff,r)
+function res = taylor_form_eval_half(tay_coeff,r)
 
 	n = length(tay_coeff);
 
+	%todo inf as built-in function!!
 	left = inf(tay_coeff(n));
 	right = sup(tay_coeff(n));
 
 	for i = n-1:-1:1
 
-		getround(1);
+		setround(1);
 		if (right > 0)
 			right = right*r + sup(tay_coeff(i));
 		else 
 			% choose 0 to maximize
 			right = sup(tay_coeff(i));
-		endif
+		end
 
-		getround(-1);
+		setround(-1);
 		if (left < 0)
 			left = left*r + inf(tay_coeff(i));
 		else
 			% choose 0 to minimize
 			left = inf(tay_coeff(i));
-		endif
+		end
 
-	endfor
+	end
 
 	res = infsup(left,right);
 
-endfunction
+end
 

@@ -9,7 +9,7 @@ function tc = taylor_coefficients(polynomial_coefficients, c)
 
 	% allocate vector
 	tc = repmat(intval(0),1,n);
-	tc(1) = horner_form(polynomial_coefficients,c);
+	tc(1) = horner_form(polynomial_coefficients,intval(c));
 
 	% factorial
 	fact = 1;
@@ -19,15 +19,15 @@ function tc = taylor_coefficients(polynomial_coefficients, c)
 		polynomial_coefficients(n) = polynomial_coefficients(n-1);
 		for i = n-1:-1:j
 			polynomial_coefficients(i) = polynomial_coefficients(i-1)*k;
-			k++;
-		endfor
+			k = k+1;
+		end
 		
 		p = polynomial_coefficients(j:n);
 
-		tc(j) = horner_form(p,c) / fact;
-		fact *= j;
+		tc(j) = horner_form(p,intval(c)) / fact;
+		fact = fact * j;
 
-	endfor
+	end
 
-endfunction
+end
 

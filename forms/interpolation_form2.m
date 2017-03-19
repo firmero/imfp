@@ -50,5 +50,5 @@ function res = interpolation_form2(polynomial_coefficients,X)
 
 	res = hull(p1,p2) + p_at_c;
 
-endfunction
+end
 
