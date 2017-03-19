@@ -13,7 +13,9 @@ function imfp
 
 	addpath( [ IFMP_DIR filesep 'forms' ] );
 
+	%test_suite
 	disp ok
+
 end
 %% start of misc
 
@@ -50,7 +52,7 @@ function y = evaluate_parallel(polynomial_coefficients, X)
 	for i = 1:ncpus
 	
 		% todo rounding
-		getround(1);
+		setround(1);
 		right = left + delta;
 		intervals(i) = infsup(left,right);
 		left = right;
@@ -104,7 +106,7 @@ function d = distance(X,Y)
 		%return
 	end
 
-	getround(1);
+	setround(1);
 	wX = (sup(X)-inf(X));
 	wY = (sup(Y)-inf(Y));
 	d = 1024*(wX - wY)/wY;
@@ -132,11 +134,9 @@ function res = mean_value_slope_form_int(p,X)
 	 res = interval_polynomial_form_par(p,X,@mean_value_slope_form);
 end
 
-% not working
-%
-%function res = mean_value_form_bicentred_int(p,X)
-%	 res = interval_polynomial_form(p,X,@mean_value_form_bicentred);
-%end
+function res = mean_value_form_bicentred_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@mean_value_form_bicentred);
+end
 
 function res = taylor_form_int(p,X)
 	 res = interval_polynomial_form_par(p,X,@taylor_form);
@@ -167,7 +167,6 @@ function res = interpolation_slope_form_int(p,X)
 end
 %% end interval polynomials
 
-%% start of INTERPOLATION FORM
 %
 % Returns n polynomials of degree deg with coefficients in (-1,1)
 %
@@ -510,7 +509,6 @@ function res = interval_polynomial_form(p,X,form)
 
 	% A U B
 	res = hull(left_res,right_res);
-
 end
 
 function res = interval_polynomial_form_par(p,X,form)
@@ -606,7 +604,9 @@ end
 %
 function res = generate_polynomials_interval(deg, n, max_radius, midd)
 
-	%todo n=1, max_radius=0.4, midd=4
+	%todo
+	n=1; max_radius=0.4; midd=4;
+
 	deg = deg + 1;
 	res = repmat(repmat(intval(0),1,deg),n,1);
 	middles = zeros(1,deg);
