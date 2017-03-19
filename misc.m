@@ -105,6 +105,57 @@ function d = distance(X,Y)
 endfunction
 %% end of misc
 
+%% start interval polynomials
+
+function res = horner_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@horner_form);
+endfunction
+
+function res = horner_form_bisect_zero_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@horner_form_bisect_zero);
+endfunction
+
+function res = mean_value_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@mean_value_form);
+endfunction
+
+function res = mean_value_slope_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@mean_value_slope_form);
+endfunction
+
+function res = mean_value_form_bicentred_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@mean_value_form_bicentred);
+endfunction
+
+function res = taylor_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@taylor_form);
+endfunction
+
+function res = taylor_form_bisect_middle_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@taylor_form_bisect_middle);
+endfunction
+
+function res = bernstein_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@bernstein_form);
+endfunction
+
+function res = bernstein_form_bisect_zero_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@bernstein_form_bisect_zero);
+endfunction
+
+function res = interpolation_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@interpolation_form);
+endfunction
+
+function res = interpolation_form2_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@interpolation_form2);
+endfunction
+
+function res = interpolation_slope_form_int(p,X)
+	 res = interval_polynomial_form_par(p,X,@interpolation_slope_form);
+endfunction
+%% end interval polynomials
+
 %% start of HORNER FORM
 
 %
@@ -852,12 +903,13 @@ endfunction
 %
 %
 %
-function test(deg, polynomials_count, X, prefix = '')
+function test(deg, polynomials_count, polynomials_generator,
+				X, forms_struct, prefix = '')
 
 	mkdir 'tests';
 	test_dir_prefix = strcat('tests/',prefix);
 
-	polynomials = generate_polynomials(deg, polynomials_count);
+	polynomials = polynomials_generator(deg, polynomials_count);
 	polynomials_ranges = repmat(intval(0),polynomials_count,1);
 
 
@@ -867,26 +919,7 @@ function test(deg, polynomials_count, X, prefix = '')
 	endfor
 	printf("\n");
 
-	forms = {	
-				{ @horner_form, "HF"};
-				{ @horner_form_bisect_zero, "HFBZ"};
-
-				{ @mean_value_form, "MVF"};
-				{ @mean_value_slope_form, "MVSF"} ;
-				{ @mean_value_form_bicentred, "MVFB"};
-
-				{ @taylor_form, "TF"};
-				{ @taylor_form_bisect_middle, "TFBM"};
-
-				{ @bernstein_form, "BF"};
-				{ @bernstein_form_bisect_zero, "BFBZ"};
-
-				{ @interpolation_form, "IF"};
-				{ @interpolation_form2, "IF2"};
-				{ @interpolation_slope_form, "ISF"};
-		};
-
-	form_cnt = length(forms);
+	form_cnt = length(forms_struct);
 	filenames = repmat(struct("form",""),form_cnt,1);
 
 	for i = 1:form_cnt
@@ -898,15 +931,15 @@ function test(deg, polynomials_count, X, prefix = '')
 			printf("\rEval form: %4i/%i polynomial: %4i/%i",
 					i, form_cnt, j, polynomials_count);
 			tic;
-			ranges(j) = forms{i}{1}(polynomials(j,:),X);
+			ranges(j) = forms_struct{i}{1}(polynomials(j,:),X);
 			eval_time(j) = toc;
 		endfor
 
-		fname = func2str(forms{i}{1});
+		fname = func2str(forms_struct{i}{1});
 
 		form.ranges = ranges;
 		form.eval_time = eval_time;
-		form.desc = forms{i}{2};
+		form.desc = forms_struct{i}{2};
 
 		filename = strcat(test_dir_prefix,fname,'.bin');
 		save(filename, 'form', '-binary');
@@ -929,13 +962,12 @@ function test(deg, polynomials_count, X, prefix = '')
 	test_filename = strcat(test_dir_prefix,'test.bin');
 	save(test_filename,'test', '-binary');
 
-
 endfunction
 
 %
 % fileID ... output stats filename
 %
-function stats(test_filename, fileID, distance_fcn = @distance)
+function make_stats(test_filename, fileID, distance_fcn = @distance)
 
 	load(test_filename);
 	n = test.polynomials_count;
@@ -995,40 +1027,63 @@ endfunction
 
 function test_suite()
 	
+	forms_struct = {	
+				{ @horner_form, "HF"};
+				{ @horner_form_bisect_zero, "HFBZ"};
+
+				{ @mean_value_form, "MVF"};
+				{ @mean_value_slope_form, "MVSF"} ;
+				{ @mean_value_form_bicentred, "MVFB"};
+
+				{ @taylor_form, "TF"};
+				{ @taylor_form_bisect_middle, "TFBM"};
+
+				{ @bernstein_form, "BF"};
+				{ @bernstein_form_bisect_zero, "BFBZ"};
+
+				{ @interpolation_form, "IF"};
+				{ @interpolation_form2, "IF2"};
+				{ @interpolation_slope_form, "ISF"};
+		};
+
 	tests_prms ={ 
-					% deg, cnt, X, prefix
-					{ 4, 100, infsup(-0.3, 0.2), 't11_' };
-					{ 5, 100, infsup(-0.3, 0.2), 't12_' };
-					{ 6, 100, infsup(-0.3, 0.2), 't13_' };
-					{ 7, 100, infsup(-0.3, 0.2), 't14_' };
-					{ 11, 100, infsup(-0.3, 0.2), 't15_' };
-					{ 16, 100, infsup(-0.3, 0.2), 't16_' };
-					{ 21, 100, infsup(-0.3, 0.2), 't17_' };
-					{ 26, 100, infsup(-0.3, 0.2), 't18_' };
-					{ 31, 100, infsup(-0.3, 0.2), 't19_' };
+					% deg,  X, prefix
+					{ 4, infsup(-0.3, 0.2), 't11_' };
+					{ 5, infsup(-0.3, 0.2), 't12_' };
+					{ 6, infsup(-0.3, 0.2), 't13_' };
+					{ 7, infsup(-0.3, 0.2), 't14_' };
+					{ 11, infsup(-0.3, 0.2), 't15_' };
+					{ 16, infsup(-0.3, 0.2), 't16_' };
+					{ 21, infsup(-0.3, 0.2), 't17_' };
+					{ 26, infsup(-0.3, 0.2), 't18_' };
+					{ 31, infsup(-0.3, 0.2), 't19_' };
 
-					{ 4, 100, infsup(-0.15, 0.1), 't21_' };
-					{ 5, 100, infsup(-0.15, 0.1), 't22_' };
-					{ 6, 100, infsup(-0.15, 0.1), 't23_' };
-					{ 7, 100, infsup(-0.15, 0.1), 't24_' };
-					{ 11, 100, infsup(-0.15, 0.1), 't25_' };
-					{ 16, 100, infsup(-0.15, 0.1), 't26_' };
-					{ 21, 100, infsup(-0.15, 0.1), 't27_' };
-					{ 26, 100, infsup(-0.15, 0.1), 't28_' };
-					{ 31, 100, infsup(-0.15, 0.1), 't29_' };
+					{ 4, infsup(-0.15, 0.1), 't21_' };
+					{ 5, infsup(-0.15, 0.1), 't22_' };
+					{ 6, infsup(-0.15, 0.1), 't23_' };
+					{ 7, infsup(-0.15, 0.1), 't24_' };
+					{ 11, infsup(-0.15, 0.1), 't25_' };
+					{ 16, infsup(-0.15, 0.1), 't26_' };
+					{ 21, infsup(-0.15, 0.1), 't27_' };
+					{ 26, infsup(-0.15, 0.1), 't28_' };
+					{ 31, infsup(-0.15, 0.1), 't29_' };
 
-					{ 4, 100, infsup(-0.1, 0.1), 't31_' };
-					{ 5, 100, infsup(-0.1, 0.1), 't32_' };
-					{ 6, 100, infsup(-0.1, 0.1), 't33_' };
-					{ 7, 100, infsup(-0.1, 0.1), 't34_' };
-					{ 11, 100, infsup(-0.1, 0.1), 't35_' };
-					{ 16, 100, infsup(-0.1, 0.1), 't36_' };
-					{ 21, 100, infsup(-0.1, 0.1), 't37_' };
-					{ 26, 100, infsup(-0.1, 0.1), 't38_' };
-					{ 31, 100, infsup(-0.1, 0.1), 't39_' };
+					{ 4, infsup(-0.1, 0.1), 't31_' };
+					{ 5, infsup(-0.1, 0.1), 't32_' };
+					{ 6, infsup(-0.1, 0.1), 't33_' };
+					{ 7, infsup(-0.1, 0.1), 't34_' };
+					{ 11, infsup(-0.1, 0.1), 't35_' };
+					{ 16, infsup(-0.1, 0.1), 't36_' };
+					{ 21, infsup(-0.1, 0.1), 't37_' };
+					{ 26, infsup(-0.1, 0.1), 't38_' };
+					{ 31, infsup(-0.1, 0.1), 't39_' };
 
 				};
-	%tests_prms ={ { 5, 2, infsup(-0.3, 0.2), 'x11_' } };
+
+	% tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
+
+	% one test repetition
+	cnt = 2;
 
 	fileID = fopen('stats.txt','a');
 
@@ -1037,10 +1092,10 @@ function test_suite()
 
 		printf("Test case        %4i/%i\n", i, tests_cnt);
 
-		test(tests_prms{i}{1}, tests_prms{i}{2},
-			tests_prms{i}{3}, tests_prms{i}{4});
+		test(tests_prms{i}{1}, cnt, @generate_polynomials,
+			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
 
-		stats(strcat('tests/',tests_prms{i}{4},'test.bin'),fileID);
+		make_stats(strcat('tests/',tests_prms{i}{3},'test.bin'),fileID)
 
 	endfor
 
@@ -1225,17 +1280,10 @@ function res = generate_polynomials_interval(deg, n=1, max_radius=0.4, midd=4)
 endfunction
 
 %%%%%%%%%%%%%%%%%%%%
-
 %test_suite
-generate_polynomials_interval(3)
-
-
 %p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
-
+p = generate_polynomials_interval(30);
 X = infsup(-0.3,0.2);
-n = 3;
-
-
 
 %{
 evaluate_parallel(p,X)
