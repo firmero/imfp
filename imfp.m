@@ -272,6 +272,7 @@ end
 function make_stats(test_filename, fileID, distance_fcn)
 
 	%todo distance_fcn = @distance
+	distance_fcn = @distance;
 	load(test_filename);
 	n = test.polynomials_count;
 
@@ -426,7 +427,7 @@ function test_suite()
 
 				};
 
-	% tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
+	 ests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
 
 	% one test repetition
 	cnt = 2;
