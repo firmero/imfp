@@ -13,8 +13,8 @@ function imfp
 
 	addpath( [ IFMP_DIR filesep 'forms' ] );
 
-	%test_suite
-	disp ok
+	test_suite
+	disp done
 
 end
 %% start of misc
@@ -207,7 +207,6 @@ function test(deg, polynomials_count, polynomials_generator,...
 				X, forms_struct, prefix)
 	% todo prefix = ''
 
-	mkdir 'tests';
 	test_dir_prefix = strcat('tests/',prefix);
 
 	polynomials = polynomials_generator(deg, polynomials_count);
@@ -215,10 +214,13 @@ function test(deg, polynomials_count, polynomials_generator,...
 
 
 	for i = 1:polynomials_count
-		polynomials_ranges(i) = evaluate_parallel(polynomials(i,:),X);
-		printf('\rEval polynomial: %4i/%i', i, polynomials_count);
+
+		%polynomials_ranges(i) = evaluate_parallel(polynomials(i,:),X);
+		polynomials_ranges(i) = evaluate(polynomials(i,:),X);
+
+		fprintf('\rEval polynomial: %4i/%i', i, polynomials_count);
 	end
-	printf('\n');
+	fprintf('\n');
 
 	form_cnt = length(forms_struct);
 	filenames = repmat(struct('form',''),form_cnt,1);
@@ -229,7 +231,7 @@ function test(deg, polynomials_count, polynomials_generator,...
 		eval_time = zeros(polynomials_count,1);
 
 		for j = 1:polynomials_count
-			printf('\rEval form: %4i/%i polynomial: %4i/%i',...
+			fprintf('\rEval form: %4i/%i polynomial: %4i/%i',...
 					i, form_cnt, j, polynomials_count);
 			tic;
 			ranges(j) = forms_struct{i}{1}(polynomials(j,:),X);
@@ -243,12 +245,13 @@ function test(deg, polynomials_count, polynomials_generator,...
 		form.desc = forms_struct{i}{2};
 
 		filename = strcat(test_dir_prefix,fname,'.bin');
-		save(filename, 'form', '-binary');
+		% in binary mode
+		save(filename, 'form', '-mat');
 
 		filenames(i).form = filename;
 
 	end
-	printf('\n');
+	fprintf('\n');
 
 	test.X = X;
 	test.polynomials_count = polynomials_count;
@@ -261,7 +264,7 @@ function test(deg, polynomials_count, polynomials_generator,...
 	test.filenames = filenames;
 
 	test_filename = strcat(test_dir_prefix,'test.bin');
-	save(test_filename,'test', '-binary');
+	save(test_filename,'test', '-mat');
 
 end
 
@@ -272,7 +275,7 @@ function make_stats(test_filename, fileID, distance_fcn)
 
 	%todo distance_fcn = @distance
 	distance_fcn = @distance;
-	load(test_filename);
+	load(test_filename,'-mat');
 	n = test.polynomials_count;
 
 
@@ -289,7 +292,7 @@ function make_stats(test_filename, fileID, distance_fcn)
 	for i = 1:test.forms_count
 
 		% load ranges of a i-th form
-		load(test.filenames(i).form);
+		load(test.filenames(i).form,'-mat');
 
 		distances = zeros(1,n);
 		for j = 1:n
@@ -314,7 +317,7 @@ function make_stats(test_filename, fileID, distance_fcn)
 	'-------------------------------------------------------------------------\n');
 	for i = 1:test.forms_count
 
-		load(test.filenames(i).form);
+		load(test.filenames(i).form,'-mat');
 		eval_time = form.eval_time;
 
 		fprintf(fileID,' t_%-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
@@ -355,10 +358,11 @@ function test_suite2()
 
 	fileID = fopen('stats2.txt','a');
 
+	mkdir 'tests';
 	tests_cnt = length(tests_prms);
 	for i = 1:tests_cnt
 
-		printf('Test case        %4i/%i\n', i, tests_cnt);
+		fprintf('Test case        %4i/%i\n', i, tests_cnt);
 
 		test(tests_prms{i}{1}, cnt, @generate_polynomials_interval,...
 			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
@@ -433,16 +437,16 @@ function test_suite()
 
 	fileID = fopen('stats.txt','a');
 
+	mkdir 'tests';
 	tests_cnt = length(tests_prms);
 	for i = 1:tests_cnt
 
-		printf('Test case        %4i/%i\n', i, tests_cnt);
+		fprintf('Test case        %4i/%i\n', i, tests_cnt);
 
 		test(tests_prms{i}{1}, cnt, @generate_polynomials,...
 			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
 
 		make_stats(strcat('tests/',tests_prms{i}{3},'test.bin'),fileID)
-
 	end
 
 	fclose(fileID);

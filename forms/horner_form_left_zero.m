@@ -9,20 +9,20 @@ function res = horner_form_left_zero(polynomial_coefficients, X)
 
 	p(1) = intval(polynomial_coefficients(1));
 
-	% getround(1);
+	% setround(1);
 	xx = sup(X);
 
 	for i = 2:n
 
 		if (inf(p(i-1)) < 0)
-			getround(-1);
+			setround(-1);
 			left = p(i-1)*xx + polynomial_coefficients(i);
 		else % save multiply by zero
 			left = polynomial_coefficients(i);
 		end
 
 		if (sup(p(i-1)) > 0)
-			getround(1);
+			setround(1);
 			right = p(i-1)*xx + polynomial_coefficients(i);
 		else
 			right = polynomial_coefficients(i);
