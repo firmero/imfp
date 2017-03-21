@@ -1,5 +1,12 @@
 function imfp
 
+	has_intval_arithmetic = which('infsup');
+
+	if (isempty(has_intval_arithmetic))
+		disp('---- Please initialize INTLAB, then call this function again.');
+		return
+	end
+
 	global IFMP_DIR;
 
 	loc = which('imfp.m');
@@ -17,19 +24,41 @@ function imfp
 	end
 
 	% 1 for parallel
-	par = 0;
+	par = 1;
 
 	if (par && running_octave)
+
+		has_par = pkg('list','parallel');
+
+		if (isempty(has_par))
+
+			warning('Pkg parallel not found');
+
+			disp 'Installing pkg struct-1.0.14.tar.gz'
+			pkg('install',[ IFMP_DIR filesep 'lib' filesep 'struct-1.0.14.tar.gz']);
+			disp 'Pkg struct-1.0.14.tar.gz installed'
+
+			disp 'Installing pkg parallel-3.1.1.tar.gz'
+			pkg('install',[ IFMP_DIR filesep 'lib' filesep 'parallel-3.1.1.tar.gz']);
+			disp 'Pkg parallel-3.1.1.tar.gz installed'
+
+		end
+
+		pkg load struct
+		pkg load parallel
+
 		% running script makes local functions global in octave,
 		% not working in matlab :/
 		load_interval_forms_par
 		addpath( [ IFMP_DIR filesep 'misc/evaluate_polynomial/private' ] );
 		disp 'paralell'
+
+		main
 		return
 	end
 
 	if (par && ~running_octave)
-		waring('has no support to parallelization');
+		waring('Parallelization cannot be estamblished');
 	end
 
 	disp 'no paralell'
@@ -38,13 +67,19 @@ function imfp
 	addpath( [ IFMP_DIR filesep 'misc/interval_polynomial_forms' ] );
 	addpath( [ IFMP_DIR filesep 'misc/evaluate_polynomial' ] );
 
+	main
+	return
+end
+%% start of misc
+
+function main
+
 	disp 'test'
 	test_suite
 	disp 'test2'
 	test_suite2
-end
-%% start of misc
 
+end
 function test_suite2()
 	
 	forms_struct = {	
