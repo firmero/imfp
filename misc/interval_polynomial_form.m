@@ -1,7 +1,5 @@
 function res = interval_polynomial_form(p,X,form)
 
-	disp interval_polynomial_form
-
 	n = length(p);
 	up = repmat(0,1,n);
 	down = repmat(0,1,n);

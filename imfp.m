@@ -17,7 +17,9 @@ function imfp
 	end
 
 	% 1 for parallel
-	if (1 && running_octave)
+	par = 0;
+
+	if (par && running_octave)
 		% running script makes local functions global in octave,
 		% not working in matlab :/
 		load_interval_forms_par
@@ -26,7 +28,7 @@ function imfp
 		return
 	end
 
-	if (1 && ~running_octave)
+	if (par && ~running_octave)
 		waring('has no support to parallelization');
 	end
 
@@ -36,162 +38,12 @@ function imfp
 	addpath( [ IFMP_DIR filesep 'misc/interval_polynomial_forms' ] );
 	addpath( [ IFMP_DIR filesep 'misc/evaluate_polynomial' ] );
 
+	disp 'test'
+	test_suite
+	disp 'test2'
+	test_suite2
 end
 %% start of misc
-
-
-%
-% X is computed, Y is referenced
-%
-function d = distance(X,Y)
-
-	% todo if y i point?
-	% todo check if x is subset of y
-
-	if (~in(intval(Y),intval(X)))
-		;
-		%return
-	end
-
-	setround(1);
-	wX = (sup(X)-inf(X));
-	wY = (sup(Y)-inf(Y));
-	d = 1024*(wX - wY)/wY;
-
-	d = abs(d);
-
-end
-%% end of misc
-
-%
-%
-%
-function test(deg, polynomials_count, polynomials_generator,...
-				X, forms_struct, prefix)
-	% todo prefix = ''
-
-	test_dir_prefix = strcat('tests/',prefix);
-
-	polynomials = polynomials_generator(deg, polynomials_count);
-	polynomials_ranges = repmat(intval(0),polynomials_count,1);
-
-
-	for i = 1:polynomials_count
-
-		polynomials_ranges(i) = evaluate_polynomial(polynomials(i,:),X);
-
-		fprintf('\rEval polynomial: %4i/%i', i, polynomials_count);
-	end
-	fprintf('\n');
-
-	form_cnt = length(forms_struct);
-	filenames = repmat(struct('form',''),form_cnt,1);
-
-	for i = 1:form_cnt
-
-		ranges = repmat(intval(0),polynomials_count,1);
-		eval_time = zeros(polynomials_count,1);
-
-		for j = 1:polynomials_count
-			fprintf('\rEval form: %4i/%i polynomial: %4i/%i',...
-					i, form_cnt, j, polynomials_count);
-			tic;
-			ranges(j) = forms_struct{i}{1}(polynomials(j,:),X);
-			eval_time(j) = toc;
-		end
-
-		fname = func2str(forms_struct{i}{1});
-
-		form.ranges = ranges;
-		form.eval_time = eval_time;
-		form.desc = forms_struct{i}{2};
-
-		filename = strcat(test_dir_prefix,fname,'.bin');
-		% in binary mode
-		save(filename, 'form', '-mat');
-
-		filenames(i).form = filename;
-
-	end
-	fprintf('\n');
-
-	test.X = X;
-	test.polynomials_count = polynomials_count;
-	test.deg = deg;
-	test.polynomials = polynomials;
-	% the 'real' values of polynomials
-	test.polynomials_ranges = polynomials_ranges;
-
-	test.forms_count = form_cnt;
-	test.filenames = filenames;
-
-	test_filename = strcat(test_dir_prefix,'test.bin');
-	save(test_filename,'test', '-mat');
-
-end
-
-%
-% fileID ... output stats filename
-%
-function make_stats(test_filename, fileID, distance_fcn)
-
-	%todo distance_fcn = @distance
-	distance_fcn = @distance;
-	load(test_filename,'-mat');
-	n = test.polynomials_count;
-
-
-	fprintf(fileID,'>> STATS for %s\n', test_filename);
-	fprintf(fileID,' #polynomials = %-5i  deg = %-4i  X = [%f , %f]\n', ...
-			test.polynomials_count, test.deg, inf(test.X), sup(test.X));
-
-
-	fprintf(fileID,'>> [DISTANCE]\n');
-	fprintf(fileID,...
-	'Form        max         min        mean        median  deg         X\n');
-	fprintf(fileID,...
-	'-------------------------------------------------------------------------\n');
-	for i = 1:test.forms_count
-
-		% load ranges of a i-th form
-		load(test.filenames(i).form,'-mat');
-
-		distances = zeros(1,n);
-		for j = 1:n
-			distances(j) = distance_fcn(form.ranges(j), test.polynomials_ranges(j));
-		end
-
-		fprintf(fileID,' %-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
-			form.desc,...
-			max(distances), min(distances), mean(distances), median(distances),...
-			test.deg, inf(test.X), sup(test.X));
-
-	end
-	fprintf(fileID,...
-	'-------------------------------------------------------------------------\n');
-
-
-	fprintf(fileID,'>> [EVAL_TIME]\n');
-	fprintf(fileID,...
-	'Form        max         min        mean        median  deg         X\n');
-
-	fprintf(fileID,...
-	'-------------------------------------------------------------------------\n');
-	for i = 1:test.forms_count
-
-		load(test.filenames(i).form,'-mat');
-		eval_time = form.eval_time;
-
-		fprintf(fileID,' t_%-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
-			form.desc,...
-			max(eval_time), min(eval_time), mean(eval_time), median(eval_time),...
-			test.deg, inf(test.X), sup(test.X));
-
-	end
-	fprintf(fileID,...
-	'-------------------------------------------------------------------------\n');
-
-end
 
 function test_suite2()
 	
@@ -201,6 +53,7 @@ function test_suite2()
 
 				{ @mean_value_form_int, 'iMVF'};
 				{ @mean_value_slope_form_int, 'iMVSF'} ;
+				{ @mean_value_form_bicentred, 'iMVFB'};
 
 				{ @taylor_form_int, 'iTF'};
 				{ @taylor_form_bisect_middle_int, 'iTFBM'};
@@ -213,10 +66,10 @@ function test_suite2()
 				{ @interpolation_slope_form_int, 'iISF'};
 		};
 
-	 tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
+	tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
 
 	% one test repetition
-	cnt = 20;
+	cnt = 2;
 
 	fileID = fopen('stats2.txt','a');
 
@@ -230,7 +83,6 @@ function test_suite2()
 			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
 
 		make_stats(strcat('tests/',tests_prms{i}{3},'test.bin'),fileID)
-
 	end
 
 	fclose(fileID);
@@ -292,7 +144,7 @@ function test_suite()
 
 				};
 
-	 ests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
+	tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
 
 	% one test repetition
 	cnt = 2;
@@ -314,40 +166,3 @@ function test_suite()
 	fclose(fileID);
 
 end
-%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%
-% Generates n polynomials of deg degree with interval coefficients.
-%
-% Coefficients have middle in (-mid,mid) and radius in (-max_radius, max_radius)
-%
-function res = generate_polynomials_interval(deg, n, max_radius, midd)
-
-	%todo
-	n=1; max_radius=0.4; midd=4;
-
-	deg = deg + 1;
-	res = repmat(repmat(intval(0),1,deg),n,1);
-	middles = zeros(1,deg);
-	radii = zeros(1,deg);
-
-	midd = 2*midd;
-
-	for i = 1:n 
-
-		middles = midd*(rand(1,deg)-0.5);
-		radii = max_radius*rand(1,deg);
-
-		for j = 1:deg
-			res(i,j) = midrad(middles(j),radii(j));
-		end
-
-	end
-
-end
-
-%%%%%%%%%%%%%%%%%%%%
