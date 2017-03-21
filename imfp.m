@@ -5,16 +5,30 @@ function imfp
 	loc = which('imfp.m');
 	IFMP_DIR = loc(1:end-6);
 
-	if (0 ~= exist('OCTAVE_VERSION', 'builtin'))
+	addpath( [ IFMP_DIR filesep 'forms' ] );
+	addpath( [ IFMP_DIR filesep 'misc' ] );
+
+	running_octave = 0 ~= exist('OCTAVE_VERSION', 'builtin'); 
+
+	if (running_octave)
 		addpath( [ IFMP_DIR filesep 'octave_env' ] );
 	else
 		addpath( [ IFMP_DIR filesep 'matlab_env' ] );
 	end
 
-	addpath( [ IFMP_DIR filesep 'forms' ] );
+	% 1 for parallel
+	if (1 && running_octave)
+		load_interval_forms_par
+		disp 'paralell'
+		return
+	end
 
-	test_suite
-	disp done
+	if (1 && ~running_octave)
+		waring('has no support to parallelization');
+	end
+
+	disp 'no paralell'
+	load_interval_forms
 
 end
 %% start of misc
@@ -115,57 +129,6 @@ function d = distance(X,Y)
 
 end
 %% end of misc
-
-%% start interval polynomials
-
-function res = horner_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@horner_form);
-end
-
-function res = horner_form_bisect_zero_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@horner_form_bisect_zero);
-end
-
-function res = mean_value_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@mean_value_form);
-end
-
-function res = mean_value_slope_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@mean_value_slope_form);
-end
-
-function res = mean_value_form_bicentred_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@mean_value_form_bicentred);
-end
-
-function res = taylor_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@taylor_form);
-end
-
-function res = taylor_form_bisect_middle_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@taylor_form_bisect_middle);
-end
-
-function res = bernstein_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@bernstein_form);
-end
-
-function res = bernstein_form_bisect_zero_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@bernstein_form_bisect_zero);
-end
-
-function res = interpolation_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@interpolation_form);
-end
-
-function res = interpolation_form2_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@interpolation_form2);
-end
-
-function res = interpolation_slope_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@interpolation_slope_form);
-end
-%% end interval polynomials
 
 %
 % Returns n polynomials of degree deg with coefficients in (-1,1)
@@ -454,150 +417,7 @@ function test_suite()
 end
 %%%%%%%%%%%%%%%%%%%%%
 
-function res = interval_polynomial_form(p,X,form)
-	
-	n = length(p);
-	up = repmat(0,1,n);
-	down = repmat(0,1,n);
 
-	if (inf(X) < 0)
-
-		for i = n:-2:1
-			up(i) = sup(p(i));
-			down(i) = inf(p(i));
-		end
-
-		for i = n-1:-2:1
-			up(i) = inf(p(i));
-			down(i) = sup(p(i));
-		end
-
-		% compute over A
-		bound = min(sup(X),0);
-		Y = infsup(inf(X), bound);
-
-		left_max = form(up,Y);
-		left_min = form(down,Y);
-		left_res = infsup(inf(left_min),sup(left_max));
-	else
-		for i = 1:n
-			up(i) = sup(p(i));
-			down(i) = inf(p(i));
-		end
-
-		% compute over B
-		right_max = form(up,X);
-		right_min = form(down,X);
-
-		res = infsup(inf(right_min),sup(right_max));
-		return
-	end
-
-	if (sup(X) <= 0)
-		res = left_res;
-		return 
-	end
-
-	% compute over B
-	% reuse previous state of up and down vector
-	for i = n-1:-2:1
-		up(i) = sup(p(i));
-		down(i) = inf(p(i));
-	end
-
-	Y = infsup(0,sup(X));
-	right_max = form(up,Y);
-	right_min = form(down,Y);
-
-	right_res = infsup(inf(right_min),sup(right_max));
-
-	% A U B
-	res = hull(left_res,right_res);
-end
-
-function res = interval_polynomial_form_par(p,X,form)
-	
-	n = length(p);
-	up = repmat(0,1,n);
-	down = repmat(0,1,n);
-	ncpus = nproc();
-
-	if (inf(X) < 0)
-
-		for i = n:-2:1
-			up(i) = sup(p(i));
-			down(i) = inf(p(i));
-		end
-
-		for i = n-1:-2:1
-			up(i) = inf(p(i));
-			down(i) = sup(p(i));
-		end
-
-		% compute over A
-		bound = min(sup(X),0);
-		Y = infsup(inf(X), bound);
-
-		intervals{1} = Y;
-		intervals{2} = Y;
-
-		coefficients{1} = down;
-		coefficients{2} = up;
-
-	else
-		for i = 1:n
-			up(i) = sup(p(i));
-			down(i) = inf(p(i));
-		end
-
-		% compute over B
-		intervals{1} = X;
-		intervals{2} = X;
-
-		coefficients{1} = down;
-		coefficients{2} = up;
-
-		pack = parcellfun(ncpus,form,coefficients,intervals,'UniformOutput', false,...
-						'VerboseLevel', 0);
-
-		res = infsup(inf(pack{1}),sup(pack{2}));
-		return
-	end
-
-	if (sup(X) <= 0)
-
-		pack = parcellfun(ncpus,form,coefficients,intervals,'UniformOutput', false,...
-						'VerboseLevel', 0);
-
-		res = infsup(inf(pack{1}),sup(pack{2}));
-		return 
-	end
-
-	% compute over B
-	% reuse previous state of up and down vector
-	for i = n-1:-2:1
-		up(i) = sup(p(i));
-		down(i) = inf(p(i));
-	end
-
-	Y = infsup(0,sup(X));
-	intervals{3} = Y;
-	intervals{4} = Y;
-
-	coefficients{3} = down;
-	coefficients{4} = up;
-
-	% left and right interval
-	pack = parcellfun(ncpus,form,coefficients,intervals,'UniformOutput', false,...
-					'VerboseLevel', 0);
-
-	left_res = infsup(inf(pack{1}),sup(pack{2}));
-	right_res = infsup(inf(pack{3}),sup(pack{4}));
-
-	% A U B
-	res = hull(left_res,right_res);
-
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
