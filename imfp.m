@@ -17,18 +17,22 @@ function imfp
 	end
 
 	% 1 for parallel
-	if (1 && running_octave)
+	if (0 && running_octave)
+		% running script makes local functions global in octave,
+		% not working in matlab :/
 		load_interval_forms_par
 		disp 'paralell'
 		return
 	end
 
-	if (1 && ~running_octave)
+	if (0 && ~running_octave)
 		waring('has no support to parallelization');
 	end
 
 	disp 'no paralell'
-	load_interval_forms
+	% in matlab cannot promote local function to global
+	% by calling script :/
+	addpath( [ IFMP_DIR filesep 'misc/interval_polynomial_forms' ] );
 
 end
 %% start of misc
