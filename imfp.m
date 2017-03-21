@@ -17,15 +17,16 @@ function imfp
 	end
 
 	% 1 for parallel
-	if (0 && running_octave)
+	if (1 && running_octave)
 		% running script makes local functions global in octave,
 		% not working in matlab :/
 		load_interval_forms_par
+		addpath( [ IFMP_DIR filesep 'misc/evaluate_polynomial/private' ] );
 		disp 'paralell'
 		return
 	end
 
-	if (0 && ~running_octave)
+	if (1 && ~running_octave)
 		waring('has no support to parallelization');
 	end
 
@@ -33,83 +34,11 @@ function imfp
 	% in matlab cannot promote local function to global
 	% by calling script :/
 	addpath( [ IFMP_DIR filesep 'misc/interval_polynomial_forms' ] );
+	addpath( [ IFMP_DIR filesep 'misc/evaluate_polynomial' ] );
 
 end
 %% start of misc
 
-%
-% The range of natural power over interval X (as a function) 
-%
-% To achieve:
-%
-%	[-8,1]=pow_3( [-2,1] )  !=  [-2,1]*[-2,1]*[-2,1]=[-8,4]
-%
-function res = interval_power(X,n)
-
-	if (even(n))
-		res = X^n;
-		return
-	end
-
-	res = infsup(inf(X)^n, sup(X)^n);
-
-end
-
-function y = evaluate_parallel(polynomial_coefficients, X)
-
-	ncpus = nproc();
-
-	% assert ncpus != 0
-	delta = (sup(X) - inf(X))/ncpus;
-
-	coefficients = cell(1,ncpus);
-	intervals = cell(1,ncpus);
-
-
-	left = inf(X);
-	for i = 1:ncpus
-	
-		% todo rounding
-		setround(1);
-		right = left + delta;
-		intervals(i) = infsup(left,right);
-		left = right;
-
-		coefficients(i) = polynomial_coefficients;
-
-	end
-
-	a = parcellfun(ncpus, @evaluate, coefficients, intervals,'UniformOutput', false,...
-					'VerboseLevel', 0);
-
-	y = a{1};
-	for i=2:ncpus
-		y = hull(y,a{i});
-	end
-
-end
-
-%
-% X interval
-% nadhodnocuje !!!!!
-%
-function y = evaluate(polynomial_coefficients, X)
-
-	t = inf(X);
-	y = intval(polyval(polynomial_coefficients,t));
-
-	while (t + 0.0003 < sup(X))
-
-		t = t + 0.0003;
-		ny = polyval(polynomial_coefficients,t);
-
-		y = hull(y,ny);
-
-	end
-
-	y = hull(y,polyval(polynomial_coefficients,sup(X)));
-
-end
 
 %
 % X is computed, Y is referenced
@@ -135,39 +64,6 @@ end
 %% end of misc
 
 %
-% Returns n polynomials of degree deg with coefficients in (-1,1)
-%
-function res = generate_polynomials(deg, n)
-
-	%todo n=1
-
-	deg = deg + 1;
-	res = zeros(n,deg);
-
-	for i = 1:n
-		res(i,:) = rand(1,deg) - 0.5;
-	end
-
-end
-
-%
-% For testing purpose
-%
-function res = eval_forms(form_cell,p,X)
-
-	n = length(form_cell);
-	% range of form and evaltime
-	res = cell(n,2);
-
-	for i = 1:n
-		tic;
-		res{i,1} = form_cell{i}(p,X);
-		res{i,2} = toc;
-	end
-
-end
-
-%
 %
 %
 function test(deg, polynomials_count, polynomials_generator,...
@@ -182,8 +78,7 @@ function test(deg, polynomials_count, polynomials_generator,...
 
 	for i = 1:polynomials_count
 
-		%polynomials_ranges(i) = evaluate_parallel(polynomials(i,:),X);
-		polynomials_ranges(i) = evaluate(polynomials(i,:),X);
+		polynomials_ranges(i) = evaluate_polynomial(polynomials(i,:),X);
 
 		fprintf('\rEval polynomial: %4i/%i', i, polynomials_count);
 	end
@@ -456,35 +351,3 @@ function res = generate_polynomials_interval(deg, n, max_radius, midd)
 end
 
 %%%%%%%%%%%%%%%%%%%%
-%test_suite
-%p = [ infsup(-2.0,-1.3) infsup(-3.0,-2.0) infsup(2,2.5) infsup(-4,-3.0) ];
-%p = generate_polynomials_interval(30);
-%X = infsup(-0.3,0.2);
-
-%{
-evaluate_parallel(p,X)
-horner_form(p,X)
-
-disp '==============='
-%tic, interval_polynomial_form_par(p,X, @horner_form),% toc
-tic, interval_polynomial_form_par(p,X, @horner_form_bisect_zero),% toc
-disp '==============='
-
-
-%tic, interval_polynomial_form_par(p,X, @mean_value_form),% toc
-tic, interval_polynomial_form_par(p,X, @mean_value_slope_form),% toc
-tic, interval_polynomial_form_par(p,X, @mean_value_form_bicentred),% toc
-disp '==============='
-
-%tic, interval_polynomial_form_par(p,X, @taylor_form),% toc
-tic, interval_polynomial_form_par(p,X, @taylor_form_bisect_middle),% toc
-disp '==============='
-
-%tic, interval_polynomial_form_par(p,X, @bernstein_form),% toc
-tic, interval_polynomial_form_par(p,X, @bernstein_form_bisect_zero),% toc
-disp '==============='
-
-%tic, interval_polynomial_form_par(p,X, @interpolation_form),% toc
-tic, interval_polynomial_form_par(p,X, @interpolation_form2),% toc
-tic, interval_polynomial_form_par(p,X, @interpolation_slope_form),% toc
-%}
