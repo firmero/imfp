@@ -1,4 +1,7 @@
-function imfp
+%
+% To use parallelization run it with non-empty par_opt argument 
+%
+function imfp(par_opt)
 
 	has_intval_arithmetic = which('infsup');
 
@@ -24,7 +27,10 @@ function imfp
 	end
 
 	% 1 for parallel
-	par = 1;
+	par = 0;
+	if (1 == nargin)
+		par = 1;
+	end
 
 	if (par && running_octave)
 
@@ -58,7 +64,7 @@ function imfp
 	end
 
 	if (par && ~running_octave)
-		waring('Parallelization cannot be estamblished');
+		warning('Parallelization cannot be established');
 	end
 
 	disp 'no paralell'
@@ -74,6 +80,10 @@ end
 
 function main
 
+	X = infsup(2,3);
+	horner_form([2],X);
+	horner_form_int([intval(2)],X);
+
 	disp 'test'
 	test_suite
 	disp 'test2'
@@ -88,7 +98,8 @@ function test_suite2()
 
 				{ @mean_value_form_int, 'iMVF'};
 				{ @mean_value_slope_form_int, 'iMVSF'} ;
-				{ @mean_value_form_bicentred, 'iMVFB'};
+				% problem infsup
+				% { @mean_value_form_bicentred, 'iMVFB'};
 
 				{ @taylor_form_int, 'iTF'};
 				{ @taylor_form_bisect_middle_int, 'iTFBM'};
