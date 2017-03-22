@@ -72,6 +72,7 @@ function imfp(par_opt)
 	% in matlab cannot promote local function to global
 	% by calling script :/
 	addpath( [ IFMP_DIR filesep 'misc/interval_polynomial_forms' ] );
+	% shade parallel version
 	addpath( [ IFMP_DIR filesep 'misc/evaluate_polynomial' ] );
 
 	main

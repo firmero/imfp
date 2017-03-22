@@ -1,18 +1,14 @@
 function run_tests
 
-	global TEST_OUT_DIR
-	TEST_OUT_DIR = 'tests_out';
-	mkdir(TEST_OUT_DIR);
-
-	disp 'test'
-	test_suite1
-	%disp 'test2'
-	%test_suite2
+	test_suite1('stats1.txt');
+	test_suite2('stats2.txt');
 
 end
 
-function test_suite1()
-	
+function test_suite1(stats_filename)
+
+	disp('-- starting test_suite 1 --'); 
+
 	forms_struct = {	
 				% form_handler, description
 				{ @horner_form, 'HF'};
@@ -72,11 +68,14 @@ function test_suite1()
 
 	% one test repetition
 	cnt = 3;
-	exec_tests(tests_prms, cnt, @generate_polynomials, forms_struct)
+	exec_tests(tests_prms, cnt, @generate_polynomials,...
+				forms_struct,stats_filename)
 end
 
-function test_suite2()
+function test_suite2(stats_filename)
 	
+	disp('-- starting test_suite 2 --'); 
+
 	forms_struct = {	
 				% form_handler, description
 				{ @horner_form_int, 'iHF'};
@@ -98,33 +97,55 @@ function test_suite2()
 				{ @interpolation_slope_form_int, 'iISF'};
 		};
 
+	tests_prms = { 
 
-	tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
+				struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'it11_');
+				struct('deg',  5, 'interval', infsup(-0.3, 0.2), 'prefix', 'it12_');
+				struct('deg',  6, 'interval', infsup(-0.3, 0.2), 'prefix', 'it13_');
+				struct('deg',  7, 'interval', infsup(-0.3, 0.2), 'prefix', 'it14_');
+				struct('deg', 11, 'interval', infsup(-0.3, 0.2), 'prefix', 'it15_');
+				struct('deg', 16, 'interval', infsup(-0.3, 0.2), 'prefix', 'it16_');
+				struct('deg', 21, 'interval', infsup(-0.3, 0.2), 'prefix', 'it17_');
+				struct('deg', 26, 'interval', infsup(-0.3, 0.2), 'prefix', 'it18_');
+				struct('deg', 31, 'interval', infsup(-0.3, 0.2), 'prefix', 'it19_');
+
+				struct('deg',  4, 'interval', infsup(-0.15, 0.1), 'prefix', 'it21_');
+				struct('deg',  5, 'interval', infsup(-0.15, 0.1), 'prefix', 'it22_');
+				struct('deg',  6, 'interval', infsup(-0.15, 0.1), 'prefix', 'it23_');
+				struct('deg',  7, 'interval', infsup(-0.15, 0.1), 'prefix', 'it24_');
+				struct('deg', 11, 'interval', infsup(-0.15, 0.1), 'prefix', 'it25_');
+				struct('deg', 16, 'interval', infsup(-0.15, 0.1), 'prefix', 'it26_');
+				struct('deg', 21, 'interval', infsup(-0.15, 0.1), 'prefix', 'it27_');
+				struct('deg', 26, 'interval', infsup(-0.15, 0.1), 'prefix', 'it28_');
+				struct('deg', 31, 'interval', infsup(-0.15, 0.1), 'prefix', 'it29_');
+
+				struct('deg',  4, 'interval', infsup(-0.1, 0.1), 'prefix', 'it31_');
+				struct('deg',  5, 'interval', infsup(-0.1, 0.1), 'prefix', 'it32_');
+				struct('deg',  6, 'interval', infsup(-0.1, 0.1), 'prefix', 'it33_');
+				struct('deg',  7, 'interval', infsup(-0.1, 0.1), 'prefix', 'it34_');
+				struct('deg', 11, 'interval', infsup(-0.1, 0.1), 'prefix', 'it35_');
+				struct('deg', 16, 'interval', infsup(-0.1, 0.1), 'prefix', 'it36_');
+				struct('deg', 21, 'interval', infsup(-0.1, 0.1), 'prefix', 'it37_');
+				struct('deg', 26, 'interval', infsup(-0.1, 0.1), 'prefix', 'it38_');
+				struct('deg', 31, 'interval', infsup(-0.1, 0.1), 'prefix', 'it39_');
+			};
+
+	tests_prms = { 
+				struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_');
+			};
 
 	% one test repetition
-	cnt = 2;
-
-	fileID = fopen('stats2.txt','a');
-
-	mkdir 'tests';
-	tests_cnt = length(tests_prms);
-	for i = 1:tests_cnt
-
-		fprintf('Test case        %4i/%i\n', i, tests_cnt);
-
-		test(tests_prms{i}{1}, cnt, @generate_polynomials_interval,...
-			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
-
-		make_stats(strcat('tests/',tests_prms{i}{3},'test.bin'),fileID)
-	end
-
-	fclose(fileID);
+	cnt = 3;
+	exec_tests(tests_prms, cnt, @generate_polynomials_interval,...
+				forms_struct, stats_filename)
 
 end
 
-function exec_tests(tests_prms, repetitions, gen_polynomial_handler, forms_struct)
+function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
+					forms_struct,stats_filename)
 
-	stats_fileID = fopen('stats.txt','a');
+	[~,~] = mkdir('stats_out');
+	stats_fileID = fopen( [ 'stats_out' filesep stats_filename ], 'a');
 
 	tests_cnt = length(tests_prms);
 	for i = 1:tests_cnt

@@ -3,9 +3,10 @@
 %
 function test_filename = test(deg, polynomials_count, polynomials_generator,...
 								X, forms_struct, prefix)
+	test_out_dir = 'tests_out';
+	[~,~] = mkdir(test_out_dir);
 
-	global TEST_OUT_DIR
-	test_dir_prefix = [TEST_OUT_DIR filesep prefix];
+	test_dir_prefix = [test_out_dir filesep prefix];
 
 	polynomials = polynomials_generator(deg, polynomials_count);
 	polynomials_ranges = repmat(intval(0),polynomials_count,1);
