@@ -17,13 +17,14 @@ function imfp(par_opt)
 
 	addpath( [ IFMP_DIR filesep 'forms' ] );
 	addpath( [ IFMP_DIR filesep 'misc' ] );
+	addpath( [ IFMP_DIR filesep 'tests' ] );
 
 	running_octave = 0 ~= exist('OCTAVE_VERSION', 'builtin'); 
 
 	if (running_octave)
 		addpath( [ IFMP_DIR filesep 'octave_env' ] );
-	else
-		addpath( [ IFMP_DIR filesep 'matlab_env' ] );
+	%else
+	%	addpath( [ IFMP_DIR filesep 'matlab_env' ] );
 	end
 
 	% 1 for parallel
@@ -84,131 +85,7 @@ function main
 	horner_form([2],X);
 	horner_form_int([intval(2)],X);
 
-	disp 'test'
-	test_suite
-	disp 'test2'
-	test_suite2
 
-end
-function test_suite2()
-	
-	forms_struct = {	
-				{ @horner_form_int, 'iHF'};
-				{ @horner_form_bisect_zero_int, 'iHFBZ'};
-
-				{ @mean_value_form_int, 'iMVF'};
-				{ @mean_value_slope_form_int, 'iMVSF'} ;
-				% problem infsup
-				% { @mean_value_form_bicentred, 'iMVFB'};
-
-				{ @taylor_form_int, 'iTF'};
-				{ @taylor_form_bisect_middle_int, 'iTFBM'};
-
-				{ @bernstein_form_int, 'iBF'};
-				{ @bernstein_form_bisect_zero_int, 'iBFBZ'};
-
-				{ @interpolation_form_int, 'iIF'};
-				{ @interpolation_form2_int, 'iIF2'};
-				{ @interpolation_slope_form_int, 'iISF'};
-		};
-
-	tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
-
-	% one test repetition
-	cnt = 2;
-
-	fileID = fopen('stats2.txt','a');
-
-	mkdir 'tests';
-	tests_cnt = length(tests_prms);
-	for i = 1:tests_cnt
-
-		fprintf('Test case        %4i/%i\n', i, tests_cnt);
-
-		test(tests_prms{i}{1}, cnt, @generate_polynomials_interval,...
-			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
-
-		make_stats(strcat('tests/',tests_prms{i}{3},'test.bin'),fileID)
-	end
-
-	fclose(fileID);
-
-end
-
-function test_suite()
-	
-	forms_struct = {	
-				{ @horner_form, 'HF'};
-				{ @horner_form_bisect_zero, 'HFBZ'};
-
-				{ @mean_value_form, 'MVF'};
-				{ @mean_value_slope_form, 'MVSF'} ;
-				{ @mean_value_form_bicentred, 'MVFB'};
-
-				{ @taylor_form, 'TF'};
-				{ @taylor_form_bisect_middle, 'TFBM'};
-
-				{ @bernstein_form, 'BF'};
-				{ @bernstein_form_bisect_zero, 'BFBZ'};
-
-				{ @interpolation_form, 'IF'};
-				{ @interpolation_form2, 'IF2'};
-				{ @interpolation_slope_form, 'ISF'};
-		};
-
-	tests_prms ={ 
-					% deg,  X, prefix
-					{ 4, infsup(-0.3, 0.2), 't11_' };
-					{ 5, infsup(-0.3, 0.2), 't12_' };
-					{ 6, infsup(-0.3, 0.2), 't13_' };
-					{ 7, infsup(-0.3, 0.2), 't14_' };
-					{ 11, infsup(-0.3, 0.2), 't15_' };
-					{ 16, infsup(-0.3, 0.2), 't16_' };
-					{ 21, infsup(-0.3, 0.2), 't17_' };
-					{ 26, infsup(-0.3, 0.2), 't18_' };
-					{ 31, infsup(-0.3, 0.2), 't19_' };
-
-					{ 4, infsup(-0.15, 0.1), 't21_' };
-					{ 5, infsup(-0.15, 0.1), 't22_' };
-					{ 6, infsup(-0.15, 0.1), 't23_' };
-					{ 7, infsup(-0.15, 0.1), 't24_' };
-					{ 11, infsup(-0.15, 0.1), 't25_' };
-					{ 16, infsup(-0.15, 0.1), 't26_' };
-					{ 21, infsup(-0.15, 0.1), 't27_' };
-					{ 26, infsup(-0.15, 0.1), 't28_' };
-					{ 31, infsup(-0.15, 0.1), 't29_' };
-
-					{ 4, infsup(-0.1, 0.1), 't31_' };
-					{ 5, infsup(-0.1, 0.1), 't32_' };
-					{ 6, infsup(-0.1, 0.1), 't33_' };
-					{ 7, infsup(-0.1, 0.1), 't34_' };
-					{ 11, infsup(-0.1, 0.1), 't35_' };
-					{ 16, infsup(-0.1, 0.1), 't36_' };
-					{ 21, infsup(-0.1, 0.1), 't37_' };
-					{ 26, infsup(-0.1, 0.1), 't38_' };
-					{ 31, infsup(-0.1, 0.1), 't39_' };
-
-				};
-
-	tests_prms ={ { 5,infsup(-0.3, 0.2), 'x11_' } };
-
-	% one test repetition
-	cnt = 2;
-
-	fileID = fopen('stats.txt','a');
-
-	mkdir 'tests';
-	tests_cnt = length(tests_prms);
-	for i = 1:tests_cnt
-
-		fprintf('Test case        %4i/%i\n', i, tests_cnt);
-
-		test(tests_prms{i}{1}, cnt, @generate_polynomials,...
-			tests_prms{i}{2}, forms_struct, tests_prms{i}{3});
-
-		make_stats(strcat('tests/',tests_prms{i}{3},'test.bin'),fileID)
-	end
-
-	fclose(fileID);
+	run_tests
 
 end

@@ -1,11 +1,11 @@
 %
 %
 %
-function test(deg, polynomials_count, polynomials_generator,...
-				X, forms_struct, prefix)
-	% todo prefix = ''
+function test_filename = test(deg, polynomials_count, polynomials_generator,...
+								X, forms_struct, prefix)
 
-	test_dir_prefix = strcat('tests/',prefix);
+	global TEST_OUT_DIR
+	test_dir_prefix = [TEST_OUT_DIR filesep prefix];
 
 	polynomials = polynomials_generator(deg, polynomials_count);
 	polynomials_ranges = repmat(intval(0),polynomials_count,1);
@@ -59,7 +59,8 @@ function test(deg, polynomials_count, polynomials_generator,...
 	test.forms_count = form_cnt;
 	test.filenames = filenames;
 
-	test_filename = strcat(test_dir_prefix,'test.bin');
+	test_filename = [ test_dir_prefix 'test.bin' ];
+
 	save(test_filename,'test', '-mat');
 
 end
