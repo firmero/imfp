@@ -1,9 +1,10 @@
 function run_tests
 
-	t = tic; test_suite1('stats1',100);
-	toc(t)
+	t = tic; 
+	test_suite1('stats1',10);toc(t)
 
-	%test_suite2('stats2',100);
+	t = tic; 
+	test_suite2('stats2',10);toc(t)
 
 end
 

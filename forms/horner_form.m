@@ -10,6 +10,7 @@
 %
 function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 
+	X = intval(X);
 	%{ 
 	% gives better result but is expensive
 	if (inf(X) < 0)

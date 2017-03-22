@@ -13,6 +13,7 @@ function test_filename = test(deg, polynomials_count, polynomials_generator,...
 
 	for i = 1:polynomials_count
 
+		% real value
 		polynomials_ranges(i) = evaluate_polynomial(polynomials(i,:),X);
 
 		fprintf('\rEval polynomial: %4i/%i', i, polynomials_count);
