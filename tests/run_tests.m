@@ -1,11 +1,13 @@
 function run_tests
 
-	test_suite1('stats1.txt');
-	test_suite2('stats2.txt');
+	t = tic; test_suite1('stats1',100);
+	toc(t)
+
+	%test_suite2('stats2',100);
 
 end
 
-function test_suite1(stats_filename)
+function test_suite1(stats_filename, test_repetition)
 
 	disp('-- starting test_suite 1 --'); 
 
@@ -66,13 +68,11 @@ function test_suite1(stats_filename)
 				struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_');
 			};
 
-	% one test repetition
-	cnt = 3;
-	exec_tests(tests_prms, cnt, @generate_polynomials,...
+	exec_tests(tests_prms, test_repetition, @generate_polynomials,...
 				forms_struct,stats_filename)
 end
 
-function test_suite2(stats_filename)
+function test_suite2(stats_filename, test_repetition)
 	
 	disp('-- starting test_suite 2 --'); 
 
@@ -134,9 +134,7 @@ function test_suite2(stats_filename)
 				struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_');
 			};
 
-	% one test repetition
-	cnt = 3;
-	exec_tests(tests_prms, cnt, @generate_polynomials_interval,...
+	exec_tests(tests_prms, test_repetition, @generate_polynomials_interval,...
 				forms_struct, stats_filename)
 
 end
@@ -145,7 +143,8 @@ function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
 					forms_struct,stats_filename)
 
 	[~,~] = mkdir('stats_out');
-	stats_fileID = fopen( [ 'stats_out' filesep stats_filename ], 'a');
+	stats_fileID = fopen( [ 'stats_out' filesep stats_filename '.txt' ], 'a');
+	time_stats_fileID = fopen( [ 'stats_out' filesep stats_filename '_t.txt'], 'a');
 
 	tests_cnt = length(tests_prms);
 	for i = 1:tests_cnt
@@ -155,7 +154,7 @@ function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
 		test_filename = test(tests_prms{i}.deg, repetitions, gen_polynomial_handler,...
 					tests_prms{i}.interval, forms_struct, tests_prms{i}.prefix);
 
-		make_stats(test_filename, stats_fileID);
+		make_stats(test_filename, stats_fileID, time_stats_fileID);
 	end
 
 	fclose(stats_fileID);

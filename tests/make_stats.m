@@ -1,10 +1,11 @@
 %
 % stats_fileID ... output stats filename
 %
-function make_stats(test_filename, stats_fileID, distance_fcn)
+function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn)
 
 	%todo distance_fcn = @distance
 	distance_fcn = @distance;
+
 	load(test_filename,'-mat');
 	n = test.polynomials_count;
 
@@ -38,24 +39,24 @@ function make_stats(test_filename, stats_fileID, distance_fcn)
 	'-------------------------------------------------------------------------\n');
 
 
-	fprintf(stats_fileID,'>> [EVAL_TIME]\n');
-	fprintf(stats_fileID,...
+	fprintf(time_stats_fileID,'>> [EVAL_TIME]\n');
+	fprintf(time_stats_fileID,...
 	'Form        max         min        mean        median  deg         X\n');
 
-	fprintf(stats_fileID,...
+	fprintf(time_stats_fileID,...
 	'-------------------------------------------------------------------------\n');
 	for i = 1:test.forms_count
 
 		load(test.filenames(i).form,'-mat');
 		eval_time = form.eval_time;
 
-		fprintf(stats_fileID,' t_%-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
+		fprintf(time_stats_fileID,' t_%-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
 			form.desc,...
 			max(eval_time), min(eval_time), mean(eval_time), median(eval_time),...
 			test.deg, inf(test.X), sup(test.X));
 
 	end
-	fprintf(stats_fileID,...
+	fprintf(time_stats_fileID,...
 	'-------------------------------------------------------------------------\n');
 
 end

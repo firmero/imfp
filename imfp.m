@@ -86,7 +86,6 @@ function main
 	horner_form([2],X);
 	horner_form_int([intval(2)],X);
 
-
 	run_tests
 
 end
