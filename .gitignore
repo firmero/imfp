@@ -1,5 +1,6 @@
-sstats_out
-test_out
+stats_out
+tests_out
+octave-workspace
 startup.m
 .*.swp
 .*.swo

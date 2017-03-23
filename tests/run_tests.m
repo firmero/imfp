@@ -1,10 +1,10 @@
 function run_tests
 
 	t = tic; 
-	%test_suite1('stats1',10);toc(t)
+	%test_suite1('stats1',100);toc(t)
 
 	t = tic; 
-	test_suite2('stats2',10);toc(t)
+	test_suite2('stats2',100);toc(t)
 
 end
 
@@ -65,9 +65,7 @@ function test_suite1(stats_filename, test_repetition)
 				struct('deg', 31, 'interval', infsup(-0.1, 0.1), 'prefix', 't39_');
 			};
 
-	tests_prms = { 
-				struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_');
-			};
+	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
 
 	exec_tests(tests_prms, test_repetition, @generate_polynomials,...
 				@evaluate_polynomial, forms_struct,stats_filename)
@@ -131,9 +129,7 @@ function test_suite2(stats_filename, test_repetition)
 				struct('deg', 31, 'interval', infsup(-0.1, 0.1), 'prefix', 'it39_');
 			};
 
-	tests_prms = { 
-				struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_');
-			};
+	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_')};
 
 	exec_tests(tests_prms, test_repetition, @generate_polynomials_interval,...
 				@evaluate_polynomial_int, forms_struct, stats_filename)
