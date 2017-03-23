@@ -1,20 +1,23 @@
 %
 %
 %
-function test_filename = test(deg, polynomials_count, polynomials_generator,...
-								X, forms_struct, prefix)
+function test_filename = test(deg, polynomials_count, ...
+							polynomials_generator_handler, ...
+							evaluate_polynomial_handler, ...
+							X, forms_struct, prefix)
+
 	test_out_dir = 'tests_out';
 	[~,~] = mkdir(test_out_dir);
 
 	test_dir_prefix = [test_out_dir filesep prefix];
 
-	polynomials = polynomials_generator(deg, polynomials_count);
+	polynomials = polynomials_generator_handler(deg, polynomials_count);
 	polynomials_ranges = repmat(intval(0),polynomials_count,1);
 
 	for i = 1:polynomials_count
 
 		% real value
-		polynomials_ranges(i) = evaluate_polynomial(polynomials(i,:),X);
+		polynomials_ranges(i) = evaluate_polynomial_handler(polynomials(i,:),X);
 
 		fprintf('\rEval polynomial: %4i/%i', i, polynomials_count);
 	end

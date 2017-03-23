@@ -1,7 +1,7 @@
 function run_tests
 
 	t = tic; 
-	test_suite1('stats1',10);toc(t)
+	%test_suite1('stats1',10);toc(t)
 
 	t = tic; 
 	test_suite2('stats2',10);toc(t)
@@ -70,7 +70,7 @@ function test_suite1(stats_filename, test_repetition)
 			};
 
 	exec_tests(tests_prms, test_repetition, @generate_polynomials,...
-				forms_struct,stats_filename)
+				@evaluate_polynomial, forms_struct,stats_filename)
 end
 
 function test_suite2(stats_filename, test_repetition)
@@ -136,12 +136,12 @@ function test_suite2(stats_filename, test_repetition)
 			};
 
 	exec_tests(tests_prms, test_repetition, @generate_polynomials_interval,...
-				forms_struct, stats_filename)
+				@evaluate_polynomial_int, forms_struct, stats_filename)
 
 end
 
 function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
-					forms_struct,stats_filename)
+					eval_polynom_hander, forms_struct, stats_filename)
 
 	[~,~] = mkdir('stats_out');
 	stats_fileID = fopen( [ 'stats_out' filesep stats_filename '.txt' ], 'a');
@@ -152,8 +152,10 @@ function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
 
 		fprintf('Test case        %4i/%i\n', i, tests_cnt);
 
-		test_filename = test(tests_prms{i}.deg, repetitions, gen_polynomial_handler,...
-					tests_prms{i}.interval, forms_struct, tests_prms{i}.prefix);
+		test_filename = test(tests_prms{i}.deg, repetitions, ...
+						gen_polynomial_handler, ...
+						eval_polynom_hander, ...
+						tests_prms{i}.interval, forms_struct, tests_prms{i}.prefix);
 
 		make_stats(test_filename, stats_fileID, time_stats_fileID);
 	end
