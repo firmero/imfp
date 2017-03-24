@@ -1,11 +1,11 @@
 function run_tests
 
 	warning('off','all'); t = tic; 
-	test_suite1('stats1',2), toc(t)
+	test_suite1('stats1',100), toc(t)
 	warning('on','all');
 
 	warning('off','all'); t = tic; 
-	test_suite2('stats2',2), toc(t)
+	test_suite2('stats2',100), toc(t)
 	warning('on','all');
 
 	%p = generate_polynomials_interval(31,1);
