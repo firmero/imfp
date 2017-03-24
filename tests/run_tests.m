@@ -1,10 +1,13 @@
 function run_tests
 
 	t = tic; 
-	test_suite1('stats1',2);toc(t)
+	test_suite1('stats1',100);toc(t)
 
 	t = tic; 
-	test_suite2('stats2',2);toc(t)
+	%test_suite2('stats2',2);toc(t)
+
+	%p = generate_polynomials_interval(31,1);
+	%X = infsup(-0.1,0.1);
 
 end
 

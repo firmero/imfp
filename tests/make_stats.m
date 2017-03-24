@@ -4,7 +4,7 @@
 function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn)
 
 	%todo distance_fcn = @distance
-	distance_fcn = @distance;
+	distance_fcn = @distance2;
 
 	load(test_filename,'-mat');
 	n = test.polynomials_count;
@@ -29,7 +29,7 @@ function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn
 			distances(j) = distance_fcn(form.ranges(j), test.polynomials_ranges(j));
 		end
 
-		fprintf(stats_fileID,' %-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
+		fprintf(stats_fileID,' %-6s %10.2f  %10.2f  %10.2f  %10.2f  %2i [%f, %f]\n' ,...
 			form.desc,...
 			max(distances), min(distances), mean(distances), median(distances),...
 			test.deg, inf(test.X), sup(test.X));
@@ -50,7 +50,7 @@ function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn
 		load(test.filenames(i).form,'-mat');
 		eval_time = form.eval_time;
 
-		fprintf(time_stats_fileID,' t_%-6s %10.4f  %10.4f  %10.4f  %10.4f  %2i [%f, %f]\n' ,...
+		fprintf(time_stats_fileID,' t_%-6s %10.2f  %10.2f  %10.2f  %10.2f  %2i [%f, %f]\n' ,...
 			form.desc,...
 			max(eval_time), min(eval_time), mean(eval_time), median(eval_time),...
 			test.deg, inf(test.X), sup(test.X));
@@ -59,6 +59,17 @@ function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn
 	fprintf(time_stats_fileID,...
 	'-------------------------------------------------------------------------\n');
 
+end
+
+%
+% X is computed, Y is referenced
+%
+function d = distance2(X,Y)
+
+	wX = (sup(X)-inf(X));
+	wY = (sup(Y)-inf(Y));
+
+	d = 100 * (wX-wY)/wX;
 end
 
 %
