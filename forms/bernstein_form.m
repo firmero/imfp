@@ -28,7 +28,7 @@ function res = bernstein_form(polynomial_coefficients,X,k)
 		q = q + w; % trick to simulate factorial
 	end
 	
-	tc = taylor_coefficients(polynomial_coefficients,inf(X));
+	tc = taylor_coefficients_(polynomial_coefficients,inf(X));
 	for i = 1:n
 		b(i) = b(i)*tc(i);
 	end

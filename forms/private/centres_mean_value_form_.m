@@ -9,7 +9,7 @@
 %
 %	width(MVF(p,mid(X))) <= width(MVF(p,c)
 %
-function [c_left, c_right] = centres_mean_value_form(f_derivated, X)
+function [c_left, c_right] = centres_mean_value_form_(f_derivated, X)
 
 	if (inf(f_derivated) >= 0)
 		c_left = inf(X);

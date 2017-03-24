@@ -20,7 +20,7 @@ function res = taylor_form(polynomial_coefficients, X)
 	r = rad(X);
 
 	n = length(polynomial_coefficients);
-	tay_coeff = taylor_coefficients(polynomial_coefficients,intval(c));
+	tay_coeff = taylor_coefficients_(polynomial_coefficients,intval(c));
 
 	setround(1);
 	magnitude = mag(tay_coeff(n)) * r;

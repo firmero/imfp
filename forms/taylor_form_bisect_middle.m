@@ -10,7 +10,7 @@ function res = taylor_form_bisect_middle(polynomial_coefficients, X)
 	c = mid(X);
 
 	n = length(polynomial_coefficients);
-	tay_coeff = taylor_coefficients(polynomial_coefficients,c);
+	tay_coeff = taylor_coefficients_(polynomial_coefficients,c);
 
 	% right half [0,|c|]
 	setround(1);

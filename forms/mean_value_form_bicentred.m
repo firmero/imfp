@@ -11,7 +11,7 @@ function res = mean_value_form_bicentred(polynomial_coefficients,X)
 
 	hf_derivated = horner_form(p_derivated,X);
 
-	[c_left, c_right] = centres_mean_value_form(hf_derivated,X);
+	[c_left, c_right] = centres_mean_value_form_(hf_derivated,X);
 
 	setround(1);
 	right = sup(horner_form(polynomial_coefficients,intval(c_right))) ...
