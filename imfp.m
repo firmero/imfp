@@ -1,5 +1,5 @@
 %
-% To use parallelization run it with non-empty par_opt argument 
+% To use parallelization run it with string 'par'
 %
 function imfp(par_opt)
 
@@ -29,7 +29,7 @@ function imfp(par_opt)
 
 	% 1 for parallel
 	par = 0;
-	if (1 == nargin)
+	if ((1 == nargin) && strcmp(par_opt,'par'))
 		par = 1;
 	end
 
