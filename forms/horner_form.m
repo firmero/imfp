@@ -11,14 +11,6 @@
 function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
 
 	X = intval(X);
-	%{ 
-	% gives better result but is expensive
-	if (inf(X) < 0)
-		res = horner_form_bisect_zero(polynomial_coefficients,X);
-		certainly_ok = false;
-		return
-	end
-	%}
 
 	n = length(polynomial_coefficients);
 	if (n < 1)

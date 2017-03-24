@@ -5,7 +5,7 @@
 %
 % r >= 0
 %
-function res = taylor_form_eval_half(tay_coeff,r)
+function res = taylor_form_eval_half_(tay_coeff,r)
 
 	n = length(tay_coeff);
 

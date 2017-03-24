@@ -80,5 +80,5 @@ end
 
 function main
 
-	run_tests
+	run_tests;
 end
