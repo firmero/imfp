@@ -10,6 +10,7 @@ function imfp(par_opt)
 	end
 
 	loc = which('imfp.m');
+	global IMFP_DIR;
 	IMFP_DIR = loc(1:end-6);
 
 	addpath( [ IMFP_DIR filesep 'forms' ] );
@@ -38,14 +39,21 @@ function imfp(par_opt)
 		if (isempty(has_par))
 
 			warning('Pkg parallel not found');
+			c = input('Do you want to install pkg parallel and dependencies? y/n :','s');
+			if (strcmp(c,'y'))
 
-			disp 'Installing pkg struct-1.0.14.tar.gz'
-			pkg('install',[ IMFP_DIR filesep 'lib' filesep 'struct-1.0.14.tar.gz']);
-			disp 'Pkg struct-1.0.14.tar.gz installed'
+				disp 'Installing pkg struct-1.0.14.tar.gz'
+				pkg('install',[ IMFP_DIR filesep 'lib' filesep 'struct-1.0.14.tar.gz']);
+				disp 'Pkg struct-1.0.14.tar.gz installed'
 
-			disp 'Installing pkg parallel-3.1.1.tar.gz'
-			pkg('install',[ IMFP_DIR filesep 'lib' filesep 'parallel-3.1.1.tar.gz']);
-			disp 'Pkg parallel-3.1.1.tar.gz installed'
+				disp 'Installing pkg parallel-3.1.1.tar.gz'
+				pkg('install',[ IMFP_DIR filesep 'lib' filesep 'parallel-3.1.1.tar.gz']);
+				disp 'Pkg parallel-3.1.1.tar.gz installed'
+			else
+				warning('Parallelization cannot be established.');
+				load_noparallel
+				return
+			end
 
 		end
 
@@ -63,8 +71,17 @@ function imfp(par_opt)
 	end
 
 	if (par && ~running_octave)
-		warning('Parallelization cannot be established.');
+		warning('Parallelization cannot be established in matlab.');
 	end
+	
+	load_noparallel
+	main
+	return
+end
+
+function load_noparallel
+
+	global IMFP_DIR;
 
 	disp 'no paralell...'
 	% in matlab cannot promote local function to global
@@ -72,11 +89,7 @@ function imfp(par_opt)
 	addpath( [ IMFP_DIR filesep 'misc/interval_polynomial_forms' ] );
 	% shade parallel version
 	addpath( [ IMFP_DIR filesep 'misc/evaluate_polynomial' ] );
-
-	main
-	return
 end
-%% start of misc
 
 function main
 
