@@ -1,16 +1,48 @@
+function res = eval_forms(form_cell,p,X)
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
+%
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 %
 % For testing purpose
 %
-function res = eval_forms(form_cell,p,X)
 
-	n = length(form_cell);
-	% range of form and evaltime
-	res = cell(n,2);
+n = length(form_cell);
+% range of form and evaltime
+res = cell(n,2);
 
-	for i = 1:n
-		tic;
-		res{i,1} = form_cell{i}(p,X);
-		res{i,2} = toc;
-	end
+for i = 1:n
+	tic;
+	res{i,1} = form_cell{i}(p,X);
+	res{i,2} = toc;
+end
 
 end

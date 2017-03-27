@@ -1,4 +1,11 @@
-
+function mvf = mean_value_form(polynomial_coefficients, X)
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
 %
 % Compute MVF(p,mid(X))
 %
@@ -10,17 +17,38 @@
 %
 % If 0 is not in HF(p',X) then range is without overestimation
 %
-function mvf = mean_value_form(polynomial_coefficients, X)
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	c = mid(X);
-	hf_at_center = horner_form(polynomial_coefficients,c);
+c = mid(X);
+hf_at_center = horner_form(polynomial_coefficients,c);
 
-	p_derivated = derivate_polynomial(polynomial_coefficients);
+p_derivated = derivate_polynomial(polynomial_coefficients);
 
-	hf_derivated = horner_form(p_derivated,X);
+hf_derivated = horner_form(p_derivated,X);
 
-	mvf = hf_at_center + hf_derivated*(X-c);
+mvf = hf_at_center + hf_derivated*(X-c);
 
 end
-
-

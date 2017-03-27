@@ -1,9 +1,40 @@
+function y = evaluate_polynomial_int(polynomial_coefficients, X)
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
 %
 % X interval
 % nadhodnocuje !!!!!
 %
-function y = evaluate_polynomial_int(polynomial_coefficients, X)
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	y = interval_polynomial_form(polynomial_coefficients,X,@evaluate_polynomial);
+y = interval_polynomial_form(polynomial_coefficients,X,@evaluate_polynomial);
 
 end

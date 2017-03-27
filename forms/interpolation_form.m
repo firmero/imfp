@@ -1,3 +1,12 @@
+function res = interpolation_form(polynomial_coefficients,X)
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
+%
 %
 % Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
@@ -10,30 +19,52 @@
 %
 % parabola(x) = 0.5*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 0.5*m*c^2)
 %
-function res = interpolation_form(polynomial_coefficients,X)
 	
-	p_derivated = derivate_polynomial(polynomial_coefficients);
-	p_twice_derivated = derivate_polynomial(p_derivated);
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	c = mid(X);
+p_derivated = derivate_polynomial(polynomial_coefficients);
+p_twice_derivated = derivate_polynomial(p_derivated);
 
-	p_at_c = horner_form(polynomial_coefficients,intval(c));
-	p_derivated_at_c = horner_form(p_derivated,intval(c));
-	p_twice_derivated_range = horner_form(p_twice_derivated,X);
+c = mid(X);
 
-	m = mid(p_twice_derivated_range);
+p_at_c = horner_form(polynomial_coefficients,intval(c));
+p_derivated_at_c = horner_form(p_derivated,intval(c));
+p_twice_derivated_range = horner_form(p_twice_derivated,X);
 
-	% parabola coefficients
-	a2 = 0.5*m;
-	a1 = p_derivated_at_c - m*c;
-	a0 = (a2*c - p_derivated_at_c)*c + p_at_c;
+m = mid(p_twice_derivated_range);
 
-	parabola_range = evaluate_parabola(a2,a1,a0,X);
+% parabola coefficients
+a2 = 0.5*m;
+a1 = p_derivated_at_c - m*c;
+a0 = (a2*c - p_derivated_at_c)*c + p_at_c;
 
-	setround(1);
-	r = mag(X-c);
-	res = parabola_range + (p_twice_derivated_range - m)*infsup(0,0.5*r*r);
+parabola_range = evaluate_parabola(a2,a1,a0,X);
+
+setround(1);
+r = mag(X-c);
+res = parabola_range + (p_twice_derivated_range - m)*infsup(0,0.5*r*r);
 
 end
-
-

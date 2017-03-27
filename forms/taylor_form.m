@@ -1,3 +1,11 @@
+function res = taylor_form(polynomial_coefficients, X)
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
 %
 %	c = mid(X)
 %	r = rad(X)
@@ -9,30 +17,52 @@
 %	TF	= HF(p_series,X-c)
 %		= p(c) + HF(g_series,X-c)*(X-c) = p(c) + mag(HF(g_series,X-c))*[-r,r]
 %
-function res = taylor_form(polynomial_coefficients, X)
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	if (inf(X) == sup(X))
-		res = horner_form(polynomial_coefficients,X);
-		return
-	end
-
-	c = mid(X);
-	r = rad(X);
-
-	n = length(polynomial_coefficients);
-	tay_coeff = taylor_coefficients_(polynomial_coefficients,intval(c));
-
-	setround(1);
-	magnitude = mag(tay_coeff(n)) * r;
-
-	% compute mag(HF(g_series,X-c))*[-r,r]
-	% X - c == [-r,r]
-	for i = n-1:-1:2
-		magnitude = (magnitude + mag(tay_coeff(i)))*r;
-	end
-
-	% tay_coeff(1) == p(c)
-	res = tay_coeff(1) + infsup(-magnitude, magnitude);
-
+if (inf(X) == sup(X))
+	res = horner_form(polynomial_coefficients,X);
+	return
 end
 
+c = mid(X);
+r = rad(X);
+
+n = length(polynomial_coefficients);
+tay_coeff = taylor_coefficients_(polynomial_coefficients,intval(c));
+
+setround(1);
+magnitude = mag(tay_coeff(n)) * r;
+
+% compute mag(HF(g_series,X-c))*[-r,r]
+% X - c == [-r,r]
+for i = n-1:-1:2
+	magnitude = (magnitude + mag(tay_coeff(i)))*r;
+end
+
+% tay_coeff(1) == p(c)
+res = tay_coeff(1) + infsup(-magnitude, magnitude);
+
+end

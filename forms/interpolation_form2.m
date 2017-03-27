@@ -1,4 +1,11 @@
-
+function res = interpolation_form2(polynomial_coefficients,X) 
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
 %
 % Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
@@ -22,33 +29,55 @@
 %			+ (0.5*inf(HF(p``,X)*c - p`(c))*c
 %  = p(c) + p1(X)
 %
-function res = interpolation_form2(polynomial_coefficients,X) 
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	p_derivated = derivate_polynomial(polynomial_coefficients);
-	p_twice_derivated = derivate_polynomial(p_derivated);
+p_derivated = derivate_polynomial(polynomial_coefficients);
+p_twice_derivated = derivate_polynomial(p_derivated);
 
-	c = mid(X);
+c = mid(X);
 
-	p_at_c = horner_form(polynomial_coefficients,c);
-	p_derivated_at_c = horner_form(p_derivated,c);
-	p_twice_derivated_range = horner_form(p_twice_derivated,X);
+p_at_c = horner_form(polynomial_coefficients,c);
+p_derivated_at_c = horner_form(p_derivated,c);
+p_twice_derivated_range = horner_form(p_twice_derivated,X);
 
-	% parabola coefficients for polynomials par_up
-	a2 = 0.5*p_twice_derivated_range;
+% parabola coefficients for polynomials par_up
+a2 = 0.5*p_twice_derivated_range;
 
-	a2_up = sup(a2);
-	a2_down = inf(a2);
+a2_up = sup(a2);
+a2_down = inf(a2);
 
-	a1_up = p_derivated_at_c - intval(sup(p_twice_derivated_range))*c;
-	a1_down = p_derivated_at_c - intval(inf(p_twice_derivated_range))*c;
+a1_up = p_derivated_at_c - intval(sup(p_twice_derivated_range))*c;
+a1_down = p_derivated_at_c - intval(inf(p_twice_derivated_range))*c;
 
-	a0_up = (a2_up*c - p_derivated_at_c)*c;
-	a0_down = (a2_down*c - p_derivated_at_c)*c;
+a0_up = (a2_up*c - p_derivated_at_c)*c;
+a0_down = (a2_down*c - p_derivated_at_c)*c;
 
-	p1 = evaluate_parabola(a2_up,a1_up,a0_up,X);
-	p2 = evaluate_parabola(a2_down,a1_down,a0_down,X);
+p1 = evaluate_parabola(a2_up,a1_up,a0_up,X);
+p2 = evaluate_parabola(a2_down,a1_down,a0_down,X);
 
-	res = hull(p1,p2) + p_at_c;
+res = hull(p1,p2) + p_at_c;
 
 end
-

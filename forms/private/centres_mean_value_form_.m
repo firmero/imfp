@@ -1,4 +1,11 @@
-
+function [c_left, c_right] = centres_mean_value_form_(f_derivated, X)
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
 %
 % Computes optimal points c_left and c_right in sense of:
 % 
@@ -9,25 +16,47 @@
 %
 %	width(MVF(p,mid(X))) <= width(MVF(p,c)
 %
-function [c_left, c_right] = centres_mean_value_form_(f_derivated, X)
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	if (inf(f_derivated) >= 0)
-		c_left = inf(X);
-		c_right = sup(X);
-		return
-	end
 
-	if (sup(f_derivated) <= 0)
-		c_left = sup(X);
-		c_right = inf(X);
-		return
-	end
-
-	% else approximate, it is correct thanks to lemma of optimality
-	width = sup(X) - inf(X);
-	c_right = (sup(f_derivated)*sup(X) - inf(f_derivated)*inf(X))/width;
-	c_left = (sup(f_derivated)*inf(X) - inf(f_derivated)*sup(X))/width;
-
+if (inf(f_derivated) >= 0)
+	c_left = inf(X);
+	c_right = sup(X);
+	return
 end
 
+if (sup(f_derivated) <= 0)
+	c_left = sup(X);
+	c_right = inf(X);
+	return
+end
 
+% else approximate, it is correct thanks to lemma of optimality
+width = sup(X) - inf(X);
+c_right = (sup(f_derivated)*sup(X) - inf(f_derivated)*inf(X))/width;
+c_left = (sup(f_derivated)*inf(X) - inf(f_derivated)*sup(X))/width;
+
+end

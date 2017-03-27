@@ -1,15 +1,47 @@
-function run_tests
+function run_tests()
+%BEGINDOC==================================================================
+% .Author
+%
+%  Roman Firment
+%
+%--------------------------------------------------------------------------
+% .Description.
+%
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
+%--------------------------------------------------------------------------
+% .License.
+%
+%  [license goes here]
+%
+%--------------------------------------------------------------------------
+% .History.
+%
+%  2017-MM-DD   first version
+%
+%--------------------------------------------------------------------------
+% .Todo
+%
+%
+%ENDDOC====================================================================
 
-	warning('off','all'); t = tic; 
-	test_suite1('stats1',100), toc(t)
-	warning('on','all');
+warning('off','all'); t = tic; 
+test_suite1('stats1',100), toc(t)
+warning('on','all');
 
-	warning('off','all'); t = tic; 
-	test_suite2('stats2',100), toc(t)
-	warning('on','all');
+warning('off','all'); t = tic; 
+test_suite2('stats2',100), toc(t)
+warning('on','all');
 
-	%p = generate_polynomials_interval(31,1);
-	%X = infsup(-0.1,0.1);
+%p = generate_polynomials_interval(31,1);
+%X = infsup(-0.1,0.1);
 
 end
 
