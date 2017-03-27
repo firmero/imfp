@@ -33,11 +33,11 @@ function run_tests()
 %ENDDOC====================================================================
 
 warning('off','all'); t = tic; 
-test_suite1('stats1',100), toc(t)
+test_suite1('stats1',2), toc(t)
 warning('on','all');
 
 warning('off','all'); t = tic; 
-test_suite2('stats2',100), toc(t)
+test_suite2('stats2',2), toc(t)
 warning('on','all');
 
 %p = generate_polynomials_interval(31,1);
@@ -51,22 +51,22 @@ function test_suite1(stats_filename, test_repetition)
 
 	forms_struct = {	
 				% form_handler, description
-				{ @horner_form, 'HF'};
-				{ @horner_form_bisect_zero, 'HFBZ'};
+				{ @pvhornerenc, 'HF'};
+				{ @pvhornerbzenc, 'HFBZ'};
 
-				{ @mean_value_form, 'MVF'};
-				{ @mean_value_slope_form, 'MVSF'} ;
-				{ @mean_value_form_bicentred, 'MVFB'};
+				{ @pvmeanvalenc, 'MVF'};
+				{ @pvmeanvalslenc, 'MVSF'} ;
+				{ @pvmeanvalbcenc, 'MVFB'};
 
-				{ @taylor_form, 'TF'};
-				{ @taylor_form_bisect_middle, 'TFBM'};
+				{ @pvtaylorenc, 'TF'};
+				{ @pvtaylorbmenc, 'TFBM'};
 
-				{ @bernstein_form, 'BF'};
-				{ @bernstein_form_bisect_zero, 'BFBZ'};
+				{ @pvbernsteinenc, 'BF'};
+				{ @pvbernsteinbzenc, 'BFBZ'};
 
-				{ @interpolation_form, 'IF'};
-				{ @interpolation_form2, 'IF2'};
-				{ @interpolation_slope_form, 'ISF'};
+				{ @pvinterpolationenc, 'IF'};
+				{ @pvinterpolation2enc, 'IF2'};
+				{ @pvinterpolationslenc, 'ISF'};
 		};
 
 	tests_prms = { 
@@ -122,7 +122,7 @@ function test_suite1(stats_filename, test_repetition)
 				struct('deg', 31, 'interval', infsup(0.2, 0.3), 'prefix', 't59_');
 			};
 
-	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
+	tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
 
 	exec_tests(tests_prms, test_repetition, @generate_polynomials,...
 				@evaluate_polynomial, forms_struct,stats_filename)
@@ -133,24 +133,25 @@ function test_suite2(stats_filename, test_repetition)
 	disp('-- starting test_suite 2 --'); 
 
 	forms_struct = {	
+
 				% form_handler, description
-				{ @horner_form_int, 'iHF'};
-				{ @horner_form_bisect_zero_int, 'iHFBZ'};
+				{ @pvihornerenc, 'iHF'};
+				{ @pvihornerbzenc, 'iHFBZ'};
 
-				{ @mean_value_form_int, 'iMVF'};
-				{ @mean_value_slope_form_int, 'iMVSF'} ;
+				{ @pvimeanvalenc, 'iMVF'};
+				{ @pvimeanvalslenc, 'iMVSF'} ;
 				% problem infsup
-				% { @mean_value_form_bicentred, 'iMVFB'};
+				% { @pvimeanvalbcenc, 'iMVFB'};
 
-				{ @taylor_form_int, 'iTF'};
-				{ @taylor_form_bisect_middle_int, 'iTFBM'};
+				{ @pvitaylorenc, 'iTF'};
+				{ @pvitaylorbmenc, 'iTFBM'};
 
-				{ @bernstein_form_int, 'iBF'};
-				{ @bernstein_form_bisect_zero_int, 'iBFBZ'};
+				{ @pvibernsteinenc, 'iBF'};
+				{ @pvibernsteinbzenc, 'iBFBZ'};
 
-				{ @interpolation_form_int, 'iIF'};
-				{ @interpolation_form2_int, 'iIF2'};
-				{ @interpolation_slope_form_int, 'iISF'};
+				{ @pviinterpolationenc, 'iIF'};
+				{ @pviinterpolation2enc, 'iIF2'};
+				{ @pviinterpolationslenc, 'iISF'};
 		};
 
 	tests_prms = { 
@@ -206,7 +207,7 @@ function test_suite2(stats_filename, test_repetition)
 				struct('deg', 31, 'interval', infsup(0.2, 0.3), 'prefix', 'it59_');
 			};
 
-	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_')};
+	tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_')};
 
 	exec_tests(tests_prms, test_repetition, @generate_polynomials_interval,...
 				@evaluate_polynomial_int, forms_struct, stats_filename)

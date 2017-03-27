@@ -39,7 +39,7 @@ n = length(polynomial_coefficients);
 
 % allocate vector
 tc = repmat(intval(0),1,n);
-tc(1) = horner_form(polynomial_coefficients,intval(c));
+tc(1) = pvhornerenc(polynomial_coefficients,intval(c));
 
 % factorial
 fact = 1;
@@ -54,7 +54,7 @@ for j = 2:n
 	
 	p = polynomial_coefficients(j:n);
 
-	tc(j) = horner_form(p,intval(c)) / fact;
+	tc(j) = pvhornerenc(p,intval(c)) / fact;
 	fact = fact * j;
 
 end

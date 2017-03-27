@@ -8,7 +8,7 @@ function res = taylor_form_eval_half_(tay_coeff,r)
 % .Description.
 %
 %
-% This function is used by taylor_form_bisect_middle(), which converts
+% This function is used by pvtaylorbm(), which converts
 % his input interval to centered interval [-r,r], then it calls this function
 % twice and returns hull of results returned by that function.
 %

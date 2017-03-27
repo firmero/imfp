@@ -1,4 +1,4 @@
-function res = interpolation_form(polynomial_coefficients,X)
+function res = pvinterpolation2enc(polynomial_coefficients,X) 
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,19 +7,28 @@ function res = interpolation_form(polynomial_coefficients,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%
 % Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
-% m = mid(HF(p``,X))
+% IF2(X) = [inf(p_down),sup(p_up)]
+%
+% IF2(X) is subset of IF(X)
+%
 % c = mid(X)
 %
-% IF(X) = HF(parabola,X) + 0.5*(HF(p``,X) - m)*(X-c)^2
+% p_up(x)   = p(c) + p`(c)(x-c) + 0.5*sup(HF(p``,X))*(x-c)^2 
+%  = p(c)	+ 0.5*sup(HF(p``,X))*x^2 
+%			+ (p`(c) - sup(HF(p``,X))*c)*x 
+%			+ (0.5*sup(HF(p``,X)*c - p`(c))*c
+%  = p(c) + p2(X)
 %
-% parabola(x) = 0.5*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 0.5*m*c^2)
+% p_down(x) = p(c) + p`(c)(x-c) + 0.5*inf(HF(p``,X))*(x-c)^2
+%  = p(c)	+ 0.5*inf(HF(p``,X))*x^2 
+%			+ (p`(c) - inf(HF(p``,X))*c)*x 
+%			+ (0.5*inf(HF(p``,X)*c - p`(c))*c
+%  = p(c) + p1(X)
 %
-	
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
@@ -50,21 +59,25 @@ p_twice_derivated = derivate_polynomial(p_derivated);
 
 c = mid(X);
 
-p_at_c = horner_form(polynomial_coefficients,intval(c));
-p_derivated_at_c = horner_form(p_derivated,intval(c));
-p_twice_derivated_range = horner_form(p_twice_derivated,X);
+p_at_c = pvhornerenc(polynomial_coefficients,c);
+p_derivated_at_c = pvhornerenc(p_derivated,c);
+p_twice_derivated_range = pvhornerenc(p_twice_derivated,X);
 
-m = mid(p_twice_derivated_range);
+% parabola coefficients for polynomials par_up
+a2 = 0.5*p_twice_derivated_range;
 
-% parabola coefficients
-a2 = 0.5*m;
-a1 = p_derivated_at_c - m*c;
-a0 = (a2*c - p_derivated_at_c)*c + p_at_c;
+a2_up = sup(a2);
+a2_down = inf(a2);
 
-parabola_range = evaluate_parabola(a2,a1,a0,X);
+a1_up = p_derivated_at_c - intval(sup(p_twice_derivated_range))*c;
+a1_down = p_derivated_at_c - intval(inf(p_twice_derivated_range))*c;
 
-setround(1);
-r = mag(X-c);
-res = parabola_range + (p_twice_derivated_range - m)*infsup(0,0.5*r*r);
+a0_up = (a2_up*c - p_derivated_at_c)*c;
+a0_down = (a2_down*c - p_derivated_at_c)*c;
+
+p1 = evaluate_parabola(a2_up,a1_up,a0_up,X);
+p2 = evaluate_parabola(a2_down,a1_down,a0_down,X);
+
+res = hull(p1,p2) + p_at_c;
 
 end

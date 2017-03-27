@@ -1,4 +1,4 @@
-function res = bernstein_form(polynomial_coefficients,X,k)
+function res = pvtaylorenc(polynomial_coefficients, X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,8 +7,15 @@ function res = bernstein_form(polynomial_coefficients,X,k)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Return the hull of the j-th Bernstein polynomials of order k over X,
-%    j = 0..k where k >= deg(p)
+%	c = mid(X)
+%	r = rad(X)
+%
+%	p_series = sum i=0..deg(p) a(p,c,i)*x^i
+%	g_series = sum i=1..deg(p) a(p,c,i)*x^(i-1)
+%			where a(p,c,i) = HF(derivative(p,i),c)/i!
+%
+%	TF	= HF(p_series,X-c)
+%		= p(c) + HF(g_series,X-c)*(X-c) = p(c) + mag(HF(g_series,X-c))*[-r,r]
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -35,44 +42,27 @@ function res = bernstein_form(polynomial_coefficients,X,k)
 %
 %ENDDOC====================================================================
 
-%todo
-k = -321;
-w = sup(X) - inf(X);
+if (inf(X) == sup(X))
+	res = pvhornerenc(polynomial_coefficients,X);
+	return
+end
+
+c = mid(X);
+r = rad(X);
+
 n = length(polynomial_coefficients);
+tay_coeff = taylor_coefficients_(polynomial_coefficients,intval(c));
 
-% k should be at least n-1 (deg of polynom)
-if (k == -321)
-	k = n-1;
-elseif (k< n-1)
-	warning('Parameter k should be at least the degree of polynomial');
-	k = n-1;
+setround(1);
+magnitude = mag(tay_coeff(n)) * r;
+
+% compute mag(HF(g_series,X-c))*[-r,r]
+% X - c == [-r,r]
+for i = n-1:-1:2
+	magnitude = (magnitude + mag(tay_coeff(i)))*r;
 end
 
-% temporary, not bernstein coefficients
-b(1) = intval(1);
-
-% to simulate factorial
-q = w;
-
-for i = 2:n
-	b(i) = b(i-1)*q/(k-i+2);
-	q = q + w; % trick to simulate factorial
-end
-
-tc = taylor_coefficients_(polynomial_coefficients,inf(X));
-for i = 1:n
-	b(i) = b(i)*tc(i);
-end
-
-% scheme to compute iteratively bernstein coefficients (stored in b(1))
-res = b(1);
-for j = 1:k
-	for i = 1:min(n-1,k-j+1)
-		b(i) = b(i) + b(i+1);
-	end
-
-	% b(1) is bernstein coeffcient <- b1,b2,b3,bj.. after the j-th loop
-	res = hull(res,b(1));
-end
+% tay_coeff(1) == p(c)
+res = tay_coeff(1) + infsup(-magnitude, magnitude);
 
 end

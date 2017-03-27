@@ -1,4 +1,4 @@
-function res = bernstein_form_bisect_zero(polynomial_coefficients,X,k)
+function mvf = pvmeanvalenc(polynomial_coefficients, X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,7 +7,15 @@ function res = bernstein_form_bisect_zero(polynomial_coefficients,X,k)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Bernstein form for X containing 0.
+% Compute MVF(p,mid(X))
+%
+%	mvf = p(mid(X)) + HF(p',X)*(X-mid(X))
+%
+% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
+% If 0 is not in HF(p',X) then range is without overestimation
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -34,37 +42,13 @@ function res = bernstein_form_bisect_zero(polynomial_coefficients,X,k)
 %
 %ENDDOC====================================================================
 
-n = length(polynomial_coefficients);
-%todo
-k = -321;
+c = mid(X);
+hf_at_center = pvhornerenc(polynomial_coefficients,c);
 
-if (~in(0,X))
-	warning('Interval X doesn''t contain 0');
-	res = bernstein_form(polynomial_coefficients,X,k);
-	return
-end
+p_derivated = derivate_polynomial(polynomial_coefficients);
 
-if (k == -321)
-	k = n-1;
-elseif (k< n-1)
-	warning('Parameter k should be at least the degree of polynomial');
-	k = n-1;
-end
+hf_derivated = pvhornerenc(p_derivated,X);
 
-right = bernstein_form(polynomial_coefficients,infsup(0,sup(X)), k);
-
-% coefficients for p(-x)
-start = 1;
-if (odd(n))
-	start = start + 1;
-end
-
-for i = start:2:n
-	polynomial_coefficients(i) = polynomial_coefficients(i) * (-1);
-end
-
-left = bernstein_form(polynomial_coefficients,infsup(0,-inf(X)), k);
-
-res = hull(left, right);
+mvf = hf_at_center + hf_derivated*(X-c);
 
 end

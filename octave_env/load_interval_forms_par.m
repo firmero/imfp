@@ -31,50 +31,50 @@
 %
 %ENDDOC====================================================================
 1;
-function res = horner_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@horner_form);
+function res = pvihornerenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvhornerenc);
 end
 
-function res = horner_form_bisect_zero_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@horner_form_bisect_zero);
+function res = pvihornerbzenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvhornerbzenc);
 end
 
-function res = mean_value_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@mean_value_form);
+function res = pvimeanvalenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvmeanvalenc);
 end
 
-function res = mean_value_slope_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@mean_value_slope_form);
+function res = pvimeanvalslenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvmeanvalslenc);
 end
 
-function res = mean_value_form_bicentred_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@mean_value_form_bicentred);
+function res = pvimeanvalbcenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvmeanvalbcenc);
 end
 
-function res = taylor_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@taylor_form);
+function res = pvitaylorenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvtaylorenc);
 end
 
-function res = taylor_form_bisect_middle_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@taylor_form_bisect_middle);
+function res = pvitaylorbmenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvtaylorbmenc);
 end
 
-function res = bernstein_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@bernstein_form);
+function res = pvibernsteinenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvbernsteinenc);
 end
 
-function res = bernstein_form_bisect_zero_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@bernstein_form_bisect_zero);
+function res = pvibernsteinbzenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvbernsteinbzenc);
 end
 
-function res = interpolation_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@interpolation_form);
+function res = pviinterpolationenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvinterpolationenc);
 end
 
-function res = interpolation_form2_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@interpolation_form2);
+function res = pviinterpolation2enc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvinterpolation2enc);
 end
 
-function res = interpolation_slope_form_int(p,X)
-	 res = interval_polynomial_form_par(p,X,@interpolation_slope_form);
+function res = pviinterpolationslenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvinterpolationslenc);
 end

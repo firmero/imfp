@@ -1,4 +1,4 @@
-function res = horner_form_left_zero(polynomial_coefficients, X)
+function res = pvbernsteinenc(polynomial_coefficients,X,k)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,7 +7,8 @@ function res = horner_form_left_zero(polynomial_coefficients, X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Horner form for X = [0,R]
+%  Return the hull of the j-th Bernstein polynomials of order k over X,
+%    j = 0..k where k >= deg(p)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -34,35 +35,44 @@ function res = horner_form_left_zero(polynomial_coefficients, X)
 %
 %ENDDOC====================================================================
 
+%todo
+k = -321;
+w = sup(X) - inf(X);
 n = length(polynomial_coefficients);
-% allocate vector
-p = repmat(intval(0),1,n);
 
-p(1) = intval(polynomial_coefficients(1));
-
-% setround(1);
-xx = sup(X);
-
-for i = 2:n
-
-	if (inf(p(i-1)) < 0)
-		setround(-1);
-		left = p(i-1)*xx + polynomial_coefficients(i);
-	else % save multiply by zero
-		left = polynomial_coefficients(i);
-	end
-
-	if (sup(p(i-1)) > 0)
-		setround(1);
-		right = p(i-1)*xx + polynomial_coefficients(i);
-	else
-		right = polynomial_coefficients(i);
-	end
-
-	p(i) = infsup(inf(intval(left)), sup(intval(right)));
-
+% k should be at least n-1 (deg of polynom)
+if (k == -321)
+	k = n-1;
+elseif (k< n-1)
+	warning('Parameter k should be at least the degree of polynomial');
+	k = n-1;
 end
 
-res = p(n);
+% temporary, not bernstein coefficients
+b(1) = intval(1);
+
+% to simulate factorial
+q = w;
+
+for i = 2:n
+	b(i) = b(i-1)*q/(k-i+2);
+	q = q + w; % trick to simulate factorial
+end
+
+tc = taylor_coefficients_(polynomial_coefficients,inf(X));
+for i = 1:n
+	b(i) = b(i)*tc(i);
+end
+
+% scheme to compute iteratively bernstein coefficients (stored in b(1))
+res = b(1);
+for j = 1:k
+	for i = 1:min(n-1,k-j+1)
+		b(i) = b(i) + b(i+1);
+	end
+
+	% b(1) is bernstein coeffcient <- b1,b2,b3,bj.. after the j-th loop
+	res = hull(res,b(1));
+end
 
 end

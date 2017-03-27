@@ -1,4 +1,4 @@
-function [res, certainly_ok] = horner_form(polynomial_coefficients, X)
+function [res, certainly_ok] = pvhornerenc(polynomial_coefficients, X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -98,5 +98,4 @@ else	% on left
 end
 
 certainly_ok = true;
-
 end

@@ -1,4 +1,4 @@
-function res = bernstein_form_int(p,X)
+function res = pvihornerenc(p,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -32,6 +32,6 @@ function res = bernstein_form_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@bernstein_form);
+res = interval_polynomial_form(p,X,@pvhornerenc);
 
 end

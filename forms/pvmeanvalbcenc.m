@@ -1,4 +1,4 @@
-function res = bernstein_form_bisect_zero_int(p,X)
+function res = pvmeanvalbcenc(polynomial_coefficients,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -6,6 +6,12 @@ function res = bernstein_form_bisect_zero_int(p,X)
 %
 %--------------------------------------------------------------------------
 % .Description.
+%
+% MVFB(p,X) = infsup(inf(HF(p,c_left)), sup(HF(p,c_right)))
+%
+% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -32,6 +38,20 @@ function res = bernstein_form_bisect_zero_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@bernstein_form_bisect_zero);
+p_derivated = derivate_polynomial(polynomial_coefficients);
+
+hf_derivated = pvhornerenc(p_derivated,X);
+
+[c_left, c_right] = centres_mean_value_form_(hf_derivated,X);
+
+setround(1);
+right = sup(pvhornerenc(polynomial_coefficients,intval(c_right))) ...
+		+ sup(hf_derivated*(X-c_right));
+
+setround(-1);
+left = inf(pvhornerenc(polynomial_coefficients,intval(c_left))) ...
+		+ inf(hf_derivated*(X-c_left));
+
+res = infsup(left,right);
 
 end

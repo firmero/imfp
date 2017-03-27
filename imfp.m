@@ -74,31 +74,31 @@ if (par && running_octave)
 		c = input('Do you want to install pkg parallel and dependencies? y/n :','s');
 		if (strcmp(c,'y'))
 
-			disp 'Installing pkg struct-1.0.14.tar.gz'
+			disp 'Installing pkg struct-1.0.14.tar.gz';
 			pkg('install',[ IMFP_DIR filesep 'lib' filesep 'struct-1.0.14.tar.gz']);
-			disp 'Pkg struct-1.0.14.tar.gz installed'
+			disp 'Pkg struct-1.0.14.tar.gz installed';
 
-			disp 'Installing pkg parallel-3.1.1.tar.gz'
+			disp 'Installing pkg parallel-3.1.1.tar.gz';
 			pkg('install',[ IMFP_DIR filesep 'lib' filesep 'parallel-3.1.1.tar.gz']);
-			disp 'Pkg parallel-3.1.1.tar.gz installed'
+			disp 'Pkg parallel-3.1.1.tar.gz installed';
 		else
 			warning('Parallelization cannot be established.');
-			load_noparallel
+			load_noparallel;
 			return
 		end
 
 	end
 
-	pkg load struct
-	pkg load parallel
+	pkg load struct;
+	pkg load parallel;
 
 	% running script makes local functions global in octave,
 	% not working in matlab :/
-	load_interval_forms_par
+	load_interval_forms_par;
 	addpath( [ IMFP_DIR filesep 'misc/evaluate_polynomial/private' ] );
-	disp 'paralell...'
+	disp 'paralell...';
 
-	main
+	main;
 	return
 end
 
@@ -106,8 +106,8 @@ if (par && ~running_octave)
 	warning('Parallelization cannot be established in matlab.');
 end
 
-load_noparallel
-main
+load_noparallel;
+main;
 return
 
 end
@@ -116,7 +116,7 @@ function load_noparallel
 
 	global IMFP_DIR;
 
-	disp 'no paralell...'
+	disp 'no paralell...';
 	% in matlab cannot promote local function to global
 	% by calling script :/
 	addpath( [ IMFP_DIR filesep 'misc/interval_polynomial_forms' ] );

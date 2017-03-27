@@ -1,4 +1,4 @@
-function res = interpolation_slope_form(polynomial_coefficients,X)
+function res = pvinterpolationslenc(polynomial_coefficients,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -54,7 +54,7 @@ function res = interpolation_slope_form(polynomial_coefficients,X)
 n = length(polynomial_coefficients);
 
 if (n < 3)
-	res = horner_form(polynomial_coefficients,X);
+	res = pvhornerenc(polynomial_coefficients,X);
 	return;
 end
 

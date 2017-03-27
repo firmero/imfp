@@ -1,4 +1,4 @@
-function res = taylor_form_int(p,X)
+function res = pvitaylorbmenc(p,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -32,6 +32,6 @@ function res = taylor_form_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@taylor_form);
+res = interval_polynomial_form(p,X,@pvtaylorbmenc);
 
 end

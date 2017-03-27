@@ -1,4 +1,4 @@
-function res = interpolation_slope_form_int(p,X)
+function res = pvibernsteinenc(p,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -32,6 +32,6 @@ function res = interpolation_slope_form_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@interpolation_slope_form);
+res = interval_polynomial_form(p,X,@pvbernsteinenc);
 
 end

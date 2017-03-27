@@ -1,4 +1,4 @@
-function res = horner_form_int(p,X)
+function res = pvimeanvalbcenc(p,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -32,6 +32,6 @@ function res = horner_form_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@horner_form);
+res = interval_polynomial_form(p,X,@pvmeanvalbcenc);
 
 end

@@ -1,4 +1,4 @@
-function res = mean_value_slope_form_int(p,X)
+function res = pvimeanvalslenc(p,X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -32,6 +32,6 @@ function res = mean_value_slope_form_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@mean_value_slope_form);
+res = interval_polynomial_form(p,X,@pvmeanvalslenc);
 
 end

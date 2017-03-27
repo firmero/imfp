@@ -1,4 +1,4 @@
-function res = horner_form_bisect_zero_int(p,X)
+function res = pvtaylorbmenc(polynomial_coefficients, X)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -6,6 +6,12 @@ function res = horner_form_bisect_zero_int(p,X)
 %
 %--------------------------------------------------------------------------
 % .Description.
+%
+%	TF	= HF(p_series,X-c)
+%			X - c is centered interval
+%
+%	p_series(x) = sum i=0..deg(p) a(p,c,i)*x^i
+%		where a(p,c,i) = HF(derivative(p,i),c)/i!
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -32,6 +38,28 @@ function res = horner_form_bisect_zero_int(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@horner_form_bisect_zero);
+
+c = mid(X);
+
+n = length(polynomial_coefficients);
+tay_coeff = taylor_coefficients_(polynomial_coefficients,c);
+
+% right half [0,|c|]
+setround(1);
+x =	sup(X) - c;
+R = taylor_form_eval_half_(tay_coeff,x);
+
+% left half [-|c|,0] -> [0,|c|] && p_series(-x)
+setround(-1);
+x = c - inf(X);
+
+% coefficients for p_series(-x)
+for i = 2:2:n
+	tay_coeff(i) = tay_coeff(i) * -1;
+end
+
+L = taylor_form_eval_half_(tay_coeff,x);
+
+res = hull(L,R);
 
 end
