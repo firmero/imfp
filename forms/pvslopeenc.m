@@ -7,6 +7,21 @@ function isf = pvslopeenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
+%    The function computes range of Slope form of polynomial p over ix.
+%  
+%  c = mid(ix)
+%  gc is uniquely defined polynomial such that: f(x) = f(c) + gc(x)*(x-c).
+%  Then the slope form is defined SF = f(c) + HF(gc,ix)*(ix-c)
+%
+%  Coefficients of gc:
+%  n = length(p)
+%  gc(x) = b_1*x^(n-2) + b_2*x^(n-3) + ... + b_(n-2)*x + b_(n-1)
+%
+%  b_1 =  a_1 
+%  b_2 =  a_1*c + a_2 
+%  b_3 = (a_1*c + a_2)*c + a_3 
+%  ...
+%
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
@@ -20,6 +35,8 @@ function isf = pvslopeenc(p, ix)
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  isf ... Slope form
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -37,18 +54,13 @@ function isf = pvslopeenc(p, ix)
 %
 %ENDDOC====================================================================
 
-
 n = length(p);
-c = mid(ix);
+if (n == 1)
+	isf = p(1);
+	return;
+end
 
-%
-% gc(x) = b_1*x^(n-2) + b_2*x^(n-3) + ... + b_(n-2)*x + b_(n-1)
-%
-% b_1 =  a_1 
-% b_2 =  a_1*c + a_2 
-% b_3 = (a_1*c + a_2)*c + a_3 
-% ...
-%
+c = mid(ix);
 
 % get coefficients of polynom gc()
 g = repmat(intval(0),1,n-1);
@@ -58,9 +70,9 @@ for i = 2:n-1
 	g(i) = g(i-1)*c + p(i);
 end
 
+% todo intval coefficients? 
 hf_g = pvhornerenc(g,ix);
 
-% todo if n == 1
 p_at_c = g(n-1)*c + p(n);
 isf = p_at_c + hf_g*(ix-c);
 
