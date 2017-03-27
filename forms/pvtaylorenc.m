@@ -50,13 +50,14 @@ function itf = pvtaylorenc(p, ix)
 %--------------------------------------------------------------------------
 % .Todo
 %
-%	todo: taylor coeff as intval?
+%  todo: taylor coeff as intval?
 %
 %ENDDOC====================================================================
 
 % used intval to prevent from the generation of the matrix of inf value,
 % if ix is point then Taylor form equals to Horner form
 if (inf(intval(ix)) == sup(ix))
+	% to do not working
 	itf = pvhornerenc(p,inf(ix));
 	return
 end

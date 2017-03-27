@@ -1,4 +1,4 @@
-function res = pvtaylorbmenc(polynomial_coefficients, X)
+function itfbm = pvtaylorbmenc(p, ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,17 +7,36 @@ function res = pvtaylorbmenc(polynomial_coefficients, X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%	TF	= HF(p_series,X-c)
-%			X - c is centered interval
+%    The function computes range of Taylor form of polynomial p over
+%  interval ix using bisection at the zero of translated ix. Interval
+%  ix-c is centered interval [-r,r].
+%  By bisection the overestimation error is reduced at least by half,
+%  because of evaluation Horner form over centered interval bisected
+%  at zero.
 %
-%	p_series(x) = sum i=0..deg(p) a(p,c,i)*x^i
+%  c = mid(ix)
+%  r = rad(ix)
+%
+%  p_series(x) = sum i=0..deg(p) a(p,c,i)*x^i
 %		where a(p,c,i) = HF(derivative(p,i),c)/i!
+%
+%  TF	= HF(p_series,ix-c)
+%		ix-c is centered interval
+%
+%  TFBM = hull(HF(p_series(-x),r), HF(p_series,r))
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  itfbm ... Taylor form with bisection
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -35,31 +54,36 @@ function res = pvtaylorbmenc(polynomial_coefficients, X)
 %--------------------------------------------------------------------------
 % .Todo
 %
+%  todo: taylor coeff as intval?
 %
 %ENDDOC====================================================================
 
+% used intval to prevent from the generation of the matrix of inf value,
+% if ix is point then Taylor form equals to Horner form
+if (inf(intval(ix)) == sup(ix))
+	% to do not working
+	itfbm = pvhornerenc(p,inf(ix));
+	return
+end
 
-c = mid(X);
+c = mid(ix);
+r = rad(ix);
 
-n = length(polynomial_coefficients);
-tay_coeff = taylor_coefficients_(polynomial_coefficients,c);
+n = length(p);
+tay_coeff = taylor_coefficients_(p,c);
 
-% right half [0,|c|]
-setround(1);
-x =	sup(X) - c;
-R = taylor_form_eval_half_(tay_coeff,x);
+% we want to evaluate horner over [-r,r]
+% right half [0,r]
+R = taylor_form_eval_half_(tay_coeff,r);
 
-% left half [-|c|,0] -> [0,|c|] && p_series(-x)
-setround(-1);
-x = c - inf(X);
-
+% left half [-r,0] transform to [0,r] and p_series to p_series(-x)
 % coefficients for p_series(-x)
 for i = 2:2:n
 	tay_coeff(i) = tay_coeff(i) * -1;
 end
 
-L = taylor_form_eval_half_(tay_coeff,x);
+L = taylor_form_eval_half_(tay_coeff,r);
 
-res = hull(L,R);
+itfbm = hull(L,R);
 
 end

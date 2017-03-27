@@ -41,6 +41,8 @@ function res = taylor_form_eval_half_(tay_coeff,r)
 
 n = length(tay_coeff);
 
+oldmod = getround();
+
 %todo inf as built-in function!!
 left = inf(tay_coeff(n));
 right = sup(tay_coeff(n));
@@ -67,4 +69,5 @@ end
 
 res = infsup(left,right);
 
+setround(oldmod);
 end
