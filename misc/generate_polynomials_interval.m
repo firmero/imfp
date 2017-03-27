@@ -7,7 +7,7 @@ function res = generate_polynomials_interval(deg, n, max_radius, midd)
 
 	%todo n=1; 	
 	% todo not default ...
-	max_radius=0.4; midd=4;
+	max_radius=0.4; midd=-0.1;
 
 	deg = deg + 1;
 	res = repmat(repmat(intval(0),1,deg),n,1);
