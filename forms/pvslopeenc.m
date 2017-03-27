@@ -1,4 +1,4 @@
-function res = pvimeanvalslenc(p,X)
+function isf = pvslopeenc(p, ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -9,6 +9,11 @@ function res = pvimeanvalslenc(p,X)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
+%
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -32,6 +37,31 @@ function res = pvimeanvalslenc(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@pvmeanvalslenc);
+
+n = length(p);
+c = mid(ix);
+
+%
+% gc(x) = b_1*x^(n-2) + b_2*x^(n-3) + ... + b_(n-2)*x + b_(n-1)
+%
+% b_1 =  a_1 
+% b_2 =  a_1*c + a_2 
+% b_3 = (a_1*c + a_2)*c + a_3 
+% ...
+%
+
+% get coefficients of polynom gc()
+g = repmat(intval(0),1,n-1);
+
+g(1) = p(1);
+for i = 2:n-1
+	g(i) = g(i-1)*c + p(i);
+end
+
+hf_g = pvhornerenc(g,ix);
+
+% todo if n == 1
+p_at_c = g(n-1)*c + p(n);
+isf = p_at_c + hf_g*(ix-c);
 
 end

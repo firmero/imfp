@@ -43,8 +43,8 @@ function res = pvimeanvalenc(p,X)
 	 res = interval_polynomial_form_par(p,X,@pvmeanvalenc);
 end
 
-function res = pvimeanvalslenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvmeanvalslenc);
+function res = pvislopeenc(p,X)
+	 res = interval_polynomial_form_par(p,X,@pvslopeenc);
 end
 
 function res = pvimeanvalbcenc(p,X)
