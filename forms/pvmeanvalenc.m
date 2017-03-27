@@ -1,4 +1,4 @@
-function mvf = pvmeanvalenc(polynomial_coefficients, X)
+function imvf = pvmeanvalenc(p, ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,21 +7,27 @@ function mvf = pvmeanvalenc(polynomial_coefficients, X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-% Compute MVF(p,mid(X))
+%    The function computes range of Mean value form MVF of polynomial p
+%  over ix. If 0 is not in HF(p',ix) then range is without overestimation.
+%  From the mean value theorem: for all x and c in ix exists q in ix 
+%  such that p(x) = p(c) + p`(q)*(x-c), therefore p(x) is in 
+%  p(c) + p`(ix)*(x-c). Then p(ix) is subset of p(c) + p`(ix)*(ix-c).
+%  Mean value form is a special case when c = mid(iX);
 %
-%	mvf = p(mid(X)) + HF(p',X)*(X-mid(X))
-%
-% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
-%
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
-%
-% If 0 is not in HF(p',X) then range is without overestimation
+%	MVF = p(mid(ix)) + HF(p',ix)*(ix-mid(ix))
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  itf ... Mean value form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -42,13 +48,13 @@ function mvf = pvmeanvalenc(polynomial_coefficients, X)
 %
 %ENDDOC====================================================================
 
-c = mid(X);
-hf_at_center = pvhornerenc(polynomial_coefficients,c);
+c = mid(ix);
+hf_at_center = pvhornerenc(p,c);
 
-p_derivated = derivate_polynomial(polynomial_coefficients);
+p_derivated = derivate_polynomial(p);
 
-hf_derivated = pvhornerenc(p_derivated,X);
+hf_derivated = pvhornerenc(p_derivated,ix);
 
-mvf = hf_at_center + hf_derivated*(X-c);
+imvf = hf_at_center + hf_derivated*(ix-c);
 
 end
