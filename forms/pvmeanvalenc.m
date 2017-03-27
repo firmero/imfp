@@ -51,6 +51,8 @@ function imvf = pvmeanvalenc(p, ix)
 c = mid(ix);
 hf_at_center = pvhornerenc(p,c);
 
+% todo should return intval coefficients!!
+% then it is needed to use horner over interval polynomial...
 p_derivated = derivate_polynomial(p);
 
 hf_derivated = pvhornerenc(p_derivated,ix);

@@ -1,4 +1,4 @@
-function res = pvmeanvalbcenc(polynomial_coefficients,X)
+function imvfbc = pvmeanvalbcenc(p,ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,17 +7,24 @@ function res = pvmeanvalbcenc(polynomial_coefficients,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-% MVFB(p,X) = infsup(inf(HF(p,c_left)), sup(HF(p,c_right)))
+%  Bicentred mean value form evaluates mean value form twice and intersect
+%  results.
 %
-% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
-%
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%   MVFB(p,ix) = [inf(MVFC(ix,c_left)), sup(MVFC(ix,c_right))]
+%		where MVFC(ix,c) = HF(p,c) + HF(p`,ix)*(ix-c)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  imvfbc ... Bicentred mean value form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -38,20 +45,22 @@ function res = pvmeanvalbcenc(polynomial_coefficients,X)
 %
 %ENDDOC====================================================================
 
-p_derivated = derivate_polynomial(polynomial_coefficients);
+p_derivated = derivate_polynomial(p);
 
-hf_derivated = pvhornerenc(p_derivated,X);
+hf_derivated = pvhornerenc(p_derivated,ix);
 
-[c_left, c_right] = centres_mean_value_form_(hf_derivated,X);
+[c_left, c_right] = centres_mean_value_form_(hf_derivated,ix);
 
+oldmod = getround();
 setround(1);
-right = sup(pvhornerenc(polynomial_coefficients,intval(c_right))) ...
-		+ sup(hf_derivated*(X-c_right));
+right = sup(pvhornerenc(p,intval(c_right))) ...
+		+ sup(hf_derivated*(ix-c_right));
 
 setround(-1);
-left = inf(pvhornerenc(polynomial_coefficients,intval(c_left))) ...
-		+ inf(hf_derivated*(X-c_left));
+left = inf(pvhornerenc(p,intval(c_left))) ...
+		+ inf(hf_derivated*(ix-c_left));
 
-res = infsup(left,right);
+imvfbc = infsup(left,right);
 
+setround(oldmod);
 end

@@ -57,8 +57,7 @@ function itf = pvtaylorenc(p, ix)
 % used intval to prevent from the generation of the matrix of inf value,
 % if ix is point then Taylor form equals to Horner form
 if (inf(intval(ix)) == sup(ix))
-	% to do not working
-	itf = pvhornerenc(p,inf(ix));
+	itf = pvhornerenc(p,inf(intval(ix)));
 	return
 end
 
