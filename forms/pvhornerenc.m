@@ -1,4 +1,4 @@
-function [res, certainly_ok] = pvhornerenc(polynomial_coefficients, X)
+function [res, certainly_ok] = pvhornerenc(polynomial_coefficients, ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -19,6 +19,11 @@ function [res, certainly_ok] = pvhornerenc(polynomial_coefficients, X)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
+%
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -42,7 +47,7 @@ function [res, certainly_ok] = pvhornerenc(polynomial_coefficients, X)
 %
 %ENDDOC====================================================================
 
-X = intval(X);
+ix = intval(ix);
 
 n = length(polynomial_coefficients);
 if (n < 1)
@@ -56,18 +61,18 @@ p = repmat(intval(0),1,n);
 p(1) = intval(polynomial_coefficients(1));
 
 for i = 2:n
-	p(i) = p(i-1) * X + polynomial_coefficients(i);
+	p(i) = p(i-1) * ix + polynomial_coefficients(i);
 end
 
 res = p(n);
 
 % tests for covering overestimation interval
-if (inf(X) == sup(X))
+if (inf(ix) == sup(ix))
 	certainly_ok = true; % what if coefficients are intervals
 	return
 end
 
-if (in(0,intval(X)))
+if (in(0,intval(ix)))
 	certainly_ok = false; % what if coefficients are intervals
 	return
 end
@@ -77,10 +82,11 @@ if (isa(polynomial_coefficients(1),'intval'))
 	certainly_ok = false;
 	return
 end
+
 % !! not working on interval coefficients !!
 sgn = sign(polynomial_coefficients(1));
 
-if (inf(X) >= 0 )		% on right
+if (inf(ix) >= 0 )		% on right
 	for i = 2:n-1
 		if (inf(sgn*p(i)) < 0)
 			certainly_ok = false;
