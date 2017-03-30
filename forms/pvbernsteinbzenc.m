@@ -12,8 +12,8 @@ function [ibfbz ver] = pvbernsteinbzenc(p,ix,k)
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  ix ... interval x
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
 %  k  ... optional, should be at least deg(p), which is default value.
 %         greater value leads to tighter enclosure
 %
@@ -29,7 +29,8 @@ function [ibfbz ver] = pvbernsteinbzenc(p,ix,k)
 % .Implementation details.
 %
 %  For ix containing the zero evaluate Bernstein form of p over [0,sup(ix)]
-%  and Bernstein form of p(-x) over [0,-inf(ix)].
+%  and Bernstein form of p(-x) over [0,-inf(ix)]. Otherwise Bernstein form
+%  of p over ix.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -66,7 +67,8 @@ end
 
 [iright verright] = pvbernsteinenc(p,infsup(0,sup(ix)), k);
 
-% coefficients for p(-x)
+% coefficients for p(-x), then call with x
+% p(-x) = a_1*(-x)^(n-1) + a_2*(-x)^(n-2) + ... + a_(n-1)*(-x)^1 + a_n
 start = 1;
 if (odd(n))
 	start = start + 1;
@@ -76,12 +78,11 @@ for i = start:2:n
 	p(i) = p(i) * (-1);
 end
 
-
 [ileft verleft] = pvbernsteinenc(p,infsup(0,-inf(ix)), k);
 
 ibfbz = hull(ileft, iright);
 
-% overestimation
+% overestimation test
 if (verleft + verright == 2)
 	ver = 1;
 else 

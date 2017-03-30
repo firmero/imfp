@@ -7,14 +7,14 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Return the hull of the j-th Bernstein polynomials of order k over X,
-%    j = 0..k where k >= deg(p)
+%  Return the hull of the j-th Bernstein polynomials of order k over ix,
+%  j = 0..k where k >= deg(p).
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  ix ... interval x
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
 %  k  ... optional, should be at least deg(p), which is default value.
 %         greater value leads to tighter enclosure
 %
@@ -95,7 +95,7 @@ n = length(p);
 % k should be at least n-1 (deg of polynomial)
 if (nargin() == 2)
 	k = n-1;
-% not hadle bad calling
+% not hadled bad calling
 elseif (k < n-1)
 	warning('Parameter k should be at least the degree of polynomial');
 	k = n-1;
