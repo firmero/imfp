@@ -1,4 +1,4 @@
-function res = pvinterpolation2enc(polynomial_coefficients,X) 
+function iif2 = pvinterpolation2enc(p,ix) 
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,33 +7,37 @@ function res = pvinterpolation2enc(polynomial_coefficients,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
+%  Interpolation form 2 gives no worse result as Interpolation form.
+%  Interpolation form follows from:
+%  p(x) = p(c) + p`(c)*(x-c) + 0.5*p``(y)*(x-c)^2,
+%    where c = mid(ix), y is between c and x.
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%  IF2(ix) = [ inf(p_down(ix)), sup(p_up(ix)) ]
 %
-% IF2(X) = [inf(p_down),sup(p_up)]
+%  p_up(x)	= p(c) + p`(c)(x-c) + 0.5*sup(HF(p``,ix))*(x-c)^2 
+%			= p(c) + parabola_up(x)
 %
-% IF2(X) is subset of IF(X)
+%    parabola_up(x) =	  0.5*sup(HF(p``,ix))*x^2 
+%						+ (p`(c) - sup(HF(p``,ix))*c)*x 
+%						+ (0.5*sup(HF(p``,ix)*c - p`(c))*c
 %
-% c = mid(X)
+%  p_down(x)= p(c) + p`(c)(x-c) + 0.5*inf(HF(p``,ix))*(x-c)^2
+%			= p(c) + parabola_down(x)
 %
-% p_up(x)   = p(c) + p`(c)(x-c) + 0.5*sup(HF(p``,X))*(x-c)^2 
-%  = p(c)	+ 0.5*sup(HF(p``,X))*x^2 
-%			+ (p`(c) - sup(HF(p``,X))*c)*x 
-%			+ (0.5*sup(HF(p``,X)*c - p`(c))*c
-%  = p(c) + p2(X)
-%
-% p_down(x) = p(c) + p`(c)(x-c) + 0.5*inf(HF(p``,X))*(x-c)^2
-%  = p(c)	+ 0.5*inf(HF(p``,X))*x^2 
-%			+ (p`(c) - inf(HF(p``,X))*c)*x 
-%			+ (0.5*inf(HF(p``,X)*c - p`(c))*c
-%  = p(c) + p1(X)
+%    parabola_down(x) =	  0.5*inf(HF(p``,ix))*x^2 
+%						+ (p`(c) - inf(HF(p``,ix))*c)*x 
+%						+ (0.5*inf(HF(p``,ix)*c - p`(c))*c
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  iif2 ... Interpolation form 2
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -54,30 +58,37 @@ function res = pvinterpolation2enc(polynomial_coefficients,X)
 %
 %ENDDOC====================================================================
 
-p_derivated = derivate_polynomial(polynomial_coefficients);
-p_twice_derivated = derivate_polynomial(p_derivated);
+% interval coefficients of derivative of p
+ip_der = derivate_polynomial(p);
 
-c = mid(X);
+% interval coefficients of the second derivative of p
+ip_der2 = derivate_polynomial(ip_der);
 
-p_at_c = pvhornerenc(polynomial_coefficients,c);
-p_derivated_at_c = pvhornerenc(p_derivated,c);
-p_twice_derivated_range = pvhornerenc(p_twice_derivated,X);
+c = mid(ix);
 
-% parabola coefficients for polynomials par_up
-a2 = 0.5*p_twice_derivated_range;
+% to find out parabolas coeffcients the following values are needed
+% p(c), p`(c) and p``(ix)
+ip_at_c = pvhornerenc(p,c);
+ip_der_at_c = pvhornerenc(ip_der,c);
+ip_der2_val = pvhornerenc(ip_der2,ix);
 
-a2_up = sup(a2);
-a2_down = inf(a2);
+% parabola coefficients
+ia2 = 0.5*ip_der2_val;
 
-a1_up = p_derivated_at_c - intval(sup(p_twice_derivated_range))*c;
-a1_down = p_derivated_at_c - intval(inf(p_twice_derivated_range))*c;
+ia2_up   = sup(ia2);
+ia1_up   = ip_der_at_c - intval(sup(ip_der2_val))*c;
+ia0_up   = (ia2_up*c - ip_der_at_c)*c;
 
-a0_up = (a2_up*c - p_derivated_at_c)*c;
-a0_down = (a2_down*c - p_derivated_at_c)*c;
+ia2_down = inf(ia2);
+ia1_down = ip_der_at_c - intval(inf(ip_der2_val))*c;
+ia0_down = (ia2_down*c - ip_der_at_c)*c;
 
-p1 = evaluate_parabola(a2_up,a1_up,a0_up,X);
-p2 = evaluate_parabola(a2_down,a1_down,a0_down,X);
+iparabola_up   = evaluate_parabola(ia2_up  ,ia1_up,  ia0_up  ,ix);
+iparabola_down = evaluate_parabola(ia2_down,ia1_down,ia0_down,ix);
 
-res = hull(p1,p2) + p_at_c;
+% IF2(ix)    = [ inf(p_down(ix)), sup(p_up(ix)) ]
+% p_up(ix)   = p(c) + parabola_up(ix)
+% p_down(ix) = p(c) + parabola_down(ix)
+iif2 = hull(iparabola_down,iparabola_up) + ip_at_c;
 
 end
