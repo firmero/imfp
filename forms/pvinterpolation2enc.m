@@ -75,11 +75,11 @@ ip_der2_val = pvhornerenc(ip_der2,ix);
 % parabola coefficients
 ia2 = 0.5*ip_der2_val;
 
-ia2_up   = sup(ia2);
+ia2_up   = intval(sup(ia2));
 ia1_up   = ip_der_at_c - intval(sup(ip_der2_val))*c;
 ia0_up   = (ia2_up*c - ip_der_at_c)*c;
 
-ia2_down = inf(ia2);
+ia2_down = intval(inf(ia2));
 ia1_down = ip_der_at_c - intval(inf(ip_der2_val))*c;
 ia0_down = (ia2_down*c - ip_der_at_c)*c;
 
