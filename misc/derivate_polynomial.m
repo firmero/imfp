@@ -1,4 +1,4 @@
-function p_derivated = derivate_polynomial(polynomial_coefficients)
+function iderivative = derivate_polynomial(ip)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -10,8 +10,14 @@ function p_derivated = derivate_polynomial(polynomial_coefficients)
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ip  ... vector of polynomial coefficients [ia_1 ... ia_n]
+%
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  iderivative ... vector of coefficients of derivative of ip
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -31,17 +37,21 @@ function p_derivated = derivate_polynomial(polynomial_coefficients)
 %
 %
 %ENDDOC====================================================================
-%
-% Compute derivative of p(x)
-%
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
-%
 
-n = length(polynomial_coefficients);
-p_derivated = repmat(intval(0),1,n-1);
+% the length of derivative
+nn = length(ip) - 1;
 
-for i = 1:n-1
-	p_derivated(i) = (n-i) * polynomial_coefficients(i);
+iderivative = repmat(intval(0),1,nn);
+
+% coeffcient produced by derivation
+c = nn;
+for i = 1:nn
+	iderivative(i) = c * ip(i);
+	c = c - 1;
+end
+
+if (nn == 0)
+	iderivative(1) = intval(0);
 end
 
 end
