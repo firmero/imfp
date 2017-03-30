@@ -59,6 +59,7 @@ elseif (k < n-1)
 	k = n-1;
 end
 
+ix = intval(ix);
 if (~in(0,ix))
 	warning('Interval ix doesn''t contain 0');
 	ibfbz = pvbernsteinenc(p,ix,k);

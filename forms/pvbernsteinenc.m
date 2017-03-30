@@ -101,7 +101,8 @@ elseif (k < n-1)
 	k = n-1;
 end
 
-w = sup(ix) - inf(ix);
+ix = intval(ix);
+w = sup(ix) - inf((ix));
 
 % used for computation of bernstein coefficients
 iv = repmat(intval(0),1,n);
@@ -120,7 +121,7 @@ end
 % iv(i) = w^(i-1)*(i-1)! / (k*(k-1)*...*(k-i+2))   for i=2..n
 
 
-itc = taylor_coefficients_(p,inf(ix));
+itc = taylor_coefficients_(p,inf((ix)));
 % itc(i) = HF( (i-1) derivative of p, inf(ix))/ (i-1)!
 for i = 1:n
 	iv(i) = iv(i)*itc(i);
