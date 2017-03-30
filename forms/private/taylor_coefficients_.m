@@ -1,4 +1,4 @@
-function tc = taylor_coefficients_(polynomial_coefficients, c)
+function itc = taylor_coefficients_(p, x)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,14 +7,23 @@ function tc = taylor_coefficients_(polynomial_coefficients, c)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  tc(1) = HF(p,c) ; tc(2) = HF(p`,c)/1! ; tc(3) = HF(p``,c)/2! ...
+%  Computes taylor coefficients of polynomial p at point x.
+%
+%  itc(i) = HF(i-1 derivative of p, x) / (i-1)!  for i =1..length(p)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  x  ... evaluation point
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
+%  itc ... vector of taylor coefficients
+%  
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
@@ -34,28 +43,34 @@ function tc = taylor_coefficients_(polynomial_coefficients, c)
 %
 %ENDDOC====================================================================
 
-n = length(polynomial_coefficients);
-% assert n < 166 ... factorial
+n = length(p);
 
-% allocate vector
-tc = repmat(intval(0),1,n);
-tc(1) = pvhornerenc(polynomial_coefficients,intval(c));
+% allocate output vector
+itc = repmat(intval(0),1,n);
+itc(1) = pvhornerenc(p,x);
 
 % factorial
-fact = 1;
+fact = intval(1);
 
-for j = 2:n
-	k = 2;
-	polynomial_coefficients(n) = polynomial_coefficients(n-1);
-	for i = n-1:-1:j
-		polynomial_coefficients(i) = polynomial_coefficients(i-1)*k;
-		k = k+1;
+% r will be the length of i-1 derivative
+r = n-1;
+
+for i = 2:n
+
+	% multiplication constant produced by derivation
+	c = r;
+
+	% derivate
+	for j = 1:r
+		p(j) = c*p(j);
+		c = c-1;
 	end
-	
-	p = polynomial_coefficients(j:n);
+	% p_1 ... p_r are coefficients of (i-1) derivative of p
+	ptmp = p(1:r);
 
-	tc(j) = pvhornerenc(p,intval(c)) / fact;
-	fact = fact * j;
+	itc(i) = pvhornerenc(ptmp,x) / fact;
+	fact = fact * i;
+	r = r - 1;
 
 end
 
