@@ -1,4 +1,4 @@
-function parabola_range = evaluate_parabola(a2,a1,a0,X)
+function iy = evaluate_parabola(ia,ib,ic,ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,11 +7,22 @@ function parabola_range = evaluate_parabola(a2,a1,a0,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Computes range of parabola p(x)= ia*x^2 + ib*x + ic over interval ix.
+%
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ia ...
+%  ib ...
+%  ic ...
+%        coefficients of parabola p(x) = ia*x^2 + ib*x + ic.
+%
+%  ix ... interval x
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  iy ... the range of the input parabola over ix.
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -31,25 +42,37 @@ function parabola_range = evaluate_parabola(a2,a1,a0,X)
 %
 %
 %ENDDOC====================================================================
-%
-% Computes range of parabola a2*x^2 + a1*x + a0.
-%
 
-if (in0(0,intval(a2)))
-	parabola_range = (a2*X + a1)*X + a0;
+ix = intval(ix);
+ia = intval(ia);
+
+% if 0 is in ia then we cannot divide something by ia
+if (in(0,ia))
+	iy = (ia*ix + ib)*ix + ic;
 	return
 end
 
-mx = 0.5*a1;
-my = hull((a2*inf(X) + a1)*inf(X),(a2*sup(X) + a1)*sup(X));
+% will be used for x coordinates of local extrem
+imx = ib/2;
 
-% contain X extrem point mx
-mxi = intersect(-mx/a2,X);
-if (~isnan(mxi))
-	% extrem points
-	my = hull(my,mx*mxi);
+% eval ia*x^2 + ib*x at endpoints of ix:
+imy = hull((ia*inf(ix) + ib)*inf(ix), (ia*sup(ix) + ib)*sup(ix));
+
+% parabola has local extrem point in -b/2a
+% contain ix local extrem points?
+ixextr = intersect(-imx/ia,ix);
+if (~isnan(ixextr))
+	% non empty intersect
+	% ixextr has values as -b/2a
+	% so imx*ixextr has values as -b^2/4a
+	imy = hull(imy,imx*ixextr);
 end
 
-parabola_range = my + a0;
+% if ix doesn't contain extrem point from ixextr, iy is value at endpoints,
+% where imy = ia*x^2 + ib*x, then it is needed to add ic.
+% Else imy contains values from endpoints and also values as -b^2/4a
+% at local extrem points, also it is needed to add ic.
+% Vertex of parabola has coordinates [-b/2a, c-b^2/4a]
+iy = imy + ic;
 
 end
