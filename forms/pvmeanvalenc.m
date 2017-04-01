@@ -8,13 +8,15 @@ function imvf = pvmeanvalenc(p, ix)
 % .Description.
 %
 %    The function computes range of Mean value form MVF of polynomial p
-%  over ix. If 0 is not in HF(p',ix) then range is without overestimation.
+%  over ix.
 %  From the mean value theorem: for all x and c in ix exists q in ix 
 %  such that p(x) = p(c) + p`(q)*(x-c), therefore p(x) is in 
 %  p(c) + p`(ix)*(x-c). Then p(ix) is subset of p(c) + p`(ix)*(ix-c).
 %  Mean value form is a special case when c = mid(iX);
 %
 %	MVF = p(mid(ix)) + HF(p',ix)*(ix-mid(ix))
+%
+%  If 0 is not in HF(p',ix) then range is without overestimation.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -49,14 +51,13 @@ function imvf = pvmeanvalenc(p, ix)
 %ENDDOC====================================================================
 
 c = mid(ix);
-hf_at_center = pvhornerenc(p,c);
+ihf_at_center = pvhornerenc(p,c);
 
-% todo should return intval coefficients!!
-% then it is needed to use horner over interval polynomial...
-p_derivated = derivate_polynomial(p);
+% the interval coefficients of derivative of p
+p_iderivated = derivate_polynomial(p);
 
-hf_derivated = pvhornerenc(p_derivated,ix);
+ihf_derivated = pvhornerenc(p_iderivated,ix);
 
-imvf = hf_at_center + hf_derivated*(ix-c);
+imvf = ihf_at_center + ihf_derivated*(ix-c);
 
 end
