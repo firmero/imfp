@@ -69,8 +69,12 @@ r = rad(ix);
 
 n = length(p);
 itay_coeff = taylor_coefficients_(p,c);
+% itay_coeff(i) = a(p,c,i-1)
 
-% we want to evaluate horner over [-r,r]
+% we want to evaluate horner range of polynomial p
+% p <- itay_coeff over [-r,r]
+% p(x) = itay_coeff(n)*x^(n-1)+ itay_coeff(n-1)*x^(n-2) +...+ itay_coeff(1)
+
 % right half [0,r]
 iright = taylor_form_eval_half_(itay_coeff,r);
 

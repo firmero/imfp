@@ -71,6 +71,7 @@ setround(1);
 magnitude = mag(itay_coeff(n)) * r;
 
 % compute mag(HF(g_series,ix-c))*[-r,r]
+% itay_coeff(i) = a(p,c,i-1)
 % ix - c == [-r,r]
 % horner scheme
 for i = n-1:-1:2
