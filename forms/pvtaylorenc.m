@@ -50,7 +50,6 @@ function itf = pvtaylorenc(p, ix)
 %--------------------------------------------------------------------------
 % .Todo
 %
-%  todo: taylor coeff as intval?
 %
 %ENDDOC====================================================================
 
@@ -65,21 +64,21 @@ c = mid(ix);
 r = rad(ix);
 
 n = length(p);
-tay_coeff = taylor_coefficients_(p,intval(c));
+itay_coeff = taylor_coefficients_(p,intval(c));
 
 oldmod = getround();
 setround(1);
-magnitude = mag(tay_coeff(n)) * r;
+magnitude = mag(itay_coeff(n)) * r;
 
 % compute mag(HF(g_series,ix-c))*[-r,r]
 % ix - c == [-r,r]
 % horner scheme
 for i = n-1:-1:2
-	magnitude = (magnitude + mag(tay_coeff(i)))*r;
+	magnitude = (magnitude + mag(itay_coeff(i)))*r;
 end
 
-% tay_coeff(1) == p(c)
-itf = tay_coeff(1) + infsup(-magnitude, magnitude);
+% itay_coeff(1) == p(c)
+itf = itay_coeff(1) + infsup(-magnitude, magnitude);
 
 setround(oldmod);
 end

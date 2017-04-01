@@ -54,7 +54,6 @@ function itfbm = pvtaylorbmenc(p, ix)
 %--------------------------------------------------------------------------
 % .Todo
 %
-%  todo: taylor coeff as intval?
 %
 %ENDDOC====================================================================
 
@@ -69,20 +68,20 @@ c = mid(ix);
 r = rad(ix);
 
 n = length(p);
-tay_coeff = taylor_coefficients_(p,c);
+itay_coeff = taylor_coefficients_(p,c);
 
 % we want to evaluate horner over [-r,r]
 % right half [0,r]
-R = taylor_form_eval_half_(tay_coeff,r);
+iright = taylor_form_eval_half_(itay_coeff,r);
 
 % left half [-r,0] transform to [0,r] and p_series to p_series(-x)
 % coefficients for p_series(-x)
 for i = 2:2:n
-	tay_coeff(i) = tay_coeff(i) * -1;
+	itay_coeff(i) = itay_coeff(i) * -1;
 end
 
-L = taylor_form_eval_half_(tay_coeff,r);
+ileft = taylor_form_eval_half_(itay_coeff,r);
 
-itfbm = hull(L,R);
+itfbm = hull(ileft,iright);
 
 end
