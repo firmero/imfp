@@ -1,4 +1,4 @@
-function [c_left, c_right] = centres_mean_value_form_(f_derivated, X)
+function [c_left, c_right] = centres_mean_value_form_(ip_derivated, ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,20 +7,26 @@ function [c_left, c_right] = centres_mean_value_form_(f_derivated, X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-% Computes optimal points c_left and c_right in sense of:
+%  Computes optimal points c_left and c_right in sense of:
 % 
-% For all c in X it holds:
+%  For all t in ix it holds:
 %
-%	sup(MVF(p,c_right)) <= sup(MVF(p,c))
-%	inf(MVF(p,c_left))  >= inf(MVF(p,c))
+%	sup(MVF(p,c_right)) <= sup(MVF(p,t))
+%	inf(MVF(p,c_left))  >= inf(MVF(p,t))
 %
-%	width(MVF(p,mid(X))) <= width(MVF(p,c)
+%	width(MVF(p,mid(ix))) <= width(MVF(p,t))
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ip_derivated ... the range of derivative polynomial p over ix
+%  ix           ... interval x
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  c_left  ... the left optimal point for MVF
+%  c_right ... the right optimal point for MVF
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -41,22 +47,21 @@ function [c_left, c_right] = centres_mean_value_form_(f_derivated, X)
 %
 %ENDDOC====================================================================
 
-
-if (inf(f_derivated) >= 0)
-	c_left = inf(X);
-	c_right = sup(X);
+if (inf(ip_derivated) >= 0)
+	c_left = inf(ix);
+	c_right = sup(ix);
 	return
 end
 
-if (sup(f_derivated) <= 0)
-	c_left = sup(X);
-	c_right = inf(X);
+if (sup(ip_derivated) <= 0)
+	c_left = sup(ix);
+	c_right = inf(ix);
 	return
 end
 
 % else approximate, it is correct thanks to lemma of optimality
-width = sup(X) - inf(X);
-c_right = (sup(f_derivated)*sup(X) - inf(f_derivated)*inf(X))/width;
-c_left = (sup(f_derivated)*inf(X) - inf(f_derivated)*sup(X))/width;
+width = sup(ix) - inf(ix);
+c_right = (sup(ip_derivated)*sup(ix) - inf(ip_derivated)*inf(ix))/width;
+c_left  = (sup(ip_derivated)*inf(ix) - inf(ip_derivated)*sup(ix))/width;
 
 end
