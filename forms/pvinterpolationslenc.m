@@ -1,4 +1,4 @@
-function res = pvinterpolationslenc(polynomial_coefficients,X)
+function iifsl = pvinterpolationslenc(p,ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,30 +7,36 @@ function res = pvinterpolationslenc(polynomial_coefficients,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-% Vector polynomial_coefficients [a_1, a_2, ..., a_n] is interpreted as polynom:
+%  Interpolation slope form works similar as interpolation form.
+%  It uses uniquely defined polynomial gc(x) that:
+%		p(x) = p(c) + p`(c)*(x-c) + gc(x)*(x-c)^2
+%  !t evaluates gc over ix, and reduced previous equation to two parabolas.
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%  ISF(X) = p(c) + [inf(parabola_down),sup(parabola_up)]
 %
-% ISF(X) = [inf(p_down),sup(p_up)]
+%  igc = HF(gc,ix)
+%  c = mid(X)
 %
-% c = mid(X)
+%  parabola_up(x)   = p`(c)(x-c) + sup(igc)*(x-c)^2 
+%					=	  sup(igc)*x^2
+%						+ (p`(c)-2*sup(igc)*c)*x
+%						+ (-p`(c)*c+sup(igc)*c^2)
 %
-% p_up(x)   = p(c) + p`(c)(x-c) + sup(G)*(x-c)^2 
-%			= sup(G) + (p`(c)-2*sup(G)*c)*x + (p(c)-p`(c)*c+sup(G)*c^2)
-%
-% p_down(x) = p(c) + p`(c)(x-c) + inf(G)*(x-c)^2 
-%			= inf(G) + (p`(c)-2*inf(G)*c)*x + (p(c)-p`(c)*c+inf(G)*c^2)
-%
-% G = HF(g(c,x)), g(c,x) is uniquely defined polynomial that:
-% 
-%	p(x) = p(c) + p`(c)*(x-c) + g(c,x)*(x-c)^2
-%
+%  parabola_down(x) = p`(c)(x-c) + inf(igc)*(x-c)^2 
+%					=	  inf(igc)*x^2
+%						+ (p`(c)-2*inf(igc)*c)*x
+%						+ (-p`(c)*c+inf(igc)*c^2)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  iifsl ... Interpolation Slope form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -51,48 +57,73 @@ function res = pvinterpolationslenc(polynomial_coefficients,X)
 %
 %ENDDOC====================================================================
 
-n = length(polynomial_coefficients);
+n = length(p);
 
 if (n < 3)
-	res = pvhornerenc(polynomial_coefficients,X);
+	iifsl = pvhornerenc(p,ix);
 	return;
 end
 
-p = repmat(intval(0),1,n);
+% make interval coefficients
+ip = repmat(intval(0),1,n);
 for i = 1:n 
-	p(i) = intval(polynomial_coefficients(i));
+	ip(i) = intval(p(i));
 end
 
-c = mid(X);
+c = mid(ix);
+% eval HF(ip,c)
 for i = 2:n
-	p(i) = p(i) + c*p(i-1);
+	ip(i) = ip(i) + c*ip(i-1);
 end
-% p(n) = HF(p,c)
+% for i=1..n
+%   ip(i) = a_i + sum j=1..i-1 c^j*a_(i-j)
+%     e.g.  ip(4) = a_4 + c*a_3 + c^2*a_2 + c^3*a_1
+% ip(n) = HF(ip,c)
 
 for i = 2:n-1
-	p(i) = p(i) + c*p(i-1);
+	ip(i) = ip(i) + c*ip(i-1);
 end
-% p(n-1) = HF(p`,c)
-% p(n)   = HF(p,c)
+% for i=1..n-1
+%   ip(i) = a_i + sum j=1..i-1 (j+1)*c^j*a_(i-j)
+%     e.g.  ip(4) = a_4 + 2c*a_3 + 3c^2*a_2 + 4c^3*a_1
+% ip(n-1) = HF(ip`,c)
+% ip(n)   = HF(ip,c)
 
-G = p(1);
+% compute HF(gc,ix)
+% gc is uniquely defined polynomial:
+% p(x) = p(c) + p`(x)*(x-c) + gc(x)*(x-c)^2 
+% it can be proved that gc(x) = sum i=1..n-2 p(i)*x^(n-2-i)
+% where in p are previously computed coefficients
+igc = ip(1);
+% igc = a_1
 for i = 2:n-2
-	G = G*X + p(i);
+	igc = igc*ix + ip(i);
+	% igc = sum j=1..i p(j)*ix^(i-j)
 end
+% igc = sum i=1..n-2 p(i)*ix^(n-2-i)
 
-GC_up = intval(sup(G))*c;
-tmp = p(n-1) - GC_up; 
-a1_up = tmp - GC_up;
-a0_up = -tmp*c;
+% coefficients for parabolas
+t1 = intval(sup(igc))*c;
+t2 = ip(n-1) - t1; 
+% t2 = HF(ip`,c) - sup(igc)*c
+a1_up = t2 - t1;
+a0_up = -t2*c;
+% a1_up = HF(ip`,c) - 2*sup(igc)*c
+% a0_up = -HF(ip`,c)*c + sup(igc)*c^2
 
-GC_down = intval(inf(G))*c;
-tmp = p(n-1) - GC_down; 
-a1_down = tmp - GC_down;
-a0_down = -tmp*c;
 
-p1 = evaluate_parabola(sup(G),a1_up,a0_up,X);
-p2 = evaluate_parabola(inf(G),a1_down,a0_down,X);
+t1 = intval(inf(igc))*c;
+t2 = ip(n-1) - t1; 
+% t2 = HF(ip`,c) - inf(igc)*c
+a1_down = t2 - t1;
+a0_down = -t2*c;
+% a1_down = HF(ip`,c) - 2*inf(igc)*c
+% a0_down = -HF(ip`,c)*c + inf(igc)*c^2
 
-res = hull(p1,p2) + p(n);
+ipar_up   = evaluate_parabola(sup(igc),a1_up,  a0_up,  ix);
+ipar_down = evaluate_parabola(inf(igc),a1_down,a0_down,ix);
+
+% ip(n)=HF(ip,c)
+iifsl = ip(n) + hull(ipar_up,ipar_down);
 
 end
