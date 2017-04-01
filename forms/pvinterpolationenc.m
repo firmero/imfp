@@ -8,15 +8,15 @@ function iif = pvinterpolationenc(p,ix)
 % .Description.
 %
 %  Interpolation form uses Taylor expansion of p at the middle c of ix:
-%  p(x) = p(c) + p`(c)*(x-c) + 0/5*p``(y)*(x-c)^2 for some y between
+%  p(x) = p(c) + p`(c)*(x-c) + 1/2*p``(y)*(x-c)^2 for some y between
 %  x and c.
 %  Then for any m:
-%  p(x) = p(c) + p`(c)*(x-c) + 0.5*m*(x-c)^2 + 0.5*(p``(y)-m)*(x-c)^2
+%  p(x) = p(c) + p`(c)*(x-c) + 1/2*m*(x-c)^2 + 1/2*(p``(y)-m)*(x-c)^2
 %
 %  Interpolation form uses mid(HF(p``,ix)) as m.
-%  IF(ix) = HF(parabola,ix) + 0.5*(HF(p``,ix) - m)*(ix-c)^2
+%  IF(ix) = HF(parabola,ix) + 1/2*(HF(p``,ix) - m)*(ix-c)^2
 %
-%  parabola(x) = 0.5*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 0.5*m*c^2)
+%  parabola(x) = 1/2*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 1/2*m*c^2)
 %
 %  Where HF is Horner form.
 %
@@ -67,8 +67,8 @@ ip_der2_val = pvhornerenc(ip_der2,ix);
 im = intval(mid(ip_der2_val));
 
 % parabola coefficients
-% parabola(x) = 0.5*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 0.5*m*c^2)
-ia2 = 0.5*im;
+% parabola(x) = 1/2*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 1/2*m*c^2)
+ia2 = 1/2*im;
 ia1 = ip_der_at_c - im*c;
 ia0 = (ia2*c - ip_der_at_c)*c + ip_at_c;
 
@@ -79,8 +79,8 @@ oldmod = getround();
 setround(1);
 r = mag(ix-c);
 
-% IF(ix) = HF(parabola,ix) + 0.5*(HF(p``,ix) - m)*(ix-c)^2
-iif = iparabola_val + (ip_der2_val - im)*infsup(0,0.5*r*r);
+% IF(ix) = HF(parabola,ix) + 1/2*(HF(p``,ix) - m)*(ix-c)^2
+iif = iparabola_val + (ip_der2_val - im)*infsup(0,1/2*r*r);
 
 setround(oldmod);
 end
