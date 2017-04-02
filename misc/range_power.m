@@ -1,4 +1,4 @@
-function res = interval_power(X,n)
+function iy = range_power(ix,n)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,17 +7,22 @@ function res = interval_power(X,n)
 %--------------------------------------------------------------------------
 % .Description.
 %
-% The range of natural power over interval X (as a function) 
+%  The range of natural power over interval ix (as a function).
 %
-% To achieve:
+%  To achieve:
 %
-%	[-8,1]=pow_3( [-2,1] )  !=  [-2,1]*[-2,1]*[-2,1]=[-8,4]
+%	[-8,1] = range_power([-2,1],3)  !=  [-2,1]*[-2,1]*[-2,1]=[-8,4]
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  ix ... interval
+%  n  ... natural number
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  iy ... the range of n-th power function over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -39,10 +44,10 @@ function res = interval_power(X,n)
 %ENDDOC====================================================================
 
 if (even(n))
-	res = X^n;
+	iy = ix^n;
 	return
 end
 
-res = infsup(inf(X)^n, sup(X)^n);
+iy = infsup(inf(ix)^n, sup(ix)^n);
 
 end
