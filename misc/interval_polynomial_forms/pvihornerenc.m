@@ -1,4 +1,4 @@
-function res = pvihornerenc(p,X)
+function iy = pvihornerenc(ip,ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,14 +7,25 @@ function res = pvihornerenc(p,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Evaluate Horner form of interval polynomial ip over ix.
+%
 %--------------------------------------------------------------------------
 % .Input parameters.
+%
+%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
+%  ix ... interval x
+%
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
+%  iy ... range of Horner form of interval polynomial ip over ix
+%
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Wrapper function.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -32,6 +43,6 @@ function res = pvihornerenc(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@pvhornerenc);
+iy = interval_polynomial_form(ip,ix,@pvhornerenc);
 
 end

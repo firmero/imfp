@@ -1,4 +1,4 @@
-function res = pvitaylorbmenc(p,X)
+function iy = pvitaylorbmenc(ip,ix)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,14 +7,26 @@ function res = pvitaylorbmenc(p,X)
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Evaluate Taylor form with bisection of interval polynomial ip over ix.
+%
 %--------------------------------------------------------------------------
 % .Input parameters.
+%
+%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
+%  ix ... interval x
+%
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
+%  iy ... range of Taylor form with bisection of interval polynomial
+%         ip over ix
+%
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Wrapper function.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -32,6 +44,6 @@ function res = pvitaylorbmenc(p,X)
 %
 %ENDDOC====================================================================
 
-res = interval_polynomial_form(p,X,@pvtaylorbmenc);
+iy = interval_polynomial_form(ip,ix,@pvtaylorbmenc);
 
 end
