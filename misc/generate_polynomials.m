@@ -7,11 +7,18 @@ function res = generate_polynomials(deg, n)
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Returns n polynomials of degree deg with coefficients in (-1,1).
+%
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  deg ... degree of a generated polynomial
+%  n   ... count of polynomials
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  res ... n*(deg+1) matrix with elements in (-1,1)
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -32,16 +39,11 @@ function res = generate_polynomials(deg, n)
 %
 %ENDDOC====================================================================
 %
-% Returns n polynomials of degree deg with coefficients in (-1,1)
 %
-
-%todo n=1
-
-deg = deg + 1;
-res = zeros(n,deg);
-
-for i = 1:n
-	res(i,:) = rand(1,deg) - 0.5;
+if nargin < 2
+	n=1;
 end
+
+res = 2*rand(n,deg+1) - 1;
 
 end

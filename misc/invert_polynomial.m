@@ -1,4 +1,4 @@
-function op_polynomial = invert_polynomial(polynomial_coefficients)
+function pi = invert_polynomial(p)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -7,13 +7,19 @@ function op_polynomial = invert_polynomial(polynomial_coefficients)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Invert polynomial coefficients
+%  Invert polynomial coefficients.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  p ... vector of polynomial coefficients [a_1 ... a_n]
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
+%
+%  pi ... if n is odd then it returns 
+%                         [  a_1 -a_2  a_3 ... -a_(n-1) a_n]
+%                    else [ -a_1  a_2 -a_3 ... -a_(n-1) a_n]
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -34,13 +40,13 @@ function op_polynomial = invert_polynomial(polynomial_coefficients)
 %
 %ENDDOC====================================================================
 
-n = length(polynomial_coefficients);
+n = length(p);
 
 sgn = -1;
-op_polynomial(n) = polynomial_coefficients(n);
+pi(n) = p(n);
 
 for i = n-1:-1:1
-	op_polynomial(i) = sgn * polynomial_coefficients(i); 
+	pi(i) = sgn * p(i); 
 	sgn = sgn * (-1);
 end
 
