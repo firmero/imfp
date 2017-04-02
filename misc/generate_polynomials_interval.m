@@ -1,4 +1,4 @@
-function resi = generate_polynomials_interval(deg, n, mid, max_radius)
+function resi = generate_polynomials_interval(deg, n, max_radius, mag_mid)
 %BEGINDOC==================================================================
 % .Author
 %
@@ -9,7 +9,7 @@ function resi = generate_polynomials_interval(deg, n, mid, max_radius)
 %
 %  Generates n polynomials of deg degree with interval coefficients.
 %
-%  Coefficients have middle in mid and radius < max_radius.
+%  Coefficients have middle in (-mag_mid,mag_mid) and radius < max_radius.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -17,7 +17,7 @@ function resi = generate_polynomials_interval(deg, n, mid, max_radius)
 %  deg        ... degree of generated polynomial
 %  n          ... count of generated polynomials
 %  max_radius ... coeffcient radius is less than max_radius
-%  mid        ... coeffcient middle is in mid
+%  mag_mid    ... coeffcient middle is in (-mag_mid,mag_mid), mag_mid >=0
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -47,11 +47,11 @@ if nargin < 2
 	n = 1;
 end
 if nargin < 3
-	mid=0;
+	max_radius=0.4;
 end
 
 if nargin < 4
-	max_radius=0.5;
+	mag_mid=-0.1;
 end
 
 deg = deg + 1;
@@ -59,12 +59,15 @@ resi = repmat(repmat(intval(0),1,deg),n,1);
 middles = zeros(1,deg);
 radii = zeros(1,deg);
 
+mag_mid = 2*mag_mid;
+
 for i = 1:n 
 
+	middles = mag_mid*(rand(1,deg)-0.5)
 	radii = max_radius*rand(1,deg)
 
 	for j = 1:deg
-		resi(i,j) = midrad(mid,radii(j));
+		resi(i,j) = midrad(middles(j),radii(j));
 	end
 
 end
