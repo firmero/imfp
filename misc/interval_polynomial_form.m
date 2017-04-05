@@ -136,9 +136,9 @@ iR = infsup(0,sup(ix));
 iright_max = form(up,iR);
 iright_min = form(down,iR);
 
-right_res = infsup(inf(iright_min),sup(iright_max));
+iright_res = infsup(inf(iright_min),sup(iright_max));
 
 % L U R
-iy = hull(ileft_res,right_res);
+iy = hull(ileft_res,iright_res);
 
 end
