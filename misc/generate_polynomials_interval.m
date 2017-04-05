@@ -63,8 +63,8 @@ mag_mid = 2*mag_mid;
 
 for i = 1:n 
 
-	middles = mag_mid*(rand(1,deg)-0.5)
-	radii = max_radius*rand(1,deg)
+	middles = mag_mid*(rand(1,deg)-0.5);
+	radii = max_radius*rand(1,deg);
 
 	for j = 1:deg
 		resi(i,j) = midrad(middles(j),radii(j));
