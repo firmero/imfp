@@ -8,19 +8,11 @@ function isf = pvslopeenc(p, ix)
 % .Description.
 %
 %    The function computes range of Slope form of polynomial p over ix.
+%  For polynomial p there exists uniquely defined polynomial q such that
+%  p(x) = p(c) + q(x)*(x-c), where c = mid(ix). Polynomial q has smaller
+%  degree by one.
 %  
-%  c = mid(ix)
-%  gc is uniquely defined polynomial such that: f(x) = f(c) + gc(x)*(x-c).
-%  Then the slope form is defined SF = f(c) + HF(gc,ix)*(ix-c)
-%
-%  Coefficients of gc:
-%  n = length(p)
-%  gc(x) = b_1*x^(n-2) + b_2*x^(n-3) + ... + b_(n-2)*x + b_(n-1)
-%
-%  b_1 =  a_1 
-%  b_2 =  a_1*c + a_2 
-%  b_3 = (a_1*c + a_2)*c + a_3 
-%  ...
+%  Slope form is defined as SF = p(c) + HF(q,ix)*(ix-c)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -33,10 +25,21 @@ function isf = pvslopeenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
+%  isf ... Slope form
+%
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
-%  isf ... Slope form
+%  Coefficients of polynomial q such that p(x) = p(c) + q(x)*(x-c)
+%  n = length(p)
+%
+%  q(x) = q_1*x^(n-2) + q_2*x^(n-3) + ... + q_(n-2)*x + q_(n-1)
+%
+%  q_i = sum j=1..i a_j*c^(i-j) 
+%
+%  That can be compute using horner scheme:
+%  q_1 = a_1
+%  q_i = q_(i-1)*c + a_i,  i = 2..n-1
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -62,18 +65,20 @@ end
 
 c = mid(ix);
 
-% get coefficients of polynom gc()
-g = repmat(intval(0),1,n-1);
-
-g(1) = p(1);
+% coefficients of polynomial q
+iq = repmat(intval(0),1,n-1);
+iq(1) = p(1);
 for i = 2:n-1
-	g(i) = g(i-1)*c + p(i);
+	iq(i) = iq(i-1)*c + p(i);
 end
 
-% todo intval coefficients? 
-hf_g = pvhornerenc(g,ix);
+iyhorner_q = pvihornerenc(iq,ix);
 
-p_at_c = g(n-1)*c + p(n);
-isf = p_at_c + hf_g*(ix-c);
+% iq_(n-1) = sum j=1..(n-1) a_j*c^(n-1-j) 
+% p(n) = a_n
+ip_at_c = iq(n-1)*c + p(n);
+
+% SF = p(c) + HF(q,ix)*(ix-c)
+isf = ip_at_c + iyhorner_q*(ix-c);
 
 end
