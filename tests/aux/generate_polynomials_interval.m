@@ -55,7 +55,10 @@ if nargin < 4
 end
 
 deg = deg + 1;
-resi = repmat(repmat(intval(0),1,deg),n,1);
+% works for intlab, but not for octave interval pkg
+% resi = repmat(repmat(intval(0),1,deg),n,1);
+resi = intval(zeros(n,deg));
+
 middles = zeros(1,deg);
 radii = zeros(1,deg);
 

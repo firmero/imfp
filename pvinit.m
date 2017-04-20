@@ -29,15 +29,28 @@ function pvinit(par_opt)
 %
 %ENDDOC====================================================================
 
+running_octave = 0 ~= exist('OCTAVE_VERSION', 'builtin'); 
 has_intval_arithmetic = which('infsup');
-if (isempty(has_intval_arithmetic))
-	disp('---- Please initialize interval arithmetic, then call this function again.');
-	return
-end
 
 loc = mfilename('fullpath');
 global LOC_DIR;
-LOC_DIR = loc(1:end-6);
+LOC_DIR = loc(1:end-7);
+
+if (isempty(has_intval_arithmetic))
+	disp('-- Please initialize interval arithmetic, then call this function again.');
+	if (running_octave)
+		disp('It is possible to use INTLAB or Octave interval pkg.');
+		disp('-- In octave to get the latest version of interval pkg you can use command:');
+		disp('pkg install -forge interval');
+
+		disp('-- Or install interval pkg from lib directory:');
+		interval_pkg = [ LOC_DIR filesep 'lib' filesep 'interval-2.1.0.tar.gz'];
+		disp([ 'pkg install ' interval_pkg ]);
+		disp('-- To load octave interval use:');
+		disp('pkg load interval');
+	end
+	return
+end
 
 addpath( [ LOC_DIR filesep 'pv' ] );
 addpath( [ LOC_DIR filesep 'pv' filesep 'aux' ] );
@@ -45,14 +58,19 @@ addpath( [ LOC_DIR filesep 'pv' filesep 'aux' ] );
 addpath( [ LOC_DIR filesep 'tests' ] );
 addpath( [ LOC_DIR filesep 'tests' filesep 'aux' ] );
 
-running_octave = 0 ~= exist('OCTAVE_VERSION', 'builtin'); 
 
 if (running_octave)
+
 	% to support octave specific functions
 	addpath( [ LOC_DIR filesep 'pv' filesep 'aux' filesep 'octave_env'] );
 	addpath( [ LOC_DIR filesep 'tests' filesep 'aux' filesep 'octave_env'] );
-%else
-%	addpath( [ LOC_DIR filesep 'pv' filesep 'aux' filesep 'matlab_env'] );
+
+	has_intlab = which('intval');
+
+	if (isempty(has_intlab))
+		load_intlab_camouflage
+		disp 'problem...'
+	end
 end
 
 % 1 for parallel
