@@ -1,0 +1,62 @@
+<html> 
+<head> 
+<title>pvmeanvalenc.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> pvmeanvalenc.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+Mean value form of polynomial p over interval ix. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> ix  </b> ... interval x <br> 
+<b> p   </b> ... vector of polynomial coefficients [a_1 ... a_n] <br> 
+<br> 
+p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> itf  </b> ... Mean value form <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+From the mean value theorem: for all x and c in ix exists q in ix <br> 
+such that p(x) = p(c) + p`(q)*(x-c), therefore p(x) is in <br> 
+p(c) + p`(ix)*(x-c). Then p(ix) is subset of p(c) + p`(ix)*(ix-c). <br> 
+Mean value form is a special case when c = mid(iX); <br> 
+<br> 
+MVF(p,mid(ix)) = p(mid(ix)) + HF(p',ix)*(ix-mid(ix)) <br> 
+<br> 
+The midpoint of ix is optimal. For all t in ix it holds that <br> 
+width(MVF(p,mid(ix))) <= width(MVF(p,t)) <br> 
+<br> 
+If 0 is not in HF(p',ix) then range is without overestimation. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Thu Apr 20 09:55:54 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

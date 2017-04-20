@@ -1,0 +1,66 @@
+<html> 
+<head> 
+<title>pvslopeenc.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> pvslopeenc.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+Slope form of polynomial p over interval ix. <br> 
+For polynomial p there exists uniquely defined polynomial q such that <br> 
+p(x) = p(c) + q(x)*(x-c), where c = mid(ix). Polynomial q has smaller <br> 
+degree by one. <br> 
+<br> 
+Slope form is defined as SF = p(c) + HF(q,ix)*(ix-c) <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> ix  </b> ... interval x <br> 
+<b> p   </b> ... vector of polynomial coefficients [a_1 ... a_n] <br> 
+<br> 
+p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> isf  </b> ... Slope form <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+Coefficients of polynomial q such that p(x) = p(c) + q(x)*(x-c) <br> 
+n = length(p) <br> 
+<br> 
+q(x) = q_1*x^(n-2) + q_2*x^(n-3) + .. + q_(n-2)*x + q_(n-1) <br> 
+<br> 
+q_i = sum j=1..i a_j*c^(i-j) <br> 
+<br> 
+That can be compute using horner scheme: <br> 
+q_1 = a_1 <br> 
+q_i = q_(i-1)*c + a_i,  i = 2..n-1 <br> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Thu Apr 20 09:55:54 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

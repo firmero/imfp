@@ -1,4 +1,4 @@
-function [c_left, c_right] = centres_mean_value_form_(ip_derivated, ix)
+function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
 %BEGINDOC==================================================================
 % .Author
 %

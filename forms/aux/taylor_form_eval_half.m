@@ -1,4 +1,4 @@
-function itfh = taylor_form_eval_half_(itay_coeff,r)
+function itfh = taylor_form_eval_half(itay_coeff,r)
 %BEGINDOC==================================================================
 % .Author
 %

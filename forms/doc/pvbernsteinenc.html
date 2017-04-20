@@ -1,0 +1,99 @@
+<html> 
+<head> 
+<title>pvbernsteinenc.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> pvbernsteinenc.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+Bernstein form is the hull of set of b_j for j=0..k, <br> 
+b_j is j-th Bernstein coefficients of order k over ix. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> p   </b> ... vector of polynomial coefficients [a_1 ... a_n] <br> 
+<b> ix  </b> ... interval x <br> 
+<b> k   </b> ... optional, should be at least deg(p) (it is default value), <br> 
+greater value leads to tighter enclosure <br> 
+<br> 
+p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> ibf  </b> ... Bernstein form <br> 
+<b> ver  </b> ... 1 iff Bernstein form is exact, otherwise 0 <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+The j-th Generalized Bernstein polynomial of order k over ix is defined <br> 
+as: <br> 
+<br> 
+p_j(x) = (k choose j)*(x-inf(ix))^j*(sup(ix)-x)^(k-j) / width(ix)^k <br> 
+<br> 
+Generalized Bernstein polynomials p_j for j=0..k forms a basis of the <br> 
+vector space of polynomials of degree <= k. So, k in the call should be <br> 
+at least degree of p. <br> 
+<br> 
+The j-th Generalized Bernstein coefficient of p of order k over ix <br> 
+is defined as: <br> 
+<br> 
+b_j = sum i=0..j (j over i)/(k over i)*tay_coeff(i,inf(ix))*width(ix)^i <br> 
+<br> 
+where tay_coeff(i,z) = (i-th derivative of p at z) / i! <br> 
+<br> 
+Polynomial p can be rewritten as <br> 
+<br> 
+p(x) = sum j=0..k  b_j * p_j(x) <br> 
+<br> 
+Bernstein form is the hull of set of b_j for j=0..k. <br> 
+That form doesn't overestimate if and if only max and min of b_j j=0..k <br> 
+is in {b_0, b_k}. <br> 
+<br> 
+Algorithm for computation of Bernstein coefficients uses the following <br> 
+scheme: <br> 
+<br> 
+d = degree of p <br> 
+n = d + 1 <br> 
+<br> 
+for i=1..n <br> 
+v_i_0 = width(ix)^(i-1) / (k over (i-1)) * tay_coeff((i-1),inf(ix)) <br> 
+=(width(ix)^(i-1) / (k*(k-1)*..*(k-i+2))) * (i-1)! * <br> 
+* tay_coeff((i-1),inf(ix)) <br> 
+<br> 
+for j = 1..k-d                        v_n_j = v_n_0 <br> 
+<br> 
+for j = 1..k   i=1..min(n-1, k-j+1)   v_i_j = v_i_(j-1) + v_(i+1)_(j-1) <br> 
+<br> 
+Then b_j = v_1_j     for j=0..k <br> 
+<br> 
+The implementation use only one dimensional array iv size of n. <br> 
+Direction j symbolizes the j-th computation round. After the j-th loop <br> 
+iv(i) = iv_i_j for all i where iv_i_j is defined. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Thu Apr 20 09:55:54 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

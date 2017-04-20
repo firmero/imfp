@@ -62,7 +62,7 @@ p_iderivated = derivate_polynomial(p);
 ihf_derivated = pvhornerenc(p_iderivated,ix);
 
 % find optimal points
-[c_left, c_right] = centres_mean_value_form_(ihf_derivated,ix);
+[c_left, c_right] = centres_mean_value_form(ihf_derivated,ix);
 
 oldmod = getround();
 setround(1);

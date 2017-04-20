@@ -1,0 +1,65 @@
+<html> 
+<head> 
+<title>pvmeanvalbcenc.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> pvmeanvalbcenc.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+Bicentred mean value form of polynomial p over interval ix. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> ix  </b> ... interval x <br> 
+<b> p   </b> ... vector of polynomial coefficients [a_1 ... a_n] <br> 
+<br> 
+p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> imvfbc  </b> ... Bicentred mean value form <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+Bicentred mean value form evaluates mean value form twice and constructs <br> 
+final range. <br> 
+MVF = p(c) + HF(p',ix)*(ix-c), where c = mid(ix) <br> 
+MVFB uses as c optimal points c_left and c_right, than for all t in ix <br> 
+it holds: <br> 
+<br> 
+sup(MVF(p,c_right)) <= sup(MVF(p,t)) <br> 
+inf(MVF(p,c_left))  >= inf(MVF(p,t)) <br> 
+<br> 
+MVFB(p,ix) = [inf(MVFC(ix,c_left)), sup(MVFC(ix,c_right))] <br> 
+where MVFC(ix,t) = HF(p,t) + HF(p`,ix)*(ix-t) <br> 
+<br> 
+If 0 is not in interior of HF(p',ix) then range is without <br> 
+overestimation. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Thu Apr 20 09:55:54 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

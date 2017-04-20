@@ -1,0 +1,78 @@
+<html> 
+<head> 
+<title>pvhornerenc.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> pvhornerenc.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+Horner form of polynomial p over interval ix. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> p   </b> ... vector of polynomial coefficients [a_1 ... a_n] <br> 
+<b> ix  </b> ... interval x <br> 
+greater value leads to tighter enclosure <br> 
+<br> 
+p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> ihf  </b> ... Horner form <br> 
+<b> ver  </b> ... if 1 then Horner form do not overestimate <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+The implementation tests sufficient condition for non-overestimation <br> 
+of Horner form. The result of test is returned by variable ver. <br> 
+<br> 
+The condition is: if the intersection of io and interior of ix <br> 
+is empty then Horner form is exact. <br> 
+<br> 
+io is the hull of all real x such that q_i(x) = 0 for some i in 1..n, <br> 
+n = length(p). It's evident that 0 is in io, if degree is more than 0. <br> 
+<br> 
+q_i is defined for i = 1..n: <br> 
+<br> 
+q_1(x)     = a_1 <br> 
+q_i(x)     = q_(i-1)(x)*x + a_i  for i = 1..n <br> 
+<br> 
+The range of Horner form of p is obviously q_n(ix). <br> 
+<br> 
+The emptiness of intersection of io and interior of ix is equivalent <br> 
+to satisfying the following conditions: <br> 
+<br> 
+inf(ix) >= 0 and inf(HF(q_i,ix)) >= 0 for i=1..n <br> 
+or <br> 
+sup(ix) <= 0 and inf(sgn_i*HF(q_i,ix)) >= 0 for i=1..n <br> 
+where for j = 1..n <br> 
+sgn_j =  1 if j is odd <br> 
+sgn_j = -1 if j is even <br> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Thu Apr 20 09:55:54 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

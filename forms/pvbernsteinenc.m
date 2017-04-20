@@ -121,7 +121,7 @@ end
 % iv(i) = w^(i-1)*(i-1)! / (k*(k-1)*...*(k-i+2))   for i=2..n
 
 
-itc = taylor_coefficients_(p,inf(ix));
+itc = taylor_coefficients(p,inf(ix));
 % itc(i) = HF( (i-1) derivative of p, inf(ix))/ (i-1)!
 for i = 1:n
 	iv(i) = iv(i)*itc(i);

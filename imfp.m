@@ -46,16 +46,19 @@ global IMFP_DIR;
 IMFP_DIR = loc(1:end-6);
 
 addpath( [ IMFP_DIR filesep 'forms' ] );
-addpath( [ IMFP_DIR filesep 'misc' ] );
+addpath( [ IMFP_DIR filesep 'forms' filesep 'aux' ] );
+
 addpath( [ IMFP_DIR filesep 'tests' ] );
+addpath( [ IMFP_DIR filesep 'tests' filesep 'aux' ] );
 
 running_octave = 0 ~= exist('OCTAVE_VERSION', 'builtin'); 
 
 if (running_octave)
 	% to support octave specific functions
-	addpath( [ IMFP_DIR filesep 'octave_env' ] );
+	addpath( [ IMFP_DIR filesep 'forms' filesep 'aux' filesep 'octave_env'] );
+	addpath( [ IMFP_DIR filesep 'tests' filesep 'aux' filesep 'octave_env'] );
 %else
-%	addpath( [ IMFP_DIR filesep 'matlab_env' ] );
+%	addpath( [ IMFP_DIR filesep 'forms' filesep 'aux' filesep 'matlab_env'] );
 end
 
 % 1 for parallel
@@ -95,7 +98,9 @@ if (par && running_octave)
 	% running script makes local functions global in octave,
 	% not working in matlab :/
 	load_interval_forms_par;
-	addpath( [ IMFP_DIR filesep 'misc/evaluate_polynomial/private' ] );
+
+	% while testing use parallel version of evaluation of polynomial
+	addpath( [ IMFP_DIR filesep 'tests/aux/evaluate_polynomial/private' ] );
 	disp 'paralell...';
 
 	main;
@@ -119,9 +124,9 @@ function load_noparallel
 	disp 'no paralell...';
 	% in matlab cannot promote local function to global
 	% by calling script :/
-	addpath( [ IMFP_DIR filesep 'misc/interval_polynomial_forms' ] );
+	addpath( [ IMFP_DIR filesep 'forms/aux/interval_polynomial_forms' ] );
 	% shade parallel version
-	addpath( [ IMFP_DIR filesep 'misc/evaluate_polynomial' ] );
+	addpath( [ IMFP_DIR filesep 'tests/aux/evaluate_polynomial' ] );
 end
 
 function main

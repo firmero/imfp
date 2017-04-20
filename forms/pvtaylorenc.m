@@ -66,7 +66,7 @@ c = mid(ix);
 r = rad(ix);
 
 n = length(p);
-itay_coeff = taylor_coefficients_(p,intval(c));
+itay_coeff = taylor_coefficients(p,intval(c));
 
 oldmod = getround();
 setround(1);

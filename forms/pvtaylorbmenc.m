@@ -69,7 +69,7 @@ c = mid(ix);
 r = rad(ix);
 
 n = length(p);
-itay_coeff = taylor_coefficients_(p,c);
+itay_coeff = taylor_coefficients(p,c);
 % itay_coeff(i) = a(p,c,i-1)
 
 % we want to evaluate horner range of polynomial p
@@ -77,7 +77,7 @@ itay_coeff = taylor_coefficients_(p,c);
 % p(x) = itay_coeff(n)*x^(n-1)+ itay_coeff(n-1)*x^(n-2) +...+ itay_coeff(1)
 
 % right half [0,r]
-iright = taylor_form_eval_half_(itay_coeff,r);
+iright = taylor_form_eval_half(itay_coeff,r);
 
 % left half [-r,0] transform to [0,r] and p_series to p_series(-x)
 % coefficients for p_series(-x)
@@ -85,7 +85,7 @@ for i = 2:2:n
 	itay_coeff(i) = itay_coeff(i) * -1;
 end
 
-ileft = taylor_form_eval_half_(itay_coeff,r);
+ileft = taylor_form_eval_half(itay_coeff,r);
 
 itfbm = hull(ileft,iright);
 
