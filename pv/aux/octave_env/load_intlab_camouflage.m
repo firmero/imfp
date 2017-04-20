@@ -7,6 +7,7 @@
 % .Description.
 %
 %  Script remaps some INTLAB functions to Octave interval pkg's functions.
+%  Not working when INTLAB paths are loaded.
 %
 %--------------------------------------------------------------------------
 % .License.

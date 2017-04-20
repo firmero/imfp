@@ -114,7 +114,7 @@ if (par && running_octave)
 
 	% while testing use parallel version of evaluation of polynomial
 	addpath( [ LOC_DIR filesep 'tests/aux/evaluate_polynomial/private' ] );
-	disp 'paralell...';
+	disp 'DEBUG: paralell...';
 
 	main;
 	return
@@ -134,7 +134,7 @@ function load_noparallel
 
 	global LOC_DIR;
 
-	disp 'no paralell...';
+	disp 'DEBUG: no paralell...';
 	% in matlab cannot promote local function to global
 	% by calling script :/
 	addpath( [ LOC_DIR filesep 'pv/aux/interval_polynomial_forms' ] );
