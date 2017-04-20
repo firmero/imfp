@@ -69,7 +69,7 @@ end
 [iright verright] = pvbernsteinenc(p,infsup(0,sup(ix)), k);
 
 % coefficients for p(-x), then call with x
-% p(-x) = a_1*(-x)^(n-1) + a_2*(-x)^(n-2) + ... + a_(n-1)*(-x)^1 + a_n
+% p(-x) = a_1*(-x)^(n-1) + a_2*(-x)^(n-2) + .. + a_(n-1)*(-x)^1 + a_n
 start = 1;
 if (odd(n))
 	start = start + 1;

@@ -1,14 +1,13 @@
-function iy = pvihornerbzenc(ip,ix)
+function iy = pvimeanvalenc(ip,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Horner form with bisection at zero of interval polynomial 
-%  ip over ix.
+%  Evaluate Mean value form of interval polynomial ip over ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -16,18 +15,18 @@ function iy = pvihornerbzenc(ip,ix)
 %  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
 %  ix ... interval x
 %
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Horner form with bisection at zero of interval 
-%         polynomial ip over ix
+%  iy ... range of Mean value form of interval polynomial ip over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
-%  Wrapper function.
+%  Wrapper function. It calls interval_polynomial_form with proper form
+%  handler.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -40,11 +39,11 @@ function iy = pvihornerbzenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-iy = interval_polynomial_form(ip,ix,@pvhornerbzenc);
+iy = interval_polynomial_form(ip,ix,@pvmeanvalenc);
 
 end

@@ -1,6 +1,6 @@
 function iy = pviinterpolationenc(ip,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -15,7 +15,7 @@ function iy = pviinterpolationenc(ip,ix)
 %  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
 %  ix ... interval x
 %
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -25,7 +25,8 @@ function iy = pviinterpolationenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
-%  Wrapper function.
+%  Wrapper function. It calls interval_polynomial_form with proper form
+%  handler.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -38,7 +39,7 @@ function iy = pviinterpolationenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

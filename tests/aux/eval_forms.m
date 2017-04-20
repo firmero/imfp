@@ -1,6 +1,6 @@
 function res_cell = eval_forms(forms_cell,p,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -15,7 +15,7 @@ function res_cell = eval_forms(forms_cell,p,ix)
 %  p          ... vector of polynomial coefficients [a_1 ... a_n]
 %  ix         ... interval x
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -38,7 +38,7 @@ function res_cell = eval_forms(forms_cell,p,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

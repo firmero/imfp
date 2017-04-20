@@ -1,6 +1,6 @@
 function itfbm = pvtaylorbmenc(p, ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -53,7 +53,7 @@ function itfbm = pvtaylorbmenc(p, ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

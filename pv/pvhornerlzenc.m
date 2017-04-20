@@ -1,31 +1,22 @@
-function iy = pvimeanvalenc(ip,ix)
+function res = pvhornerlzenc(polynomial_coefficients, X)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Mean value form of interval polynomial ip over ix.
+%  Horner form for X = [0,R]
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
-%  ix ... interval x
-%
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
-%
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Mean value form of interval polynomial ip over ix
-%
 %--------------------------------------------------------------------------
 % .Implementation details.
-%
-%  Wrapper function.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -38,11 +29,39 @@ function iy = pvimeanvalenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-iy = interval_polynomial_form(ip,ix,@pvmeanvalenc);
+n = length(polynomial_coefficients);
+% allocate vector
+p = repmat(intval(0),1,n);
 
+p(1) = intval(polynomial_coefficients(1));
+
+% setround(1);
+xx = sup(X);
+
+for i = 2:n
+
+	if (inf(p(i-1)) < 0)
+		setround(-1);
+		left = p(i-1)*xx + polynomial_coefficients(i);
+	else % save multiply by zero
+		left = polynomial_coefficients(i);
+	end
+
+	if (sup(p(i-1)) > 0)
+		setround(1);
+		right = p(i-1)*xx + polynomial_coefficients(i);
+	else
+		right = polynomial_coefficients(i);
+	end
+
+	p(i) = infsup(inf(intval(left)), sup(intval(right)));
+
+end
+
+res = p(n);
 end

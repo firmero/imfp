@@ -1,13 +1,13 @@
 function iy = evaluate_parabola(ia,ib,ic,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Computes range of parabola p(x)= ia*x^2 + ib*x + ic over interval ix.
+%  The range of parabola p(x)= ia*x^2 + ib*x + ic over interval ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -38,7 +38,7 @@ function iy = evaluate_parabola(ia,ib,ic,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

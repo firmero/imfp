@@ -1,26 +1,32 @@
-function iderivative = derivate_polynomial(ip)
+function iy = pvislopeenc(ip,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Evaluate Slope form of interval polynomial ip over ix.
+%
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  ip  ... vector of polynomial coefficients [ia_1 ... ia_n]
+%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
+%  ix ... interval x
 %
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iderivative ... vector of coefficients of derivative of ip
+%  iy ... range of Slope form of interval polynomial ip over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Wrapper function. It calls interval_polynomial_form with proper form
+%  handler.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -33,25 +39,11 @@ function iderivative = derivate_polynomial(ip)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-% the length of derivative
-nn = length(ip) - 1;
-
-iderivative = repmat(intval(0),1,nn);
-
-% coeffcient produced by derivation
-c = nn;
-for i = 1:nn
-	iderivative(i) = c * ip(i);
-	c = c - 1;
-end
-
-if (nn == 0)
-	iderivative(1) = intval(0);
-end
+iy = interval_polynomial_form(ip,ix,@pvslopeenc);
 
 end

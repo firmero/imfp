@@ -1,32 +1,31 @@
-function iy = pviinterpolationslenc(ip,ix)
+function iy = range_power(ix,n)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Interpolation slope form of interval polynomial ip over ix.
+%  The range of natural power over interval ix (as a function).
+%
+%  To achieve:
+%
+%	[-8,1] = range_power([-2,1],3)  !=  [-2,1]*[-2,1]*[-2,1]=[-8,4]
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
-%  ix ... interval x
-%
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%  ix ... interval
+%  n  ... natural number
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Interpolation slope form of interval polynomial ip 
-%         over ix
+%  iy ... the range of n-th power function over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
-%
-%  Wrapper function.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -39,11 +38,16 @@ function iy = pviinterpolationslenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-iy = interval_polynomial_form(ip,ix,@pvinterpolationslenc);
+if (even(n))
+	iy = ix^n;
+	return
+end
+
+iy = infsup(inf(ix)^n, sup(ix)^n);
 
 end

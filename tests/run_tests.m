@@ -1,6 +1,6 @@
 function run_tests()
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -27,7 +27,7 @@ function run_tests()
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
@@ -55,7 +55,7 @@ function test_suite1(stats_filename, test_repetition)
 				{ @pvhornerbzenc, 'HFBZ'};
 
 				{ @pvmeanvalenc, 'MVF'};
-				{ @pvmeanvalslenc, 'MVSF'} ;
+				{ @pvslopeenc, 'MVSF'} ;
 				{ @pvmeanvalbcenc, 'MVFB'};
 
 				{ @pvtaylorenc, 'TF'};
@@ -139,7 +139,7 @@ function test_suite2(stats_filename, test_repetition)
 				{ @pvihornerbzenc, 'iHFBZ'};
 
 				{ @pvimeanvalenc, 'iMVF'};
-				{ @pvimeanvalslenc, 'iMVSF'} ;
+				{ @pvislopeenc, 'iMVSF'} ;
 				% problem infsup
 				% { @pvimeanvalbcenc, 'iMVFB'};
 

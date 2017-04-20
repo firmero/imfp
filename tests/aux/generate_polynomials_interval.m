@@ -1,6 +1,6 @@
 function resi = generate_polynomials_interval(deg, n, max_radius, mag_mid)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -38,7 +38,7 @@ function resi = generate_polynomials_interval(deg, n, max_radius, mag_mid)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

@@ -1,19 +1,20 @@
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%--------------------------------------------------------------------------
-% .Input parameters.
-%
-%--------------------------------------------------------------------------
-% .Output parameters.
+%  This script makes functions for evaluating range of interval polynomials
+%  to use parallelism during execution (available in Octave, using pkg 
+%  parallel).
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  The interval version of the certain form f
+%  is call of interval_polynomial_form_par with f as handler.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -26,7 +27,7 @@
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

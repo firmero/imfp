@@ -1,6 +1,6 @@
 function iy = interval_polynomial_form(ip,ix,form)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -18,7 +18,7 @@ function iy = interval_polynomial_form(ip,ix,form)
 %  ix   ... interval x
 %  form ... function handler accepting point polynomial and ix
 %
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -59,12 +59,12 @@ function iy = interval_polynomial_form(ip,ix,form)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-if (!isintval(ip(1)))
+if (~isintval(ip(1)))
 	iy = form(ip,ix);
 	return
 end

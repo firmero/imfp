@@ -1,28 +1,25 @@
-function iy = range_power(ix,n)
+function pi = invert_polynomial(p)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  The range of natural power over interval ix (as a function).
-%
-%  To achieve:
-%
-%	[-8,1] = range_power([-2,1],3)  !=  [-2,1]*[-2,1]*[-2,1]=[-8,4]
+%  Invert polynomial coefficients.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  ix ... interval
-%  n  ... natural number
+%  p ... vector of polynomial coefficients [a_1 ... a_n]
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... the range of n-th power function over ix
+%  pi ... if n is odd then it returns 
+%                         [  a_1 -a_2  a_3 ... -a_(n-1) a_n]
+%                    else [ -a_1  a_2 -a_3 ... -a_(n-1) a_n]
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -38,16 +35,19 @@ function iy = range_power(ix,n)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-if (even(n))
-	iy = ix^n;
-	return
-end
+n = length(p);
 
-iy = infsup(inf(ix)^n, sup(ix)^n);
+sgn = -1;
+pi(n) = p(n);
+
+for i = n-1:-1:1
+	pi(i) = sgn * p(i); 
+	sgn = sgn * (-1);
+end
 
 end

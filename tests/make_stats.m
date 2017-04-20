@@ -1,6 +1,6 @@
 function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -29,7 +29,7 @@ function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

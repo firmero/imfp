@@ -1,13 +1,13 @@
-function iy = pvimeanvalbcenc(ip,ix)
+function iy = pviinterpolation2enc(ip,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Bicentred mean value form of interval polynomial ip over ix.
+%  Evaluate Interpolation form 2 of interval polynomial ip over ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -15,18 +15,18 @@ function iy = pvimeanvalbcenc(ip,ix)
 %  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
 %  ix ... interval x
 %
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Bicentred mean value form of interval 
-%         polynomial ip over ix
+%  iy ... range of Interpolation form 2 of interval polynomial ip over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
 %
-%  Wrapper function.
+%  Wrapper function. It calls interval_polynomial_form with proper form
+%  handler.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -39,11 +39,11 @@ function iy = pvimeanvalbcenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-iy = interval_polynomial_form(ip,ix,@pvmeanvalbcenc);
+iy = interval_polynomial_form(ip,ix,@pvinterpolation2enc);
 
 end

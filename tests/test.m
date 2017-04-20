@@ -3,7 +3,7 @@ function test_filename = test(deg, polynomials_count, ...
 							evaluate_polynomial_handler, ...
 							X, forms_struct, prefix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -30,7 +30,7 @@ function test_filename = test(deg, polynomials_count, ...
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

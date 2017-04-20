@@ -1,6 +1,6 @@
 function y = evaluate_polynomial(polynomial_coefficients, X)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -27,7 +27,7 @@ function y = evaluate_polynomial(polynomial_coefficients, X)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

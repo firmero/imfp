@@ -1,33 +1,33 @@
-function iy = pvibernsteinbzenc(ip,ix)
+function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Bernstein form with bisection at zero of interval polynomial
-%  ip over ix.
+%  Computes optimal points c_left and c_right in sense of:
+% 
+%  For all t in ix it holds:
+%
+%	sup(MVF(p,c_right)) <= sup(MVF(p,t))
+%	inf(MVF(p,c_left))  >= inf(MVF(p,t))
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
-%  ix ... interval x
-%
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%  ip_derivated ... the range of derivative polynomial p over ix
+%  ix           ... interval x
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Bernstein form with bisection at zero of interval 
-%         polynomial ip over ix
+%  c_left  ... the left optimal point for MVF
+%  c_right ... the right optimal point for MVF
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
-%
-%  Wrapper function.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -40,11 +40,26 @@ function iy = pvibernsteinbzenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-iy = interval_polynomial_form(ip,ix,@pvbernsteinbzenc);
+if (inf(ip_derivated) >= 0)
+	c_left = inf(ix);
+	c_right = sup(ix);
+	return
+end
+
+if (sup(ip_derivated) <= 0)
+	c_left = sup(ix);
+	c_right = inf(ix);
+	return
+end
+
+% else approximate, it is correct thanks to lemma of optimality
+width = sup(ix) - inf(ix);
+c_right = (sup(ip_derivated)*sup(ix) - inf(ip_derivated)*inf(ix))/width;
+c_left  = (sup(ip_derivated)*inf(ix) - inf(ip_derivated)*sup(ix))/width;
 
 end

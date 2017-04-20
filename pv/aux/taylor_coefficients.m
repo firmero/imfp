@@ -1,31 +1,31 @@
-function iy = pvislopeenc(ip,ix)
+function itc = taylor_coefficients(p, x)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Slope form of interval polynomial ip over ix.
+%  Computes taylor coefficients of polynomial p at point x.
+%
+%  itc(i) = HF(i-1 derivative of p, x) / (i-1)!  for i =1..length(p)
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
-%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  x  ... evaluation point
 %
-%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + ... + ia_(n-1)*x^1 + ia_n
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Slope form of interval polynomial ip over ix
-%
+%  itc ... vector of taylor coefficients
+%  
 %--------------------------------------------------------------------------
 % .Implementation details.
-%
-%  Wrapper function.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -38,11 +38,40 @@ function iy = pvislopeenc(ip,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-iy = interval_polynomial_form(ip,ix,@pvslopeenc);
+n = length(p);
+
+% allocate output vector
+itc = repmat(intval(0),1,n);
+itc(1) = pvhornerenc(p,x);
+
+% factorial
+fact = intval(1);
+
+% r will be the length of i-1 derivative
+r = n-1;
+
+for i = 2:n
+
+	% multiplication constant produced by derivation
+	c = r;
+
+	% derivate
+	for j = 1:r
+		p(j) = c*p(j);
+		c = c-1;
+	end
+	% p_1 ... p_r are coefficients of (i-1) derivative of p
+	ptmp = p(1:r);
+
+	itc(i) = pvhornerenc(ptmp,x) / fact;
+	fact = fact * i;
+	r = r - 1;
+
+end
 
 end

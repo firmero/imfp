@@ -1,6 +1,6 @@
 function itfh = taylor_form_eval_half(itay_coeff,r)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -42,7 +42,7 @@ function itfh = taylor_form_eval_half(itay_coeff,r)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

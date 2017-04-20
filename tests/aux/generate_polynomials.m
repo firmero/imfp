@@ -1,6 +1,6 @@
 function res = generate_polynomials(deg, n)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
@@ -34,7 +34,7 @@ function res = generate_polynomials(deg, n)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

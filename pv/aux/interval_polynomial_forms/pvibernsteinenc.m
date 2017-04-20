@@ -1,35 +1,32 @@
-function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
+function iy = pvibernsteinenc(ip,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Computes optimal points c_left and c_right in sense of:
-% 
-%  For all t in ix it holds:
-%
-%	sup(MVF(p,c_right)) <= sup(MVF(p,t))
-%	inf(MVF(p,c_left))  >= inf(MVF(p,t))
-%
-%	width(MVF(p,mid(ix))) <= width(MVF(p,t))
+%  Evaluate Bernstein form of interval polynomial ip over ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  ip_derivated ... the range of derivative polynomial p over ix
-%  ix           ... interval x
+%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
+%  ix ... interval x
+%
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  c_left  ... the left optimal point for MVF
-%  c_right ... the right optimal point for MVF
+%  iy ... range of Bernstein form of interval polynomial ip over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Wrapper function. It calls interval_polynomial_form with proper form
+%  handler.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -42,26 +39,11 @@ function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-if (inf(ip_derivated) >= 0)
-	c_left = inf(ix);
-	c_right = sup(ix);
-	return
-end
-
-if (sup(ip_derivated) <= 0)
-	c_left = sup(ix);
-	c_right = inf(ix);
-	return
-end
-
-% else approximate, it is correct thanks to lemma of optimality
-width = sup(ix) - inf(ix);
-c_right = (sup(ip_derivated)*sup(ix) - inf(ip_derivated)*inf(ix))/width;
-c_left  = (sup(ip_derivated)*inf(ix) - inf(ip_derivated)*sup(ix))/width;
+iy = interval_polynomial_form(ip,ix,@pvbernsteinenc);
 
 end

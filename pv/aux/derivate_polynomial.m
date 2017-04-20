@@ -1,25 +1,25 @@
-function pi = invert_polynomial(p)
+function iderivative = derivate_polynomial(ip)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Invert polynomial coefficients.
+%  Derivative of ip.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p ... vector of polynomial coefficients [a_1 ... a_n]
+%  ip  ... vector of polynomial coefficients [ia_1 ... ia_n]
+%
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  pi ... if n is odd then it returns 
-%                         [  a_1 -a_2  a_3 ... -a_(n-1) a_n]
-%                    else [ -a_1  a_2 -a_3 ... -a_(n-1) a_n]
+%  iderivative ... vector of coefficients of derivative of ip
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -35,19 +35,25 @@ function pi = invert_polynomial(p)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-n = length(p);
+% the length of derivative
+nn = length(ip) - 1;
 
-sgn = -1;
-pi(n) = p(n);
+iderivative = repmat(intval(0),1,nn);
 
-for i = n-1:-1:1
-	pi(i) = sgn * p(i); 
-	sgn = sgn * (-1);
+% coeffcient produced by derivation
+c = nn;
+for i = 1:nn
+	iderivative(i) = c * ip(i);
+	c = c - 1;
+end
+
+if (nn == 0)
+	iderivative(1) = intval(0);
 end
 
 end
