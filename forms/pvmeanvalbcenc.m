@@ -1,11 +1,29 @@
 function imvfbc = pvmeanvalbcenc(p,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
+%
+%  Bicentred mean value form of polynomial p over interval ix.
+%
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n.
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%  imvfbc ... Bicentred mean value form
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
 %
 %  Bicentred mean value form evaluates mean value form twice and constructs
 %  final range.
@@ -16,29 +34,11 @@ function imvfbc = pvmeanvalbcenc(p,ix)
 %	sup(MVF(p,c_right)) <= sup(MVF(p,t))
 %	inf(MVF(p,c_left))  >= inf(MVF(p,t))
 %
-%	width(MVF(p,mid(ix))) <= width(MVF(p,t))
-%
 %  MVFB(p,ix) = [inf(MVFC(ix,c_left)), sup(MVFC(ix,c_right))]
 %		where MVFC(ix,t) = HF(p,t) + HF(p`,ix)*(ix-t)
 %
 %  If 0 is not in interior of HF(p',ix) then range is without
 %  overestimation.
-%
-%--------------------------------------------------------------------------
-% .Input parameters.
-%
-%  ix ... interval x
-%  p  ... vector of polynomial coefficients [a_1 ... a_n]
-%
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
-%
-%--------------------------------------------------------------------------
-% .Output parameters.
-%
-%  imvfbc ... Bicentred mean value form
-%
-%--------------------------------------------------------------------------
-% .Implementation details.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -51,7 +51,7 @@ function imvfbc = pvmeanvalbcenc(p,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

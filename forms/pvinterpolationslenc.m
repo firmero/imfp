@@ -1,20 +1,38 @@
 function iifsl = pvinterpolationslenc(p,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Interpolation slope form of polynomial p over interval ix.
+%
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%  iifsl ... Interpolation Slope form
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
 %  Interpolation slope form works similar as interpolation form.
 %  It uses uniquely defined polynomial gc(x) that:
 %		p(x) = p(c) + p`(c)*(x-c) + gc(x)*(x-c)^2
-%  !t evaluates gc over ix, and reduced previous equation to two parabolas.
+%  It evaluates gc over ix, and reduced previous equation to two parabolas.
 %
 %  ISF(X) = p(c) + [inf(parabola_down),sup(parabola_up)]
 %
-%  igc = HF(gc,ix)
+%  igc = HF(gc,ix), HF is Horner form
 %  c = mid(X)
 %
 %  parabola_up(x)   = p`(c)(x-c) + sup(igc)*(x-c)^2 
@@ -28,20 +46,6 @@ function iifsl = pvinterpolationslenc(p,ix)
 %						+ (-p`(c)*c+inf(igc)*c^2)
 %
 %--------------------------------------------------------------------------
-% .Input parameters.
-%
-%  p  ... vector of polynomial coefficients [a_1 ... a_n]
-%  ix ... interval x
-%
-%--------------------------------------------------------------------------
-% .Output parameters.
-%
-%  iifsl ... Interpolation Slope form
-%
-%--------------------------------------------------------------------------
-% .Implementation details.
-%
-%--------------------------------------------------------------------------
 % .License.
 %
 %  [license goes here]
@@ -52,7 +56,7 @@ function iifsl = pvinterpolationslenc(p,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

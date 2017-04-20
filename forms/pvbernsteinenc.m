@@ -1,24 +1,24 @@
 function [ibf ver] = pvbernsteinenc(p,ix,k)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Return the hull of the j-th Bernstein polynomials of order k over ix,
-%  j = 0..k where k >= deg(p).
+%  Bernstein form is the hull of set of b_j for j=0..k,
+%  b_j is j-th Bernstein coefficients of order k over ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
 %  ix ... interval x
-%  k  ... optional, should be at least deg(p), which is default value.
+%  k  ... optional, should be at least deg(p) (it is default value),
 %         greater value leads to tighter enclosure
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -38,7 +38,7 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %  vector space of polynomials of degree <= k. So, k in the call should be
 %  at least degree of p.
 %
-%  The j-th Generalized Bernstein coeffcient of p of order k over ix
+%  The j-th Generalized Bernstein coefficient of p of order k over ix
 %  is defined as:
 %
 %  b_j = sum i=0..j (j over i)/(k over i)*tay_coeff(i,inf(ix))*width(ix)^i
@@ -49,7 +49,7 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %
 %  p(x) = sum j=0..k  b_j * p_j(x)
 %
-%  Bernstein form is a hull of set of b_j for j=0..k.
+%  Bernstein form is the hull of set of b_j for j=0..k.
 %  That form doesn't overestimate if and if only max and min of b_j j=0..k
 %  is in {b_0, b_k}.
 %
@@ -57,11 +57,11 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %  scheme:
 %
 %  d = degree of p
-%  n = deg + 1
+%  n = d + 1
 %  
 %  for i=1..n 
-%   b_i_0 = width(ix)^(i-1) / (k over (i-1)) * tay_coeff((i-1),inf(ix))
-%         =(width(ix)^(i-1) / (k*(k-1)*...*(k-i+2))) * (i-1)! *
+%   v_i_0 = width(ix)^(i-1) / (k over (i-1)) * tay_coeff((i-1),inf(ix))
+%         =(width(ix)^(i-1) / (k*(k-1)*..*(k-i+2))) * (i-1)! *
 %           * tay_coeff((i-1),inf(ix))
 %
 %  for j = 1..k-d                        v_n_j = v_n_0
@@ -85,7 +85,7 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
@@ -104,10 +104,10 @@ end
 ix = intval(ix);
 w = sup(ix) - inf(ix);
 
-% used for computation of bernstein coefficients
+% used for computation of Bernstein coefficients
 iv = repmat(intval(0),1,n);
 
-% temporary, this doesn't represent all bernstein coefficients
+% temporary, this doesn't represent all Bernstein coefficients
 iv(1) = intval(1);
 
 % to simulate factorial (i-1)! and w^(i-1)
@@ -130,8 +130,8 @@ end
 %   iv(i) = v_i_0   for i=1..n
 
 
-% scheme to compute iteratively bernstein coefficients
-% after the j-th loop iv(1) is a b_j 
+% scheme to compute iteratively Bernstein coefficients
+% after the j-th loop iv(1) is Bernstein coefficient b_j 
 
 % v(n) is never modified, so after the j-th round 
 % it holds that v_n_j = v_n_0 = v(n)
@@ -150,6 +150,7 @@ end
 ib_k = iv(1);
 
 % overestimation test
+% are max and min of Bernstein coefficients from {b_0, b_k}?
 itmp = hull(ib_0, ib_k);
 if (itmp == ibf)
 	ver = 1;

@@ -1,30 +1,21 @@
 function iif = pvinterpolationenc(p,ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Interpolation form uses Taylor expansion of p at the middle c of ix:
-%  p(x) = p(c) + p`(c)*(x-c) + 1/2*p``(y)*(x-c)^2 for some y between
-%  x and c.
-%  Then for any m:
-%  p(x) = p(c) + p`(c)*(x-c) + 1/2*m*(x-c)^2 + 1/2*(p``(y)-m)*(x-c)^2
-%
-%  Interpolation form uses mid(HF(p``,ix)) as m.
-%  IF(ix) = HF(parabola,ix) + 1/2*(HF(p``,ix) - m)*(ix-c)^2
-%
-%  parabola(x) = 1/2*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 1/2*m*c^2)
-%
-%  Where HF is Horner form.
+%  Interpolation form of polynomial p over interval ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
 %  ix ... interval x
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -33,6 +24,19 @@ function iif = pvinterpolationenc(p,ix)
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Interpolation form uses Taylor expansion of p at the middle c of ix:
+%  p(x) = p(c) + p`(c)*(x-c) + 1/2*p``(y)*(x-c)^2 for some y between
+%  x and c.
+%  For any m it holds:
+%  p(x) = p(c) + p`(c)*(x-c) + 1/2*m*(x-c)^2 + 1/2*(p``(y)-m)*(x-c)^2
+%
+%  Interpolation form uses mid(HF(p``,ix)) as m.
+%  IF(ix) = HF(parabola,ix) + 1/2*(HF(p``,ix) - m)*(ix-c)^2
+%
+%  parabola(x) = 1/2*m*x^2 + (p`(c) - m*c)*x + (p(c) - p`(c)*c + 1/2*m*c^2)
+%
+%  Where HF is Horner form.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -45,7 +49,7 @@ function iif = pvinterpolationenc(p,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

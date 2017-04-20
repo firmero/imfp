@@ -10,9 +10,26 @@ function itfbm = pvtaylorbmenc(p, ix)
 %    The function computes range of Taylor form of polynomial p over
 %  interval ix using bisection at the zero of translated ix. Interval
 %  ix-c is centered interval [-r,r].
+%
 %  By bisection the overestimation error is reduced at least by half,
 %  because of evaluation Horner form over centered interval bisected
 %  at zero.
+%
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%  ix ... interval x
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%  itfbm ... Taylor form with bisection
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
 %
 %  c = mid(ix)
 %  r = rad(ix)
@@ -24,22 +41,6 @@ function itfbm = pvtaylorbmenc(p, ix)
 %		ix-c is centered interval
 %
 %  TFBM = hull(HF(p_series(-x),r), HF(p_series,r))
-%
-%--------------------------------------------------------------------------
-% .Input parameters.
-%
-%  ix ... interval x
-%  p  ... vector of polynomial coefficients [a_1 ... a_n]
-%
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
-%
-%--------------------------------------------------------------------------
-% .Output parameters.
-%
-%  itfbm ... Taylor form with bisection
-%
-%--------------------------------------------------------------------------
-% .Implementation details.
 %
 %--------------------------------------------------------------------------
 % .License.

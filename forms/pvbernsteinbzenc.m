@@ -1,23 +1,23 @@
 function [ibfbz ver] = pvbernsteinbzenc(p,ix,k)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Bernstein form with bisection at the zero.
+%  Bernstein form with the bisection of the input interval at the zero.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
 %  ix ... interval x
-%  k  ... optional, should be at least deg(p), which is default value.
+%  k  ... optional, should be at least deg(p) (it is the default value),
 %         greater value leads to tighter enclosure
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -43,7 +43,7 @@ function [ibfbz ver] = pvbernsteinbzenc(p,ix,k)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
@@ -53,7 +53,7 @@ n = length(p);
 % k should be at least n-1 (deg of polynomial)
 if (nargin() == 2)
 	k = n-1;
-% not hadle bad calling
+% not hadled bad calling
 elseif (k < n-1)
 	warning('Parameter k should be at least the degree of polynomial');
 	k = n-1;

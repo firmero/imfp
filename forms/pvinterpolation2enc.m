@@ -1,13 +1,31 @@
 function iif2 = pvinterpolation2enc(p,ix) 
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Interpolation form 2 gives no worse result as Interpolation form.
+%  Interpolation form 2 of polynomial p over interval ix.
+%  Interpolation form 2 gives not worse result as Interpolation form.
+%
+%--------------------------------------------------------------------------
+% .Input parameters.
+%
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
+%
+%--------------------------------------------------------------------------
+% .Output parameters.
+%
+%  iif2 ... Interpolation form 2
+%
+%--------------------------------------------------------------------------
+% .Implementation details.
+%
 %  Interpolation form follows from:
 %  p(x) = p(c) + p`(c)*(x-c) + 0.5*p``(y)*(x-c)^2,
 %    where c = mid(ix), y is between c and x.
@@ -27,21 +45,6 @@ function iif2 = pvinterpolation2enc(p,ix)
 %    parabola_down(x) =	  0.5*inf(HF(p``,ix))*x^2 
 %						+ (p`(c) - inf(HF(p``,ix))*c)*x 
 %						+ (0.5*inf(HF(p``,ix)*c - p`(c))*c
-%
-%--------------------------------------------------------------------------
-% .Input parameters.
-%
-%  p  ... vector of polynomial coefficients [a_1 ... a_n]
-%  ix ... interval x
-%
-%--------------------------------------------------------------------------
-% .Output parameters.
-%
-%  iif2 ... Interpolation form 2
-%
-%--------------------------------------------------------------------------
-% .Implementation details.
-%
 %--------------------------------------------------------------------------
 % .License.
 %
@@ -53,7 +56,7 @@ function iif2 = pvinterpolation2enc(p,ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

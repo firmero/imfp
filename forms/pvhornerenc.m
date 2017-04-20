@@ -1,13 +1,13 @@
 function [ihf ver] = pvhornerenc(p, ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Compute Horner form of polynomial p over interval ix.
+%  Horner form of polynomial p over interval ix.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -16,13 +16,13 @@ function [ihf ver] = pvhornerenc(p, ix)
 %  ix ... interval x
 %         greater value leads to tighter enclosure
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
 %  ihf ... Horner form
-%  ver ... if 1 then Horner form do not overetimate
+%  ver ... if 1 then Horner form do not overestimate
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -46,9 +46,9 @@ function [ihf ver] = pvhornerenc(p, ix)
 %  The emptiness of intersection of io and interior of ix is equivalent
 %  to satisfying the following conditions:
 %
-%  inf(x) >= 0 and inf(HF(q_i,x)) >= 0 for i=1..n
+%  inf(ix) >= 0 and inf(HF(q_i,ix)) >= 0 for i=1..n
 %    or	
-%  sup(x) <= 0 and inf(sgn_i*HF(q_i,x)) >= 0 for i=1..n
+%  sup(ix) <= 0 and inf(sgn_i*HF(q_i,ix)) >= 0 for i=1..n
 %    where for j = 1..n
 %      sgn_j =  1 if j is odd
 %      sgn_j = -1 if j is even
@@ -64,7 +64,7 @@ function [ihf ver] = pvhornerenc(p, ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================

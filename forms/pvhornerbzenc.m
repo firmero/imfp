@@ -1,13 +1,13 @@
-function res = pvhornerbzenc(polynomial_coefficients, X)
+function ihfbz = pvhornerbzenc(p, ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Horner form for X containing 0
+%  Horner form for ix containing 0
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -29,22 +29,23 @@ function res = pvhornerbzenc(polynomial_coefficients, X)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
 
-if (~in(0,X))
+ix = intval(ix);
+if (~in(0,ix))
 	warning('Interval doesn''t contain 0');
-	res = pvhornerenc(polynomial_coefficients,X);
+	ihfbz = pvhornerenc(p,ix);
 	return
 end
 
-left_interval  = infsup(inf(X),0);
-right_interval = infsup(0,sup(X));
+ileft  = infsup(inf(ix),0);
+iright = infsup(0,sup(ix));
 
 
-res = hull(pvhornerlzenc(invert_polynomial(polynomial_coefficients),...
-							-left_interval), ...
-		  pvhornerlzenc(polynomial_coefficients,right_interval));
+% todo rucne?
+ihfbz = hull(pvhornerlzenc(invert_polynomial(p),-ileft),...
+		     pvhornerlzenc(p,iright));
 end

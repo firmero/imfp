@@ -1,13 +1,13 @@
 function isf = pvslopeenc(p, ix)
 %BEGINDOC==================================================================
-% .Author
+% .Author.
 %
 %  Roman Firment
 %
 %--------------------------------------------------------------------------
 % .Description.
 %
-%    The function computes range of Slope form of polynomial p over ix.
+%    Slope form of polynomial p over interval ix.
 %  For polynomial p there exists uniquely defined polynomial q such that
 %  p(x) = p(c) + q(x)*(x-c), where c = mid(ix). Polynomial q has smaller
 %  degree by one.
@@ -20,7 +20,7 @@ function isf = pvslopeenc(p, ix)
 %  ix ... interval x
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + ... + a_(n-1)*x^1 + a_n
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
@@ -33,7 +33,7 @@ function isf = pvslopeenc(p, ix)
 %  Coefficients of polynomial q such that p(x) = p(c) + q(x)*(x-c)
 %  n = length(p)
 %
-%  q(x) = q_1*x^(n-2) + q_2*x^(n-3) + ... + q_(n-2)*x + q_(n-1)
+%  q(x) = q_1*x^(n-2) + q_2*x^(n-3) + .. + q_(n-2)*x + q_(n-1)
 %
 %  q_i = sum j=1..i a_j*c^(i-j) 
 %
@@ -52,7 +52,7 @@ function isf = pvslopeenc(p, ix)
 %  2017-MM-DD   first version
 %
 %--------------------------------------------------------------------------
-% .Todo
+% .Todo.
 %
 %
 %ENDDOC====================================================================
