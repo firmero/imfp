@@ -1,4 +1,4 @@
-function res = pvhornerlzenc(polynomial_coefficients, X)
+function ihflz = pvhornerlzenc(p, ix)
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -7,16 +7,27 @@ function res = pvhornerlzenc(polynomial_coefficients, X)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Horner form for X = [0,R]
+%  Horner form for interval ix = [0,r], r >= 0.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
+%  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
+%
+%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
+%
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
+%  ihflz ... Horner form
+%
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  The implementation computes left and right bound of intermediate result
+%  simultaneously. For this special form of interval the interval arithemic
+%  can be omitted. So, it is faster.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -34,34 +45,50 @@ function res = pvhornerlzenc(polynomial_coefficients, X)
 %
 %ENDDOC====================================================================
 
-n = length(polynomial_coefficients);
-% allocate vector
-p = repmat(intval(0),1,n);
+ix = intval(ix);
 
-p(1) = intval(polynomial_coefficients(1));
+if (inf(ix) ~= 0)
+	warning('Interval is not of form [0,r].');
+	ihflz = pvhornerenc(p,ix);
+	return
+end
 
-% setround(1);
-xx = sup(X);
+% intermediate result
+itmp = intval(p(1));
 
-for i = 2:n
+% xx is not negative number
+xx = sup(ix);
 
-	if (inf(p(i-1)) < 0)
+oldmod = getround();
+
+for i = 2:length(p)
+
+	% we want left to minimalise
+	if (inf(itmp) < 0)
 		setround(-1);
-		left = p(i-1)*xx + polynomial_coefficients(i);
-	else % save multiply by zero
-		left = polynomial_coefficients(i);
+		% from interval ix chooose sup(ix) (=xx)
+		left = inf(itmp)*xx + p(i);
+	else 
+		% save multiply by zero
+		% from interval ix chooose 0
+		left = p(i);
 	end
 
-	if (sup(p(i-1)) > 0)
+	% we want right to maximise
+	if (sup(itmp) > 0)
 		setround(1);
-		right = p(i-1)*xx + polynomial_coefficients(i);
+		% from interval ix chooose sup(ix) (=xx)
+		right = sup(itmp)*xx + p(i);
 	else
-		right = polynomial_coefficients(i);
+		right = p(i);
 	end
 
-	p(i) = infsup(inf(intval(left)), sup(intval(right)));
+	itmp = infsup(left, right);
 
 end
 
-res = p(n);
+setround(oldmod);
+
+ihflz = itmp;
+
 end
