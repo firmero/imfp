@@ -37,7 +37,7 @@ function isf = pvslopeenc(p, ix)
 %
 %  q_i = sum j=1..i a_j*c^(i-j) 
 %
-%  That can be compute using horner scheme:
+%  That can be computed using horner scheme:
 %  q_1 = a_1
 %  q_i = q_(i-1)*c + a_i,  i = 2..n-1
 %

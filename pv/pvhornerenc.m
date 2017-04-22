@@ -39,7 +39,7 @@ function [ihf ver] = pvhornerenc(p, ix)
 %  q_i is defined for i = 1..n:
 %
 %  q_1(x)     = a_1
-%  q_i(x)     = q_(i-1)(x)*x + a_i  for i = 1..n
+%  q_i(x)     = q_(i-1)(x)*x + a_i  for i = 2..n
 %
 %  The range of Horner form of p is obviously q_n(ix).
 %
@@ -49,7 +49,7 @@ function [ihf ver] = pvhornerenc(p, ix)
 %  inf(ix) >= 0 and inf(HF(q_i,ix)) >= 0 for i=1..n
 %    or	
 %  sup(ix) <= 0 and inf(sgn_i*HF(q_i,ix)) >= 0 for i=1..n
-%    where for j = 1..n
+%    where sgn_j is defined for j = 1..n as:
 %      sgn_j =  1 if j is odd
 %      sgn_j = -1 if j is even
 %
