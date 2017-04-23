@@ -12,7 +12,7 @@ function iy = pvislopeenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p  ... vector of polynomial interval coefficients [ia_1 ... ia_n]
+%  ip ... vector of polynomial interval coefficients [ia_1 ... ia_n]
 %  ix ... interval x
 %
 %	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n

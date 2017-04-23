@@ -17,8 +17,8 @@ function isf = pvslopeenc(p, ix)
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  ix ... interval x
 %  p  ... vector of polynomial coefficients [a_1 ... a_n]
+%  ix ... interval x
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %

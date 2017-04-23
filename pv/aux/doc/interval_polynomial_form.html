@@ -1,0 +1,73 @@
+<html> 
+<head> 
+<title>interval_polynomial_form.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> interval_polynomial_form.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+Evaluate the range of interval polynomial ip over ix using a function <br> 
+handler form which can compute range of polynomial with point <br> 
+coefficients over ix. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> ip    </b> ... vector of polynomial interval coefficients [ia_1 ... ia_n] <br> 
+<b> ix    </b> ... interval x <br> 
+<b> form  </b> ... function handler accepting point polynomial and ix <br> 
+<br> 
+ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> iy  </b> ... range of form of interval polynomial ip over ix <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+Reduce computation of interval polynomial to 2 or 4 evaluation of <br> 
+polynomial with point coefficients. <br> 
+<br> 
+If ix doesn't contain negative number, then the range of ip is: <br> 
+<br> 
+iyr = [inf(range(down,ix)), sup(range(up,ix))], where <br> 
+down:  [.. inf(ia_(n-2)) inf(ia_(n-1)) inf(ia_n)] <br> 
+up:    [.. sup(ia_(n-2)) sup(ia_(n-1)) sup(ia_n)] <br> 
+<br> 
+If ix doesn't contain positive number, then the range of ip is: <br> 
+<br> 
+iyl = [inf(range(down,ix)), sup(range(up,ix))], where <br> 
+down:  [.. inf(ia_(n-2)) inf(ia_(n-1)) inf(ia_n)] <br> 
+up:    [.. sup(ia_(n-2)) sup(ia_(n-1)) sup(ia_n)] <br> 
+<br> 
+In the other situation, the range of ip is the hull of iyl and iyr. <br> 
+<br> 
+In the implementation the range of up and down polynomial is computed <br> 
+by function handler form. <br> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Sun Apr 23 12:40:05 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

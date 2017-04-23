@@ -32,50 +32,50 @@
 %
 %ENDDOC====================================================================
 1;
-function res = pvihornerenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvhornerenc);
+function res = pvihornerenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvhornerenc);
 end
 
-function res = pvihornerbzenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvhornerbzenc);
+function res = pvihornerbzenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvhornerbzenc);
 end
 
-function res = pvimeanvalenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvmeanvalenc);
+function res = pvimeanvalenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvmeanvalenc);
 end
 
-function res = pvislopeenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvslopeenc);
+function res = pvislopeenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvslopeenc);
 end
 
-function res = pvimeanvalbcenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvmeanvalbcenc);
+function res = pvimeanvalbcenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvmeanvalbcenc);
 end
 
-function res = pvitaylorenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvtaylorenc);
+function res = pvitaylorenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvtaylorenc);
 end
 
-function res = pvitaylorbmenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvtaylorbmenc);
+function res = pvitaylorbmenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvtaylorbmenc);
 end
 
-function res = pvibernsteinenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvbernsteinenc);
+function res = pvibernsteinenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvbernsteinenc);
 end
 
-function res = pvibernsteinbzenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvbernsteinbzenc);
+function res = pvibernsteinbzenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvbernsteinbzenc);
 end
 
-function res = pviinterpolationenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvinterpolationenc);
+function res = pviinterpolationenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvinterpolationenc);
 end
 
-function res = pviinterpolation2enc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvinterpolation2enc);
+function res = pviinterpolation2enc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvinterpolation2enc);
 end
 
-function res = pviinterpolationslenc(p,X)
-	 res = interval_polynomial_form_par(p,X,@pvinterpolationslenc);
+function res = pviinterpolationslenc(p,ix)
+	 res = interval_polynomial_form_par(p,ix,@pvinterpolationslenc);
 end

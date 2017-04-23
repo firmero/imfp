@@ -1,0 +1,56 @@
+<html> 
+<head> 
+<title>taylor_form_eval_half.m</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-9"> 
+<link rel="stylesheet" type="text/css" href="style.css"> 
+</head> 
+<div id="obsah"> 
+<div id="text"> 
+<br> &nbsp; <a href="index.html">&lt;&lt; back to list of functions </a> 
+<br> 
+&nbsp; <h1 class="section"> &nbsp; function <code> taylor_form_eval_half.m </code> </h1> <h2 class="subsection"> &nbsp; Author </h2> 
+<br> 
+Roman Firment <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Description </h2> 
+<br> 
+This function is used by pvtaylorbm(), which converts his input interval <br> 
+to centered interval [-r,r]. Then it calls that function <br> 
+twice and returns hull of results returned by that function. <br> 
+<br> 
+val(x) = sum i=1 .. length(itay_coeff) itay_coeff(i)*x^(i-1), <br> 
+where itay_coeff(i) = (i-1 derivative of p)(c) / (i-1)! <br> 
+<br> 
+Returns [inf(val(ir)), sup(val(ir))], where ir = [0..r] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> itay_coeff  </b> ... interval taylor coefficients <br> 
+itay_coeff(i) = (i-1 derivative of p)(c) / (i-1)! <br> 
+<b> r           </b> ... radius <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Output parameters </h2> 
+<br> 
+<b> itfh  </b> ... itfh = [inf(val(ir)), sup(val(ir))], where ir = [0..r] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+<h2 class="subsection"> &nbsp; License </h2> 
+<br> 
+[license goes here] <br> 
+<br> 
+<h2 class="subsection"> &nbsp; History </h2> 
+<br> 
+2017-MM-DD   first version <br> 
+<br> 
+<h2 class="subsection"> &nbsp; Todo </h2> 
+<br> 
+<br> 
+<br><br><br><br> 
+<hr> 
+<code> Generated automatically by OcDoc Sun Apr 23 12:40:05 2017
+ </code> 
+</div> 
+</div> 
+</body> 
+</html> 

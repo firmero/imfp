@@ -18,8 +18,8 @@ function pi = invert_polynomial(p)
 % .Output parameters.
 %
 %  pi ... if n is odd then it returns 
-%                         [  a_1 -a_2  a_3 ... -a_(n-1) a_n]
-%                    else [ -a_1  a_2 -a_3 ... -a_(n-1) a_n]
+%                         [  a_1 -a_2  a_3 .. -a_(n-1) a_n]
+%                    else [ -a_1  a_2 -a_3 .. -a_(n-1) a_n]
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

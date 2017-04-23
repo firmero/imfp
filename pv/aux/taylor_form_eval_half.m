@@ -11,7 +11,7 @@ function itfh = taylor_form_eval_half(itay_coeff,r)
 %  to centered interval [-r,r]. Then it calls that function
 %  twice and returns hull of results returned by that function.
 %
-%  val(x) = sum i=1...length(itay_coeff) itay_coeff(i)*x^(i-1),
+%  val(x) = sum i=1 .. length(itay_coeff) itay_coeff(i)*x^(i-1),
 %       where itay_coeff(i) = (i-1 derivative of p)(c) / (i-1)!
 %
 %  Returns [inf(val(ir)), sup(val(ir))], where ir = [0..r]

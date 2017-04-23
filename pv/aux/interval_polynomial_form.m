@@ -34,14 +34,14 @@ function iy = interval_polynomial_form(ip,ix,form)
 %  If ix doesn't contain negative number, then the range of ip is:
 %
 %	iyr = [inf(range(down,ix)), sup(range(up,ix))], where
-%			down:  [... inf(ia_(n-2)) inf(ia_(n-1)) inf(ia_n)]
-%			up:    [... sup(ia_(n-2)) sup(ia_(n-1)) sup(ia_n)]
+%			down:  [.. inf(ia_(n-2)) inf(ia_(n-1)) inf(ia_n)]
+%			up:    [.. sup(ia_(n-2)) sup(ia_(n-1)) sup(ia_n)]
 %
 %  If ix doesn't contain positive number, then the range of ip is:
 %
 %	iyl = [inf(range(down,ix)), sup(range(up,ix))], where
-%			down:  [... inf(ia_(n-2)) inf(ia_(n-1)) inf(ia_n)]
-%			up:    [... sup(ia_(n-2)) sup(ia_(n-1)) sup(ia_n)]
+%			down:  [.. inf(ia_(n-2)) inf(ia_(n-1)) inf(ia_n)]
+%			up:    [.. sup(ia_(n-2)) sup(ia_(n-1)) sup(ia_n)]
 %
 %  In the other situation, the range of ip is the hull of iyl and iyr.
 %
