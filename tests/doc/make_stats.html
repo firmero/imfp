@@ -14,13 +14,30 @@ Roman Firment <br>
 <br> 
 <h2 class="subsection"> &nbsp; Description </h2> 
 <br> 
-<b> stats_fileID  </b> ... output stats filename <br> 
+Generates statistics from test data produced by function test. <br> 
+Sec is used as the unit of time. <br> 
 <br> 
 <h2 class="subsection"> &nbsp; Input parameters </h2> 
+<br> 
+<b> test_filename      </b> ... location to test data <br> 
+<b> stats_fileID       </b> ... file identifier returned by fopen for output stats <br> 
+<b> time_stats_fileID  </b> ... file identifier returned by fopen for time stats output <br> 
 <br> 
 <h2 class="subsection"> &nbsp; Output parameters </h2> 
 <br> 
 <h2 class="subsection"> &nbsp; Implementation details </h2> 
+<br> 
+Test data loaded from test_filename contains paths to test data to every <br> 
+form. Test data also contains reference ranges with minimal overestimation <br> 
+error. <br> 
+<br> 
+Stats uses the following function to get values for statistics: <br> 
+100 * (width(ix) - width(iy)) / width(ix) <br> 
+ix is range produced by form, iy is reference range <br> 
+<br> 
+Statistical quantities are computed: <br> 
+max, min, mean, median <br> 
+(smaller is better) <br> 
 <br> 
 <h2 class="subsection"> &nbsp; License </h2> 
 <br> 
@@ -35,7 +52,7 @@ Roman Firment <br>
 <br> 
 <br><br><br><br> 
 <hr> 
-<code> Generated automatically by OcDoc Sat Apr 22 10:40:32 2017
+<code> Generated automatically by OcDoc Mon Apr 24 21:13:34 2017
  </code> 
 </div> 
 </div> 

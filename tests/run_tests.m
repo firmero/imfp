@@ -7,14 +7,20 @@ function run_tests()
 %--------------------------------------------------------------------------
 % .Description.
 %
-%--------------------------------------------------------------------------
-% .Input parameters.
-%
-%--------------------------------------------------------------------------
-% .Output parameters.
+%  Script executes test suites hardcoded in this file.
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Test suites call private function exec_tests with proper arguments.
+%
+%  Functions test_suite* have args:
+%  stats_filename and repetitions which are forwarded to exec_tests.
+%
+%  Parameter repetitions represents how many polynomials should be 
+%  created for specific combination of interval and degree.
+%
+%  Stats are generated in directory stats_out.
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -32,24 +38,23 @@ function run_tests()
 %
 %ENDDOC====================================================================
 
-warning('off','all'); t = tic; 
-test_suite1('stats1',2), toc(t)
-warning('on','all');
+warning('off','notzero');
 
-warning('off','all'); t = tic; 
-test_suite2('stats2',2), toc(t)
-warning('on','all');
+t = tic; 
+test_suite1('stats1',100), toc(t)
 
-%p = generate_polynomials_interval(31,1);
-%X = infsup(-0.1,0.1);
+t = tic; 
+test_suite2('stats2',100), toc(t)
+
+warning('on','notzero');
 
 end
 
-function test_suite1(stats_filename, test_repetition)
+function test_suite1(stats_filename, repetitions)
 
 	disp('-- starting test_suite 1 --'); 
 
-	forms_struct = {	
+	forms_structs = {	
 				% form_handler, description
 				{ @pvhornerenc, 'HF'};
 				{ @pvhornerbzenc, 'HFBZ'};
@@ -122,17 +127,17 @@ function test_suite1(stats_filename, test_repetition)
 				struct('deg', 31, 'interval', infsup(0.2, 0.3), 'prefix', 't59_');
 			};
 
-	tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
+	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
 
-	exec_tests(tests_prms, test_repetition, @generate_polynomials,...
-				@evaluate_polynomial, forms_struct,stats_filename)
+	exec_tests(tests_prms, repetitions, @generate_polynomials,...
+				@evaluate_polynomial, forms_structs,stats_filename)
 end
 
-function test_suite2(stats_filename, test_repetition)
+function test_suite2(stats_filename, repetitions)
 	
 	disp('-- starting test_suite 2 --'); 
 
-	forms_struct = {	
+	forms_structs = {	
 
 				% form_handler, description
 				{ @pvihornerenc, 'iHF'};
@@ -140,8 +145,9 @@ function test_suite2(stats_filename, test_repetition)
 
 				{ @pvimeanvalenc, 'iMVF'};
 				{ @pvislopeenc, 'iMVSF'} ;
+
 				% problem infsup
-				% { @pvimeanvalbcenc, 'iMVFB'};
+				{ @pvimeanvalbcenc, 'iMVFB'};
 
 				{ @pvitaylorenc, 'iTF'};
 				{ @pvitaylorbmenc, 'iTFBM'};
@@ -207,15 +213,15 @@ function test_suite2(stats_filename, test_repetition)
 				struct('deg', 31, 'interval', infsup(0.2, 0.3), 'prefix', 'it59_');
 			};
 
-	tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_')};
+	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_')};
 
-	exec_tests(tests_prms, test_repetition, @generate_polynomials_interval,...
-				@evaluate_polynomial_int, forms_struct, stats_filename)
+	exec_tests(tests_prms, repetitions, @generate_polynomials_interval,...
+				@evaluate_polynomial_int, forms_structs, stats_filename)
 
 end
 
 function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
-					eval_polynom_hander, forms_struct, stats_filename)
+					evaluate_polynomial_handler, forms_structs, stats_filename)
 
 	[~,~] = mkdir('stats_out');
 	stats_fileID = fopen( [ 'stats_out' filesep stats_filename '.txt' ], 'a');
@@ -228,11 +234,12 @@ function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
 
 		test_filename = test(tests_prms{i}.deg, repetitions, ...
 						gen_polynomial_handler, ...
-						eval_polynom_hander, ...
-						tests_prms{i}.interval, forms_struct, tests_prms{i}.prefix);
+						evaluate_polynomial_handler, ...
+						tests_prms{i}.interval, forms_structs, tests_prms{i}.prefix);
 
 		make_stats(test_filename, stats_fileID, time_stats_fileID);
 	end
 
 	fclose(stats_fileID);
+	fclose(time_stats_fileID);
 end

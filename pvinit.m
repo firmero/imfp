@@ -143,5 +143,5 @@ function load_noparallel
 end
 
 function main
-	run_tests;
+	%run_tests;
 end

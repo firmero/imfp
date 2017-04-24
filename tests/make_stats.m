@@ -1,4 +1,4 @@
-function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn)
+function make_stats(test_filename, stats_fileID, time_stats_fileID)
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -7,16 +7,33 @@ function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  stats_fileID ... output stats filename
+%  Generates statistics from test data produced by function test.
+%  Sec is used as the unit of time.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
+%
+%  test_filename     ... location to test data
+%  stats_fileID      ... file identifier returned by fopen for output stats
+%  time_stats_fileID ... file identifier returned by fopen for time stats output
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Test data loaded from test_filename contains paths to test data to every
+%  form. Test data also contains reference ranges with minimal overestimation
+%  error.
+%
+%  Stats uses the following function to get values for statistics:
+%  100 * (width(ix) - width(iy)) / width(ix)
+%  ix is range produced by form, iy is reference range
+%
+%  Statistical quantities are computed:
+%  max, min, mean, median
+%  (smaller is better)
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -34,20 +51,23 @@ function make_stats(test_filename, stats_fileID, time_stats_fileID, distance_fcn
 %
 %ENDDOC====================================================================
 
-%todo distance_fcn = @distance
 distance_fcn = @distance2;
 
 load(test_filename,'-mat');
-n = test.polynomials_count;
+n = test.n;
 
 
 fprintf(stats_fileID,'>> STATS for %s\n', test_filename);
 fprintf(stats_fileID,' #polynomials = %-5i  deg = %-4i  X = [%f , %f]\n', ...
-		test.polynomials_count, test.deg, inf(test.X), sup(test.X));
+		test.n, test.deg, inf(test.ix), sup(test.ix));
+
+fprintf(time_stats_fileID,'>> STATS for %s\n', test_filename);
+fprintf(time_stats_fileID,' #polynomials = %-5i  deg = %-4i  X = [%f , %f]\n', ...
+		test.n, test.deg, inf(test.ix), sup(test.ix));
 
 fprintf(stats_fileID,'>> [DISTANCE]\n');
 fprintf(stats_fileID,...
-'Form        max         min        mean        median  deg         X\n');
+'Form         max          min         mean       median  deg         X\n');
 fprintf(stats_fileID,...
 '-------------------------------------------------------------------------\n');
 for i = 1:test.forms_count
@@ -60,10 +80,10 @@ for i = 1:test.forms_count
 		distances(j) = distance_fcn(form.ranges(j), test.polynomials_ranges(j));
 	end
 
-	fprintf(stats_fileID,' %-6s %10.2f  %10.2f  %10.2f  %10.2f  %2i [%f, %f]\n' ,...
+	fprintf(stats_fileID,' %-6s %10.3f  %10.3f  %10.3f  %10.3f  %2i [%f, %f]\n' ,...
 		form.desc,...
 		max(distances), min(distances), mean(distances), median(distances),...
-		test.deg, inf(test.X), sup(test.X));
+		test.deg, inf(test.ix), sup(test.ix));
 
 end
 fprintf(stats_fileID,...
@@ -72,19 +92,19 @@ fprintf(stats_fileID,...
 
 fprintf(time_stats_fileID,'>> [EVAL_TIME]\n');
 fprintf(time_stats_fileID,...
-'Form        max         min        mean        median  deg         X\n');
+'Form         max          min         mean       median  deg         X\n');
 
 fprintf(time_stats_fileID,...
 '-------------------------------------------------------------------------\n');
 for i = 1:test.forms_count
 
 	load(test.filenames(i).form,'-mat');
-	eval_time = form.eval_time;
+	eval_times = form.eval_times;
 
-	fprintf(time_stats_fileID,' t_%-6s %10.2f  %10.2f  %10.2f  %10.2f  %2i [%f, %f]\n' ,...
+	fprintf(time_stats_fileID,' %-6s %10.3f  %10.3f  %10.3f  %10.3f  %2i [%f, %f]\n' ,...
 		form.desc,...
-		max(eval_time), min(eval_time), mean(eval_time), median(eval_time),...
-		test.deg, inf(test.X), sup(test.X));
+		max(eval_times), min(eval_times), mean(eval_times), median(eval_times),...
+		test.deg, inf(test.ix), sup(test.ix));
 
 end
 fprintf(time_stats_fileID,...
@@ -93,34 +113,12 @@ fprintf(time_stats_fileID,...
 end
 
 %
-% X is computed, Y is referenced
+% ix is computed, iy is referenced
 %
-function d = distance2(X,Y)
+function d = distance2(ix,iy)
 
-	wX = (sup(X)-inf(X));
-	wY = (sup(Y)-inf(Y));
+	wX = (sup(ix)-inf(ix));
+	wY = (sup(iy)-inf(iy));
 
 	d = 100 * (wX-wY)/wX;
-end
-
-%
-% X is computed, Y is referenced
-%
-function d = distance(X,Y)
-
-	% todo if y i point?
-	% todo check if x is subset of y
-
-	if (~in(intval(Y),intval(X)))
-		;
-		%return
-	end
-
-	setround(1);
-	wX = (sup(X)-inf(X));
-	wY = (sup(Y)-inf(Y));
-	d = 1024*(wX - wY)/wY;
-
-	d = abs(d);
-
 end
