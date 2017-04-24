@@ -38,7 +38,7 @@ function run_tests()
 %
 %ENDDOC====================================================================
 
-warning('off','notzero');
+%warning('off','notzero');
 
 t = tic; 
 test_suite1('stats1',100), toc(t)
@@ -46,7 +46,7 @@ test_suite1('stats1',100), toc(t)
 t = tic; 
 test_suite2('stats2',100), toc(t)
 
-warning('on','notzero');
+%warning('on','notzero');
 
 end
 
