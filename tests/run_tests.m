@@ -61,7 +61,7 @@ function test_suite1(stats_filename, repetitions)
 
 				{ @pvmeanvalenc, 'MVF'};
 				{ @pvslopeenc, 'MVSF'} ;
-				{ @pvmeanvalbcenc, 'MVFB'};
+				{ @pvmeanvalbcenc, 'MVFBC'};
 
 				{ @pvtaylorenc, 'TF'};
 				{ @pvtaylorbmenc, 'TFBM'};
@@ -145,9 +145,7 @@ function test_suite2(stats_filename, repetitions)
 
 				{ @pvimeanvalenc, 'iMVF'};
 				{ @pvislopeenc, 'iMVSF'} ;
-
-				% problem infsup
-				{ @pvimeanvalbcenc, 'iMVFB'};
+				{ @pvimeanvalbcenc, 'iMVFBC'};
 
 				{ @pvitaylorenc, 'iTF'};
 				{ @pvitaylorbmenc, 'iTFBM'};
@@ -224,8 +222,8 @@ function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
 					evaluate_polynomial_handler, forms_structs, stats_filename)
 
 	[~,~] = mkdir('stats_out');
-	stats_fileID = fopen( [ 'stats_out' filesep stats_filename '.txt' ], 'a');
-	time_stats_fileID = fopen( [ 'stats_out' filesep stats_filename '_t.txt'], 'a');
+	stats_fileID = fopen( [ 'stats_out' filesep stats_filename '.txt' ], 'w');
+	time_stats_fileID = fopen( [ 'stats_out' filesep stats_filename '_t.txt'], 'w');
 
 	tests_cnt = length(tests_prms);
 	for i = 1:tests_cnt
