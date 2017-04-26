@@ -18,6 +18,7 @@ function resi = generate_polynomials_interval(deg, n, max_radius, mag_mid)
 %  n          ... count of generated polynomials
 %  max_radius ... coeffcient radius is less than max_radius
 %  mag_mid    ... coeffcient middle is in (-mag_mid,mag_mid), mag_mid >=0
+%  defualt n is 1, max_radius 0.05, and mag_mid 0.9
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
