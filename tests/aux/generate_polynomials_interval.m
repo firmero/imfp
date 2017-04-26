@@ -51,7 +51,7 @@ if nargin < 3
 end
 
 if nargin < 4
-	mag_mid=-0.1;
+	mag_mid=0.1;
 end
 
 deg = deg + 1;
