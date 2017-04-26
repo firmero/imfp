@@ -60,7 +60,7 @@ coefficients in 1 and 3.
 Test suites 1 and 2 use intervals:  
 \[-0.3,0.2] \[-0.15, 0.1] \[-0.1,0.1] \[-0.3,-0.2] \[0.2,0.3]  
 Test suites 3 and 4:  
-\[-0.03,0.02] \[-0.015, 0.01] \[-0.01,0.01] \[-0.31,-0.20] \[0.2,0.31]  
+\[-0.03,0.02] \[-0.015, 0.01] \[-0.01,0.01] \[-0.03,-0.02] \[0.02,0.03]  
 
 ### Stats
 Copy of generated tests data is in directory report. It also contains  
