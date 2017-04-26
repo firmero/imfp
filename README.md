@@ -52,7 +52,7 @@ Generated files appear in directories stats\_out and tests\_out.
 
 Test suites use polynomials of deg 4,5,6,7,11,16,21,26,31.  
 Polynomials with point coefficients have random coefficients from (-1,1).  
-Interval polynomials coefficients have middle in (-0.1,0.1) and radius < 0.4.  
+Interval polynomials coefficients have middle in (-0.9,0.9) and radius < 0.05.  
 
 Interval polynomials are tested with suites 2 and 4. Polynomials with point  
 coefficients in 1 and 3.

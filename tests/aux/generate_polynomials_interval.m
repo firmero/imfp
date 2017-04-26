@@ -47,11 +47,11 @@ if nargin < 2
 	n = 1;
 end
 if nargin < 3
-	max_radius=0.4;
+	max_radius=0.05;
 end
 
 if nargin < 4
-	mag_mid=0.1;
+	mag_mid=0.9;
 end
 
 deg = deg + 1;
