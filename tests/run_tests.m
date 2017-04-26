@@ -150,7 +150,7 @@ function test_suite2(stats_filename, repetitions)
 				{ @pvihornerbzenc, 'iHFBZ'};
 
 				{ @pvimeanvalenc, 'iMVF'};
-				{ @pvislopeenc, 'SF'} ;
+				{ @pvislopeenc, 'iSF'} ;
 				{ @pvimeanvalbcenc, 'iMVFBC'};
 
 				{ @pvitaylorenc, 'iTF'};
