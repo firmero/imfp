@@ -61,7 +61,7 @@ end
 
 ix = intval(ix);
 if (~in(0,ix))
-	warning('notzero','Interval ix doesn''t contain 0');
+	warning('Interval ix doesn''t contain 0');
 	ibfbz = pvbernsteinenc(p,ix,k);
 	return
 end

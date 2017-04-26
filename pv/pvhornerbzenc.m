@@ -48,7 +48,7 @@ function ihfbz = pvhornerbzenc(p, ix)
 
 ix = intval(ix);
 if (~in(0,ix))
-	warning('notzero','Interval doesn''t contain 0');
+	warning('Interval doesn''t contain 0');
 	ihfbz = pvhornerenc(p,ix);
 	return
 end

@@ -58,7 +58,7 @@ if (sup(ip_derivated) <= 0)
 end
 
 % else approximate, it is correct thanks to lemma of optimality
-width = sup(ix) - inf(ix);
+width = sup(ip_derivated) - inf(ip_derivated);
 c_right = (sup(ip_derivated)*sup(ix) - inf(ip_derivated)*inf(ix))/width;
 c_left  = (sup(ip_derivated)*inf(ix) - inf(ip_derivated)*sup(ix))/width;
 
