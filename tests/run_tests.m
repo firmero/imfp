@@ -46,8 +46,11 @@ t = tic;
 t = tic; 
 %test_suite2('stats2',100), toc(t)
 
-t = tic; 
+t = tic;
 %test_suite3('stats3',100), toc(t)
+
+t = tic;
+%test_suite4('stats4',100), toc(t)
 
 %warning('on','notzero');
 
@@ -302,6 +305,88 @@ function test_suite3(stats_filename, repetitions)
 
 	exec_tests(tests_prms, repetitions, @generate_polynomials,...
 				@evaluate_polynomial, forms_structs,stats_filename)
+end
+function test_suite4(stats_filename, repetitions)
+
+	disp('-- starting test_suite 4 --'); 
+
+	forms_structs = {	
+				% form_handler, description
+				{ @pvihornerenc, 'iHF'};
+				{ @pvihornerbzenc, 'iHFBZ'};
+
+				{ @pvimeanvalenc, 'iMVF'};
+				{ @pvislopeenc, 'iSF'} ;
+				{ @pvimeanvalbcenc, 'iMVFBC'};
+
+				{ @pvitaylorenc, 'iTF'};
+				{ @pvitaylorbmenc, 'iTFBM'};
+
+				{ @pvibernsteinenc, 'iBF'};
+				{ @pvibernsteinbzenc, 'iBFBZ'};
+
+				{ @pviinterpolationenc, 'iIF'};
+				{ @pviinterpolation2enc, 'iIF2'};
+				{ @pviinterpolationslenc, 'iISF'};
+		};
+
+	tests_prms = { 
+
+				struct('deg',  4, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu11_');
+				struct('deg',  5, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu12_');
+				struct('deg',  6, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu13_');
+				struct('deg',  7, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu14_');
+				struct('deg', 11, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu15_');
+				struct('deg', 16, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu16_');
+				struct('deg', 21, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu17_');
+				struct('deg', 26, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu18_');
+				struct('deg', 31, 'interval', infsup(-0.03, 0.02), 'prefix', 'iu19_');
+
+				struct('deg',  4, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu21_');
+				struct('deg',  5, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu22_');
+				struct('deg',  6, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu23_');
+				struct('deg',  7, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu24_');
+				struct('deg', 11, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu25_');
+				struct('deg', 16, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu26_');
+				struct('deg', 21, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu27_');
+				struct('deg', 26, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu28_');
+				struct('deg', 31, 'interval', infsup(-0.015, 0.01), 'prefix', 'iu29_');
+
+				struct('deg',  4, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu31_');
+				struct('deg',  5, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu32_');
+				struct('deg',  6, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu33_');
+				struct('deg',  7, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu34_');
+				struct('deg', 11, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu35_');
+				struct('deg', 16, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu36_');
+				struct('deg', 21, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu37_');
+				struct('deg', 26, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu38_');
+				struct('deg', 31, 'interval', infsup(-0.01, 0.01), 'prefix', 'iu39_');
+
+				struct('deg',  4, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu41_');
+				struct('deg',  5, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu42_');
+				struct('deg',  6, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu43_');
+				struct('deg',  7, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu44_');
+				struct('deg', 11, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu45_');
+				struct('deg', 16, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu46_');
+				struct('deg', 21, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu47_');
+				struct('deg', 26, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu48_');
+				struct('deg', 31, 'interval', infsup(-0.31, -0.2), 'prefix', 'iu49_');
+
+				struct('deg',  4, 'interval', infsup(0.2, 0.31), 'prefix', 'iu51_');
+				struct('deg',  5, 'interval', infsup(0.2, 0.31), 'prefix', 'iu52_');
+				struct('deg',  6, 'interval', infsup(0.2, 0.31), 'prefix', 'iu53_');
+				struct('deg',  7, 'interval', infsup(0.2, 0.31), 'prefix', 'iu54_');
+				struct('deg', 11, 'interval', infsup(0.2, 0.31), 'prefix', 'iu55_');
+				struct('deg', 16, 'interval', infsup(0.2, 0.31), 'prefix', 'iu56_');
+				struct('deg', 21, 'interval', infsup(0.2, 0.31), 'prefix', 'iu57_');
+				struct('deg', 26, 'interval', infsup(0.2, 0.31), 'prefix', 'iu58_');
+				struct('deg', 31, 'interval', infsup(0.2, 0.31), 'prefix', 'iu59_');
+			};
+
+	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
+
+	exec_tests(tests_prms, repetitions, @generate_polynomials_interval,...
+				@evaluate_polynomial_int, forms_structs, stats_filename)
 end
 
 function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
