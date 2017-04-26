@@ -21,7 +21,10 @@ To load functions to your workspace you need to call pvinit. In octave
 it is possible to run some code from pv in parallel mode. That can be enabled by  
 calling pvinit with argument 'par'. Packages parallel-3.1.1 and its dependency  
 struct-1.0.14 are used to achieve it. They can be installed during pvinit  
-execution. Pvinit loads pkg tests to make its functions available.
+execution. Pvinit loads pkg tests to make its functions available.  
+Parallelization is used in evaluation of interval polynomials. Interval polynomial  
+is reduced to 2 or 4 polynomial with point coefficients. It also speeds up  
+function used in tests for getting as tight as possible range, which is slow.  
   
 After initialization, it should be possible to call function from directory  
 pv having prefix pv. These methods works for polynomials with point (not intval  
@@ -38,4 +41,52 @@ Code works in Octave 4.0.3 and Matlab R2017a (9.2.0.538062).
 Tested with INTLAB v9 and octave interval pkg (located in lib folder).
 
 ### Tests
+Functions for that purpose are in pkg tests which is documented. To use it, pvinit  
+is needed to call.
+
+Test suites are hardcoded in file run\_tests.m and can be easily added or removed  
+from there. By default, none of test suites runs by calling run\_tests function.  
+To enable uncomment proper suite in run\_tests function. Test suite has  
+as argument filename of statistics and how many times  should be one test repeated.  
+Generated files appear in directories stats\_out and tests\_out.  
+
+Test suites use polynomials of deg 4,5,6,7,11,16,21,26,31.  
+Polynomials with point coefficients have random coefficients from (-1,1).  
+Interval polynomials coefficients have middle in (-0.1,0.1) and radius < 0.4.  
+
+Interval polynomials are tested with suites 2 and 4. Polynomials with point  
+coefficients in 1 and 3.
+
+Test suites 1 and 2 use intervals:  
+\[-0.3,0.2] \[-0.15, 0.1] \[-0.1,0.1] \[-0.3,-0.2] \[0.2,0.3]  
+Test suites 3 and 4:  
+\[-0.03,0.02] \[-0.015, 0.01] \[-0.01,0.01] \[-0.31,-0.20] \[0.2,0.31]  
+
 ### Stats
+Copy of generated tests data is in directory report. It also contains  
+tables produced by script table.awk used on stats files. That script  
+can use as output values median, mean, min, max.  
+Data was produced in Matlab.  
+
+Stats uses the following function to get values for statistics:  
+100 * (width(ix) - width(iy)) / width(ix)  
+ix is range produced by form, iy is reference range  
+
+Some observations from stats output for polynomial with point coefficients:  
+* HFBZ: for interval not containing 0 faster while not using interval  
+  arithmetic and it gives half overestimation of HF.  
+* MVF: very similar ranges as HF, for wider interval even worse.  
+  2 times slower than HF.  
+* SF: also very similar to HF, but for interval x without 0 gives  
+  half overestimation of HF. 3-5 slower than HF.  
+* MVFBC: the most time gives very precise range. 3 slower than HF.  
+* IF, IF2: IF2 can give a little better range as IF, but not worse.  
+  Tight range. 4 time slower than HF.  
+* ISF: very tight range. 4 times slower than HF.  
+* TF: similar to HF. For interval x without 0 gives half overestimation of HF.  
+  Similar ranges as SF but with increasing degree is much more slower.  
+* TFBM: ranges similar to HFBM, but work very well also on interval without 0.  
+  In average it gives half overestimation of TF. Runtime is like TF.  
+* BF: the most precise but the most time consuming form.  
+* BFBM: in average overestimation reduced by half comaped to BF.  
+  For interval x with zero runs twice longer than BF.
