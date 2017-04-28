@@ -7,7 +7,8 @@ function iif = pvinterpolationenc(p,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Interpolation form of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Interpolation form
+%  of polynomial over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function iif = pvinterpolationenc(p,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iif ... Interpolation form
+%  iif ... interval computed by Interpolation form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

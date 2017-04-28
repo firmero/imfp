@@ -7,7 +7,8 @@ function iy = pvihornerenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Horner form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Horner form of interval polynomial 
+%  over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,8 @@ function iy = pvihornerenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Horner form of interval polynomial ip over ix
+%  iy ... interval computed by Horner form of interval polynomial ip over
+%         interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

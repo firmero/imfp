@@ -7,7 +7,8 @@ function iifsl = pvinterpolationslenc(p,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Interpolation slope form of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Interpolation slope form
+%  of polynomial over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function iifsl = pvinterpolationslenc(p,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iifsl ... Interpolation Slope form
+%  iifsl ... interval computed by Interpolation Slope form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

@@ -7,7 +7,8 @@ function itf = pvtaylorenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%    The function computes range of Taylor form TF of polynomial p over ix.
+%  Evaluates enclosure of range of polynomial using Taylor form over
+%  interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function itf = pvtaylorenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  itf ... Taylor form
+%  itf ... interval computed by Taylor form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

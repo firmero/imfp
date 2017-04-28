@@ -7,6 +7,8 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %--------------------------------------------------------------------------
 % .Description.
 %
+%  Evaluates enclosure of range of polynomial using Bernstein form
+%  of polynomial over input interval.
 %  Bernstein form is the hull of set of b_j for j=0..k,
 %  b_j is j-th Bernstein coefficients of order k over ix.
 %
@@ -23,7 +25,7 @@ function [ibf ver] = pvbernsteinenc(p,ix,k)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  ibf ... Bernstein form
+%  ibf ... interval computed by Bernstein form
 %  ver ... 1 iff Bernstein form is exact, otherwise 0
 %
 %--------------------------------------------------------------------------

@@ -7,7 +7,8 @@ function iy = pviinterpolationenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Interpolation form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Interpolation form of interval polynomial 
+%  over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,8 @@ function iy = pviinterpolationenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Interpolation form of interval polynomial ip over ix
+%  iy ... interval computed by Interpolation form of interval polynomial ip
+%         over interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

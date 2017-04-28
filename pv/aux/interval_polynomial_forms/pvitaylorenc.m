@@ -7,7 +7,8 @@ function iy = pvitaylorenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Taylor form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Taylor form of interval polynomial 
+%  over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function iy = pvitaylorenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Taylor form of interval polynomial ip over ix
+%  iy ... interval computed by Taylor form of interval polynomial ip over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

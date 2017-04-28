@@ -7,8 +7,8 @@ function iy = pvihornerbzenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Horner form with bisection at zero of interval polynomial 
-%  ip over ix.
+%  Evaluates enclosure of range of Horner form with bisection at zero
+%  of input interval of interval polynomial over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -21,8 +21,8 @@ function iy = pvihornerbzenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Horner form with bisection at zero of interval 
-%         polynomial ip over ix
+%  iy ... interval computed by Horner form with bisection at zero of interval 
+%         polynomial ip over interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

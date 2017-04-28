@@ -7,7 +7,9 @@ function isf = pvslopeenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%    Slope form of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Slope form over
+%  interval.
+%
 %  For polynomial p there exists uniquely defined polynomial q such that
 %  p(x) = p(c) + q(x)*(x-c), where c = mid(ix). Polynomial q has smaller
 %  degree by one.
@@ -25,7 +27,7 @@ function isf = pvslopeenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  isf ... Slope form
+%  isf ... interval computed by Slope form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

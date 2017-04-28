@@ -7,7 +7,8 @@ function ihflz = pvhornerlzenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Horner form for interval ix = [0,r], r >= 0.
+%  Evaluates enclosure of range of polynomial using Horner form
+%  for interval ix = [0,r], r >= 0.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function ihflz = pvhornerlzenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  ihflz ... Horner form
+%  ihflz ... interval computed by Horner form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

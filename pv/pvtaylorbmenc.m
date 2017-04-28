@@ -7,7 +7,7 @@ function itfbm = pvtaylorbmenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%    The function computes range of Taylor form of polynomial p over
+%  Evaluates enclosure of range of polynomial using Taylor form over
 %  interval ix using bisection at the zero of translated ix. Interval
 %  ix-c is centered interval [-r,r].
 %
@@ -26,7 +26,7 @@ function itfbm = pvtaylorbmenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  itfbm ... Taylor form with bisection
+%  itfbm ... interval computed by Taylor form with bisection
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

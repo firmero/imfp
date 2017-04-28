@@ -7,7 +7,8 @@ function imvf = pvmeanvalenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Mean value form of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Mean value form over
+%  interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function imvf = pvmeanvalenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  itf ... Mean value form
+%  itf ... interval computed by Mean value form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

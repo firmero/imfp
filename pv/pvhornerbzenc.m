@@ -7,7 +7,8 @@ function ihfbz = pvhornerbzenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Horner form for ix containing 0.
+%  Evaluates enclosure of range of polynomial using Horner form for
+%  input interval containing 0.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function ihfbz = pvhornerbzenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  ihfbz ... Horner form with bisection at the zero
+%  ihfbz ... interval computed by Horner form with bisection at the zero
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

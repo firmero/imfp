@@ -7,7 +7,8 @@ function iy = pvimeanvalenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Mean value form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Mean value form of interval polynomial
+%  over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,8 @@ function iy = pvimeanvalenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Mean value form of interval polynomial ip over ix
+%  iy ... interval computed by Mean value form of interval polynomial ip
+%         over interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

@@ -7,7 +7,8 @@ function [ihf ver] = pvhornerenc(p, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Horner form of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Horner form over
+%  interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -21,7 +22,7 @@ function [ihf ver] = pvhornerenc(p, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  ihf ... Horner form
+%  ihf ... interval computed by Horner form
 %  ver ... if 1 then Horner form do not overestimate
 %
 %--------------------------------------------------------------------------

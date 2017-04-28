@@ -7,7 +7,8 @@ function iif2 = pvinterpolation2enc(p,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Interpolation form 2 of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Interpolation form 2
+%  of polynomial over interval.
 %  Interpolation form 2 gives not worse result as Interpolation form.
 %
 %--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ function iif2 = pvinterpolation2enc(p,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iif2 ... Interpolation form 2
+%  iif2 ... interval computed by Interpolation form 2
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

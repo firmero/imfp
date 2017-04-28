@@ -7,7 +7,8 @@ function iy = pvislopeenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Slope form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Slope form of interval polynomial 
+%  over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,8 @@ function iy = pvislopeenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Slope form of interval polynomial ip over ix
+%  iy ... interval computed by Slope form of interval polynomial ip over
+%         interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

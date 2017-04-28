@@ -7,7 +7,8 @@ function iy = pvitaylorbmenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Taylor form with bisection of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Taylor form with bisection of interval
+%  polynomial over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,8 +21,8 @@ function iy = pvitaylorbmenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Taylor form with bisection of interval polynomial
-%         ip over ix
+%  iy ... interval computed by Taylor form with bisection of interval
+%         polynomial ip over ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

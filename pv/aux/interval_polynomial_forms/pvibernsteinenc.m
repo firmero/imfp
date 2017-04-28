@@ -7,7 +7,8 @@ function iy = pvibernsteinenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Bernstein form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Bernstein form of interval polynomial 
+%  over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,8 @@ function iy = pvibernsteinenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Bernstein form of interval polynomial ip over ix
+%  iy ... interval computed by Bernstein form of interval polynomial ip
+%		  over interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

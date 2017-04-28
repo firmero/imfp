@@ -7,7 +7,8 @@ function iy = pviinterpolationslenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Evaluate Interpolation slope form of interval polynomial ip over ix.
+%  Evaluates enclosure of range of Interpolation slope form of interval 
+%  polynomial over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,8 +21,8 @@ function iy = pviinterpolationslenc(ip,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  iy ... range of Interpolation slope form of interval polynomial ip 
-%         over ix
+%  iy ... interval computed by Interpolation slope form of interval polynomial
+%         ip over interval ix
 %
 %--------------------------------------------------------------------------
 % .Implementation details.

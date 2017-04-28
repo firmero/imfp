@@ -7,7 +7,8 @@ function [ibfbz ver] = pvbernsteinbzenc(p,ix,k)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Bernstein form with the bisection of the input interval at the zero.
+%  Evaluates enclosure of range of polynomial using Bernstein form 
+%  of polynomial with the bisection of the input interval at the zero.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -22,7 +23,7 @@ function [ibfbz ver] = pvbernsteinbzenc(p,ix,k)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  ibfbz ... Bernstein form with bisection at the zero.
+%  ibfbz ... interval computed by Bernstein form with bisection at the zero.
 %  ver   ... 1 iff Bernstein form is exact, otherwise 0
 %
 %--------------------------------------------------------------------------

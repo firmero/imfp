@@ -7,7 +7,8 @@ function imvfbc = pvmeanvalbcenc(p,ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Bicentred mean value form of polynomial p over interval ix.
+%  Evaluates enclosure of range of polynomial using Bicentred mean value
+%  form of polynomial over interval.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -20,7 +21,7 @@ function imvfbc = pvmeanvalbcenc(p,ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  imvfbc ... Bicentred mean value form
+%  imvfbc ... interval computed by Bicentred mean value form
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
