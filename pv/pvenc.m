@@ -8,7 +8,7 @@ function [iy ver] = pvenc(p,ix,strategy)
 % .Description.
 %
 %  Evaluates enclosure of range of polynomial over the input interval.
-%  Using third parameter can be specified approach for evaluating.
+%  Using the third parameter can be specified approach of evaluating.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -33,19 +33,31 @@ function [iy ver] = pvenc(p,ix,strategy)
 %
 %  FASTEST  - pvhornerenc or pvhornerbzenc (HF, HFBZ)
 %  FASTER   - pvmeanvalbcenc (MVFBC)
-%  EFECTIVE - pvmeanvalbcenc (MVFBC), pvinterpolation2enc (IF2)
+%  EFECTIVE - pvmeanvalbcenc (MVFBC) for x with 0,
+%             otherwise pvinterpolation2enc (IF2)
 %  TIGHTER  - pvinterpolationslenc (ISF)
 %  TIGHTEST - pvbernsteinenc, pvbernsteinbzenc (BF, BFBZ)
 %
 %--------------------------------------------------------------------------
 % .License.
 %
-%  [license goes here]
+%  Copyright (C) 2017  Charles University in Prague, Czech Republic
+%
+%  LIME 1.0 is free for private use and for purely academic purposes.
+%  It would be very kind from the future user of LIME 1.0 to give
+%  reference that this software package has been developed
+%  by at Charles University, Czech Republic.
+%
+%  For any other use of LIME 1.0 a license is required.
+%
+%  THIS SOFTWARE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR IMPLIED
+%  WARRANTIES, INCLUDING, WITHOUT LIMITATIONS, THE IMPLIED WARRANTIES
+%  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 %
 %--------------------------------------------------------------------------
 % .History.
 %
-%  2017-MM-DD   first version
+%  2017-05-05  first version
 %
 %--------------------------------------------------------------------------
 % .Todo.

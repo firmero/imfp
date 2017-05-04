@@ -1,4 +1,4 @@
-function itc = taylor_coefficients(p, x)
+function iy = pvienc(ip,ix,strategy)
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -7,25 +7,34 @@ function itc = taylor_coefficients(p, x)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Computes taylor coefficients of polynomial p at point x.
-%
-%  itc(i) = HF(i-1 derivative of p, x) / (i-1)!  for i =1..length(p)
+%  Evaluates enclosure of range of interval polynomial over the input interval.
+%  Using the third parameter can be specified approach of evaluating.
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
 %
-%  p  ... vector of polynomial coefficients [a_1 ... a_n]
-%  x  ... evaluation point
+%  ip       ... vector of polynomial interval coefficients [ia_1 ... ia_n]
+%  ix       ... interval x
+%  strategy ... optional, can be lowercase, default is EFECTIVE,
+%               one of the values: FASTEST, FASTER, EFECTIVE, TIGHTER, TIGHTEST
 %
-%	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
+%	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  itc ... vector of taylor coefficients
-%  
+%  iy ... enclosure of range
+%
 %--------------------------------------------------------------------------
 % .Implementation details.
+%
+%  Strategy and the methods which are used for them:
+%
+%  FASTEST  - pvihornerbzenc (iHFBZ)
+%  FASTER   - pvislopeenc (iSF)
+%  EFECTIVE - pvimeanvalbcenc (iMVFBC)
+%  TIGHTER  - pviinterpolationslenc (iISF)
+%  TIGHTEST - pvibernsteinenc (iBF)
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -54,35 +63,25 @@ function itc = taylor_coefficients(p, x)
 %
 %ENDDOC====================================================================
 
-n = length(p);
+ix = intval(ix);
 
-% allocate output vector
-itc = repmat(intval(0),1,n);
-itc(1) = pvhornerenc(p,x);
-
-% factorial
-fact = intval(1);
-
-% r will be the length of i-1 derivative
-r = n-1;
-
-for i = 2:n
-
-	% multiplication constant produced by derivation
-	c = r;
-
-	% derivate
-	for j = 1:r
-		p(j) = c*p(j);
-		c = c-1;
-	end
-	% p_1 ... p_r are coefficients of (i-1) derivative of p
-	ptmp = p(1:r);
-
-	itc(i) = pvhornerenc(ptmp,x) / fact;
-	fact = fact * i;
-	r = r - 1;
-
+% not handled bad calling
+if (nargin() == 2)
+	strategy = 'DEFUALT';
 end
 
+strategy = upper(strategy);
+
+switch strategy
+	case 'FASTEST'
+		iy = pvihornerbzenc(ip,ix);
+	case 'FASTER'
+		iy = pvislopeenc(ip,ix);
+	case 'TIGHTER'
+		iy = pviinterpolationslenc(ip,ix);
+	case 'TIGHTEST'
+		iy = pvibernsteinenc(ip,ix);
+	otherwise
+		% default
+		iy = pvimeanvalbcenc(ip,ix);
 end
