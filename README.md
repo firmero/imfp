@@ -44,8 +44,8 @@ Octave interval pkg is also an option. Code uses INTLAB's function names.
 Using octave interval pkg pvinit remaps INTLAB's function to octave equivalent.  
 (TODO getround, setround octave equivalent?)
   
-Code works in Octave 4.0.3 and Matlab R2017a (9.2.0.538062).  
-Tested with INTLAB v9 and octave interval pkg (located in lib folder).
+Code works in Octave 4.2.1 and Matlab R2017a (9.2.0.538062).  
+Tested with INTLAB v10 and octave interval pkg (located in lib folder).
 
 ### Tests
 Functions for that purpose are in pkg tests which is documented. To use it, pvinit  
