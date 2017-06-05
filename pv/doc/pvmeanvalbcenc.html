@@ -33,13 +33,13 @@ p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n. <br>
 Bicentred mean value form evaluates mean value form twice and constructs <br> 
 final range. <br> 
 MVF = p(c) + HF(p',ix)*(ix-c), where c = mid(ix) <br> 
-MVFB uses as c optimal points c_left and c_right, than for all t in ix <br> 
+MVFB uses as c optimal points c_down and c_up, than for all t in ix <br> 
 it holds: <br> 
 <br> 
-sup(MVF(p,c_right)) <= sup(MVF(p,t)) <br> 
-inf(MVF(p,c_left))  >= inf(MVF(p,t)) <br> 
+sup(MVF(p,c_up)) <= sup(MVF(p,t)) <br> 
+inf(MVF(p,c_down))  >= inf(MVF(p,t)) <br> 
 <br> 
-MVFB(p,ix) = [inf(MVFC(ix,c_left)), sup(MVFC(ix,c_right))] <br> 
+MVFB(p,ix) = [inf(MVFC(ix,c_down)), sup(MVFC(ix,c_up))] <br> 
 where MVFC(ix,t) = HF(p,t) + HF(p`,ix)*(ix-t) <br> 
 <br> 
 If 0 is not in interior of HF(p',ix) then range is without <br> 
@@ -69,7 +69,7 @@ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. <br>
 <br> 
 <br><br><br><br> 
 <hr> 
-<code> Generated automatically by OcDoc Thu May 04 16:46:41 2017
+<code> Generated automatically by OcDoc Mon Jun 05 22:52:29 2017
  </code> 
 </div> 
 </div> 

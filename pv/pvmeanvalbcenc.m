@@ -29,13 +29,13 @@ function imvfbc = pvmeanvalbcenc(p,ix)
 %  Bicentred mean value form evaluates mean value form twice and constructs
 %  final range.
 %  MVF = p(c) + HF(p',ix)*(ix-c), where c = mid(ix)
-%  MVFB uses as c optimal points c_left and c_right, than for all t in ix
+%  MVFB uses as c optimal points c_down and c_up, than for all t in ix
 %  it holds:
 %
-%	sup(MVF(p,c_right)) <= sup(MVF(p,t))
-%	inf(MVF(p,c_left))  >= inf(MVF(p,t))
+%	sup(MVF(p,c_up)) <= sup(MVF(p,t))
+%	inf(MVF(p,c_down))  >= inf(MVF(p,t))
 %
-%  MVFB(p,ix) = [inf(MVFC(ix,c_left)), sup(MVFC(ix,c_right))]
+%  MVFB(p,ix) = [inf(MVFC(ix,c_down)), sup(MVFC(ix,c_up))]
 %		where MVFC(ix,t) = HF(p,t) + HF(p`,ix)*(ix-t)
 %
 %  If 0 is not in interior of HF(p',ix) then range is without
@@ -74,16 +74,16 @@ p_iderivated = derivate_polynomial(p);
 ihf_derivated = pvhornerenc(p_iderivated,ix);
 
 % find optimal points
-[c_left, c_right] = centres_mean_value_form(ihf_derivated,ix);
+[c_down, c_up] = centres_mean_value_form(ihf_derivated,ix);
 
 oldmod = getround();
 setround(1);
-right = sup(pvhornerenc(p,c_right)) ...
-		+ sup(ihf_derivated*(ix-c_right));
+right = sup(pvhornerenc(p,c_up)) ...
+		+ sup(ihf_derivated*(ix-c_up));
 
 setround(-1);
-left = inf(pvhornerenc(p,c_left)) ...
-		+ inf(ihf_derivated*(ix-c_left));
+left = inf(pvhornerenc(p,c_down)) ...
+		+ inf(ihf_derivated*(ix-c_down));
 
 imvfbc = infsup(left,right);
 

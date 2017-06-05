@@ -1,4 +1,4 @@
-function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
+function [c_down, c_up] = centres_mean_value_form(ip_derivated, ix)
 %BEGINDOC==================================================================
 % .Author.
 %
@@ -7,12 +7,12 @@ function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
 %--------------------------------------------------------------------------
 % .Description.
 %
-%  Computes optimal points c_left and c_right in sense of:
+%  Computes optimal points c_down and c_up in sense of:
 % 
 %  For all t in ix it holds:
 %
-%	sup(MVF(p,c_right)) <= sup(MVF(p,t))
-%	inf(MVF(p,c_left))  >= inf(MVF(p,t))
+%	sup(MVF(p,c_up)) <= sup(MVF(p,t))
+%	inf(MVF(p,c_down))  >= inf(MVF(p,t))
 %
 %--------------------------------------------------------------------------
 % .Input parameters.
@@ -23,8 +23,8 @@ function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
 %--------------------------------------------------------------------------
 % .Output parameters.
 %
-%  c_left  ... the left optimal point for MVF
-%  c_right ... the right optimal point for MVF
+%  c_down  ... optimal point for lower bound of MVF
+%  c_up    ... optimal point for upper bound of MVF
 %
 %--------------------------------------------------------------------------
 % .Implementation details.
@@ -57,20 +57,20 @@ function [c_left, c_right] = centres_mean_value_form(ip_derivated, ix)
 %ENDDOC====================================================================
 
 if (inf(ip_derivated) >= 0)
-	c_left = inf(ix);
-	c_right = sup(ix);
+	c_down = inf(ix);
+	c_up = sup(ix);
 	return
 end
 
 if (sup(ip_derivated) <= 0)
-	c_left = sup(ix);
-	c_right = inf(ix);
+	c_down = sup(ix);
+	c_up = inf(ix);
 	return
 end
 
 % else approximate, it is correct thanks to lemma of optimality
 width = sup(ip_derivated) - inf(ip_derivated);
-c_right = (sup(ip_derivated)*sup(ix) - inf(ip_derivated)*inf(ix))/width;
-c_left  = (sup(ip_derivated)*inf(ix) - inf(ip_derivated)*sup(ix))/width;
+c_up = (sup(ip_derivated)*sup(ix) - inf(ip_derivated)*inf(ix))/width;
+c_down  = (sup(ip_derivated)*inf(ix) - inf(ip_derivated)*sup(ix))/width;
 
 end
