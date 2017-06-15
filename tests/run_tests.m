@@ -67,6 +67,43 @@ test_suite4('stats4',1), toc(t)
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%  TEST SUITES DEFINITIONS    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+%  TEST SUITE TEMPLATE
+%
+%  Meaning of the input arguments is mentioned in the section
+%  Implementation details of run_test() function.
+%
+function test_suiteX(stats_filename, polynomials_count)
+
+	disp('-- starting TEMPLATE test_suite X --');
+
+	% handlers accepting interval x and vector of coeficients of polynomial
+	% together with description which will appear in stats out files
+	forms_structs = {
+				% form_handler, description
+				{ @pvhornerenc, 'HF'};
+				{ @pvslopeenc,  'SF'} ;
+		};
+
+	% add/delete structures, modify just even args of constructor struct,
+	% this defines parameters for call of function test
+	tests_prms = {
+				struct('deg',  8, 'interval', infsup(-0.3,  0.5), 'prefix', 'x1_');
+				struct('deg', 26, 'interval', infsup(-0.3,  0.5), 'prefix', 'x2_');
+				struct('deg',  4, 'interval', infsup(-0.3, -0.2), 'prefix', 'x3_');
+			};
+
+	% TODO use this call for interval polynomials
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials_interval,...
+				@evaluate_polynomial_int, forms_structs, stats_filename)
+
+	% TODO otherwise use this call for real polynomials
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials,...
+				@evaluate_polynomial, forms_structs,stats_filename)
+end
+
 function test_suite1(stats_filename, polynomials_count)
 
 	disp('-- starting test_suite 1 --'); 
