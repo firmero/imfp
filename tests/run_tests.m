@@ -87,8 +87,9 @@ function test_suiteX(stats_filename, polynomials_count)
 				{ @pvslopeenc,  'SF'} ;
 		};
 
-	% add/delete structures, modify just even args of constructor struct,
-	% this defines parameters for call of function test
+	% * add/delete structures
+	% * modify just even args of constructor struct, their meaning is self-describing
+	% * structures defines parameters for call of function test
 	tests_prms = {
 				struct('deg',  8, 'interval', infsup(-0.3,  0.5), 'prefix', 'x1_');
 				struct('deg', 26, 'interval', infsup(-0.3,  0.5), 'prefix', 'x2_');
