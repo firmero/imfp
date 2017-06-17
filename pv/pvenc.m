@@ -15,8 +15,8 @@ function [iy ver] = pvenc(p,ix,strategy)
 %
 %  p        ... vector of polynomial coefficients [a_1 ... a_n]
 %  ix       ... interval x
-%  strategy ... optional, can be lowercase, default is EFECTIVE,
-%               one of the values: FASTEST, FASTER, EFECTIVE, TIGHTER, TIGHTEST
+%  strategy ... optional, can be lowercase, default is EFFECTIVE,
+%               one of the values: FASTEST, FASTER, EFFECTIVE, TIGHTER, TIGHTEST
 %
 %	p(x) = a_1*x^(n-1) + a_2*x^(n-2) + .. + a_(n-1)*x^1 + a_n
 %
@@ -33,7 +33,7 @@ function [iy ver] = pvenc(p,ix,strategy)
 %
 %  FASTEST  - pvhornerenc or pvhornerbzenc (HF, HFBZ)
 %  FASTER   - pvmeanvalbcenc (MVFBC)
-%  EFECTIVE - pvmeanvalbcenc (MVFBC) for x with 0,
+%  EFFECTIVE - pvmeanvalbcenc (MVFBC) for x with 0,
 %             otherwise pvinterpolation2enc (IF2)
 %  TIGHTER  - pvinterpolationslenc (ISF)
 %  TIGHTEST - pvbernsteinenc, pvbernsteinbzenc (BF, BFBZ)

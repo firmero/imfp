@@ -15,8 +15,8 @@ function iy = pvienc(ip,ix,strategy)
 %
 %  ip       ... vector of polynomial interval coefficients [ia_1 ... ia_n]
 %  ix       ... interval x
-%  strategy ... optional, can be lowercase, default is EFECTIVE,
-%               one of the values: FASTEST, FASTER, EFECTIVE, TIGHTER, TIGHTEST
+%  strategy ... optional, can be lowercase, default is EFFECTIVE,
+%               one of the values: FASTEST, FASTER, EFFECTIVE, TIGHTER, TIGHTEST
 %
 %	ip(x) = ia_1*x^(n-1) + ia_2*x^(n-2) + .. + ia_(n-1)*x^1 + ia_n
 %
@@ -32,7 +32,7 @@ function iy = pvienc(ip,ix,strategy)
 %
 %  FASTEST  - pvihornerbzenc (iHFBZ)
 %  FASTER   - pvislopeenc (iSF)
-%  EFECTIVE - pvimeanvalbcenc (iMVFBC)
+%  EFFECTIVE - pvimeanvalbcenc (iMVFBC)
 %  TIGHTER  - pviinterpolationslenc (iISF)
 %  TIGHTEST - pvibernsteinenc (iBF)
 %
