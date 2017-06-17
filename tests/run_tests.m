@@ -15,9 +15,9 @@ function run_tests()
 %  Test suites call private function exec_tests with proper arguments.
 %
 %  Functions test_suite* have args:
-%  stats_filename and repetitions which are forwarded to exec_tests.
+%  stats_filename and polynomials_count which are forwarded to exec_tests.
 %
-%  Parameter repetitions represents how many polynomials should be 
+%  Parameter polynomials_count represents how many polynomials should be 
 %  created for specific combination of interval and degree.
 %
 %  Stats are generated in directory stats_out.
@@ -67,7 +67,45 @@ test_suite4('stats4',1), toc(t)
 
 end
 
-function test_suite1(stats_filename, repetitions)
+%%%%%%%%%%%%%%%%%%%%%%  TEST SUITES DEFINITIONS    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+%  TEST SUITE TEMPLATE
+%
+%  Meaning of the input arguments is mentioned in the section
+%  Implementation details of run_test() function.
+%
+function test_suiteX(stats_filename, polynomials_count)
+
+	disp('-- starting TEMPLATE test_suite X --');
+
+	% handlers accepting interval x and vector of coeficients of polynomial
+	% together with description which will appear in stats out files
+	forms_structs = {
+				% form_handler, description
+				{ @pvhornerenc, 'HF'};
+				{ @pvslopeenc,  'SF'} ;
+		};
+
+	% * add/delete structures
+	% * modify just even args of constructor struct, their meaning is self-describing
+	% * structures defines parameters for call of function test
+	tests_prms = {
+				struct('deg',  8, 'interval', infsup(-0.3,  0.5), 'prefix', 'x1_');
+				struct('deg', 26, 'interval', infsup(-0.3,  0.5), 'prefix', 'x2_');
+				struct('deg',  4, 'interval', infsup(-0.3, -0.2), 'prefix', 'x3_');
+			};
+
+	% TODO use this call for interval polynomials
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials_interval,...
+				@evaluate_polynomial_int, forms_structs, stats_filename)
+
+	% TODO otherwise use this call for real polynomials
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials,...
+				@evaluate_polynomial, forms_structs,stats_filename)
+end
+
+function test_suite1(stats_filename, polynomials_count)
 
 	disp('-- starting test_suite 1 --'); 
 
@@ -146,11 +184,11 @@ function test_suite1(stats_filename, repetitions)
 
 	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
 
-	exec_tests(tests_prms, repetitions, @generate_polynomials,...
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials,...
 				@evaluate_polynomial, forms_structs,stats_filename)
 end
 
-function test_suite2(stats_filename, repetitions)
+function test_suite2(stats_filename, polynomials_count)
 	
 	disp('-- starting test_suite 2 --'); 
 
@@ -230,12 +268,12 @@ function test_suite2(stats_filename, repetitions)
 
 	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'y11_')};
 
-	exec_tests(tests_prms, repetitions, @generate_polynomials_interval,...
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials_interval,...
 				@evaluate_polynomial_int, forms_structs, stats_filename)
 
 end
 
-function test_suite3(stats_filename, repetitions)
+function test_suite3(stats_filename, polynomials_count)
 
 	disp('-- starting test_suite 3 --'); 
 
@@ -314,10 +352,10 @@ function test_suite3(stats_filename, repetitions)
 
 	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
 
-	exec_tests(tests_prms, repetitions, @generate_polynomials,...
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials,...
 				@evaluate_polynomial, forms_structs,stats_filename)
 end
-function test_suite4(stats_filename, repetitions)
+function test_suite4(stats_filename, polynomials_count)
 
 	disp('-- starting test_suite 4 --'); 
 
@@ -396,11 +434,11 @@ function test_suite4(stats_filename, repetitions)
 
 	%tests_prms = { struct('deg',  4, 'interval', infsup(-0.3, 0.2), 'prefix', 'x11_')};
 
-	exec_tests(tests_prms, repetitions, @generate_polynomials_interval,...
+	exec_tests(tests_prms, polynomials_count, @generate_polynomials_interval,...
 				@evaluate_polynomial_int, forms_structs, stats_filename)
 end
 
-function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
+function exec_tests(tests_prms, polynomials_count, gen_polynomial_handler,...
 					evaluate_polynomial_handler, forms_structs, stats_filename)
 
 	[~,~] = mkdir('stats_out');
@@ -412,7 +450,7 @@ function exec_tests(tests_prms, repetitions, gen_polynomial_handler,...
 
 		fprintf('Test case        %4i/%i\n', i, tests_cnt);
 
-		test_filename = test(tests_prms{i}.deg, repetitions, ...
+		test_filename = test(tests_prms{i}.deg, polynomials_count, ...
 						gen_polynomial_handler, ...
 						evaluate_polynomial_handler, ...
 						tests_prms{i}.interval, forms_structs, tests_prms{i}.prefix);
