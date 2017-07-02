@@ -52,16 +52,16 @@ function run_tests()
 warning('off','all');
 
 t = tic; 
-test_suite1('stats1',1), toc(t)
+test_suite1('stats1',100), toc(t)
 
 t = tic; 
-test_suite2('stats2',1), toc(t)
+test_suite2('stats2',100), toc(t)
 
 t = tic;
-test_suite3('stats3',1), toc(t)
+test_suite3('stats3',100), toc(t)
 
 t = tic;
-test_suite4('stats4',1), toc(t)
+test_suite4('stats4',100), toc(t)
 
 %warning('on','notzero');
 
