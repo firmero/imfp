@@ -13,7 +13,7 @@ BEGIN {
 	n++;
 
 	deg[n] = $6
-	description[n] = $9 " " $11
+	description[n] = $9 ", " $11
 	next 
 }
 
