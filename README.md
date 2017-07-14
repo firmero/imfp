@@ -1,8 +1,9 @@
 ## Documentation
 
 ### Introduction
-Package pv (polynomial value) implements methods evaluating enclosure  
-of range of polynomial over interval. Polynomial can have interval coefficients.  
+Package pv (polynomial value) implements methods evaluating an enclosure  
+of the range of a polynomial over an interval. Polynomial can have  
+interval coefficients.  
   
 Methods are based on the following form:  
 * Horner (pvhornerenc, pvhornerbzenc, pvhornerlzenc)  
@@ -24,7 +25,7 @@ from them. More details about the mentioned forms and their modification for
 special cases can be found there. For genarating documentation is used  
 documentation system [ocdoc](http://kam.mff.cuni.cz/~horacek/projekty/ocdoc/).
   
-To load functions to your workspace you need to call pvinit. In octave  
+To load functions to your workspace you need to call pvinit. In Octave  
 it is possible to run some code from pv in parallel mode. That can be enabled by  
 calling pvinit with argument 'par'. Packages parallel-3.1.1 and its dependency  
 struct-1.0.14 are used to achieve it. They can be installed during pvinit  
@@ -41,18 +42,18 @@ Helper functions that are used by implementation are in directory aux.
   
 For interval arithmetic it's recommended to use INTLAB (Matlab/Octave).  
 Octave interval pkg is also an option. Code uses INTLAB's function names.  
-Using octave interval pkg pvinit remaps INTLAB's function to octave equivalent.  
-(TODO getround, setround octave equivalent?)
+Using Octave interval pkg pvinit remaps INTLAB's function to Octave equivalent.  
+However functions as getround and setround do not have equivalent in Octave.  
   
 Code works in Octave 4.2.1 and Matlab R2017a (9.2.0.538062).  
-Tested with INTLAB v10 and octave interval pkg (located in lib folder).
+Tested with INTLAB v10 and Octave interval pkg (located in lib folder).
 
 ### Tests
 Functions for that purpose are in pkg tests which is documented. To use it, pvinit  
 is needed to call.
 
 Test suites are hardcoded in file run\_tests.m and can be easily added or removed  
-from there. By default, none of test suites runs by calling run\_tests function.  
+from there. By default, none of the test suites runs by calling run\_tests function.  
 To enable uncomment proper suite in run\_tests function. Test suite has  
 as argument filename of statistics and how many times  should be one test repeated.  
 Generated files appear in directories stats\_out and tests\_out.  
@@ -79,19 +80,19 @@ i7-6700 CPU @ 3.40GHz.
 
 Stats uses the following function to get values for statistics:  
 100 * (width(ix) - width(iy)) / width(ix)  
-ix is range produced by form, iy is reference range  
+ix is range produced by form, iy is the reference range  
 
 Some observations from stats output for polynomial with point coefficients:  
-* HFBZ: for interval not containing 0 faster while not using interval  
+* HFBZ: for interval not containing 0 is faster while not using interval  
   arithmetic and it gives half overestimation of HF.  
   (Horner form with bisection at the zero)  
 * MVF: very similar ranges to HF, for wider interval even worse.  
   2 times slower than HF.  
   (Mean value form)  
 * SF: also very similar to HF, but for interval x without 0 gives  
-  half overestimation of HF. 3-5 slower than HF.  
+  half overestimation of HF. 3-5 times slower than HF.  
   (Slope form)  
-* MVFBC: the most time gives very precise range. 3 slower than HF.  
+* MVFBC: the most time gives very precise range. 3 times slower than HF.  
   (Bicentred mean value form)  
 * IF, IF2: IF2 can give a little better range as IF, but not worse.  
   Tight range. 4 time slower than HF.  

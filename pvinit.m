@@ -11,7 +11,7 @@ function pvinit(par_opt)
 % .Input parameters.
 %
 %  par_opt ... optional parallelization
-%              to use parallelization use string 'par' (only Octave)
+%              to use parallelization use string 'par' (only in Octave)
 %
 %--------------------------------------------------------------------------
 % .License.
@@ -153,6 +153,6 @@ function load_noparallel
 	addpath( [ LOC_DIR filesep 'tests/aux/evaluate_polynomial' ] );
 end
 
-function main
-	%run_tests;
-end
+%function main
+%	run_tests;
+%end

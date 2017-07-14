@@ -49,19 +49,15 @@ function run_tests()
 %
 %ENDDOC====================================================================
 
-warning('off','all');
+%warning('off','all');
 
-t = tic; 
-test_suite1('stats1',100), toc(t)
+%test_suite1('stats1',100)
 
-t = tic; 
-test_suite2('stats2',100), toc(t)
+%test_suite2('stats2',100)
 
-t = tic;
-test_suite3('stats3',100), toc(t)
+%test_suite3('stats3',100)
 
-t = tic;
-test_suite4('stats4',100), toc(t)
+%test_suite4('stats4',100)
 
 %warning('on','notzero');
 
