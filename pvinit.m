@@ -86,8 +86,14 @@ end
 
 % 1 for parallel
 par = 0;
-if ((1 == nargin) && strcmp(par_opt,'par'))
-	par = 1;
+if ((1 == nargin))
+	
+	if (strcmp(par_opt,'par'))
+		par = 1;
+	else
+		disp 'Incorect parameter''s value.'
+		disp 'To enable parallelization use string ''par''.'
+	end 
 end
 
 if (par && running_octave)
@@ -119,24 +125,25 @@ if (par && running_octave)
 	pkg load parallel;
 
 	% running script makes local functions global in octave,
-	% not working in matlab :/
+	% not working in Matlab :/
 	% load forms for interval polynomial, they use parallelism
 	load_interval_forms_par;
 
 	% while testing use parallel version of evaluation of polynomial
 	addpath( [ LOC_DIR filesep 'tests/aux/evaluate_polynomial/private' ] );
-	disp 'DEBUG: paralell...';
+	%disp 'DEBUG: paralell...';
+	disp 'Paralell mode enabled.';
 
-	main;
+	%main;
 	return
 end
 
 if (par && ~running_octave)
-	warning('Parallelization cannot be established in matlab.');
+	warning('Parallelization cannot be established in Matlab.');
 end
 
 load_noparallel;
-main;
+%main;
 return
 
 end
@@ -145,8 +152,8 @@ function load_noparallel
 
 	global LOC_DIR;
 
-	disp 'DEBUG: no paralell...';
-	% in matlab cannot promote local function to global
+	%disp 'DEBUG: no paralell...';
+	% in Matlab cannot promote local function to global
 	% by calling script :/
 	addpath( [ LOC_DIR filesep 'pv/aux/interval_polynomial_forms' ] );
 	% shade parallel version
